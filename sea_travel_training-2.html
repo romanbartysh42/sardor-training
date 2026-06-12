@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sardor Travel — Морские экскурсии</title>
+<style>
+:root {
+  --ocean:#0A6E8A;--ocean-dark:#084F63;--ocean-light:#E8F4F8;
+  --sand:#F5EDD6;--sand-dark:#E8D9B5;--coral:#E05A2B;--coral-light:#FDEEE7;
+  --green:#2D7A4F;--green-light:#E8F5EE;--text:#1A1A1A;--text-muted:#666;
+  --border:#D5E5EA;--white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--sand);color:var(--text);min-height:100vh;}
+.nav{background:var(--ocean-dark);padding:0 16px;display:flex;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.3);flex-wrap:wrap;}
+.nav-logo{color:white;font-weight:700;font-size:17px;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.2);margin-right:6px;}
+.nav-logo span{color:#7DD3E8;}
+.nav-btn{background:none;border:none;color:rgba(255,255,255,0.7);padding:16px 12px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;border-bottom:3px solid transparent;}
+.nav-btn:hover{color:white;background:rgba(255,255,255,0.08);}
+.nav-btn.active{color:white;border-bottom-color:#7DD3E8;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* HOME */
+.home{max-width:900px;margin:0 auto;padding:40px 20px;}
+.home-hero{text-align:center;padding:48px 24px;background:linear-gradient(135deg,var(--ocean-dark) 0%,var(--ocean) 100%);border-radius:16px;color:white;margin-bottom:32px;position:relative;overflow:hidden;}
+.home-hero::before{content:"🌊";font-size:120px;position:absolute;right:-20px;top:-20px;opacity:0.1;}
+.home-hero h1{font-size:26px;font-weight:700;margin-bottom:8px;}
+.home-hero p{font-size:14px;opacity:0.85;max-width:500px;margin:0 auto;line-height:1.6;}
+.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+.stat-card{background:white;border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);}
+.stat-num{font-size:30px;font-weight:700;color:var(--ocean);}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.home-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.action-card{background:white;border-radius:12px;padding:20px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;text-align:center;}
+.action-card:hover{border-color:var(--ocean);box-shadow:0 4px 16px rgba(10,110,138,0.15);transform:translateY(-2px);}
+.action-card .icon{font-size:32px;margin-bottom:10px;}
+.action-card h3{font-size:15px;font-weight:600;margin-bottom:6px;}
+.action-card p{font-size:12px;color:var(--text-muted);line-height:1.5;}
+.action-card .step{font-size:11px;color:var(--ocean);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* CARDS */
+.cards-layout{max-width:1000px;margin:0 auto;padding:24px 20px;}
+.cards-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.cards-header h2{font-size:20px;font-weight:700;flex:1;}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{background:white;border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;color:var(--text-muted);transition:all 0.2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--ocean);border-color:var(--ocean);color:white;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.tour-card{background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.tour-card:hover{border-color:var(--ocean);box-shadow:0 4px 16px rgba(10,110,138,0.15);transform:translateY(-2px);}
+.card-top{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;}
+.card-num{width:30px;height:30px;background:var(--ocean);color:white;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.card-title{font-size:13px;font-weight:600;line-height:1.3;}
+.card-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.card-tags{padding:8px 16px;display:flex;gap:5px;flex-wrap:wrap;}
+.tag{background:var(--ocean-light);color:var(--ocean-dark);border-radius:4px;padding:2px 7px;font-size:10px;font-weight:500;}
+.card-bottom{padding:8px 16px;background:var(--sand);display:flex;justify-content:space-between;align-items:center;}
+.card-time{font-size:11px;color:var(--text-muted);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;overflow-y:auto;padding:20px;}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center;}
+.modal{background:white;border-radius:16px;max-width:760px;width:100%;margin:auto;overflow:hidden;}
+.modal-header{background:linear-gradient(135deg,var(--ocean-dark),var(--ocean));color:white;padding:18px 22px;position:relative;}
+.modal-header h2{font-size:17px;font-weight:700;padding-right:36px;}
+.modal-header p{font-size:12px;opacity:0.8;margin-top:4px;}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.2);border:none;color:white;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:18px 22px;max-height:72vh;overflow-y:auto;}
+.modal-section{margin-bottom:18px;}
+.modal-section h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--ocean);margin-bottom:8px;padding-bottom:5px;border-bottom:2px solid var(--ocean-light);}
+.schedule-table{width:100%;border-collapse:collapse;font-size:12px;}
+.schedule-table th{background:var(--ocean-dark);color:white;padding:7px 10px;text-align:left;}
+.schedule-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+.schedule-table tr:nth-child(even) td{background:var(--ocean-light);}
+.schedule-table td:first-child{font-weight:600;white-space:nowrap;width:110px;}
+.inc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.inc-col h4{font-size:11px;font-weight:700;padding:5px 9px;border-radius:5px 5px 0 0;}
+.inc-col.yes h4{background:var(--green);color:white;}
+.inc-col.no h4{background:var(--coral);color:white;}
+.inc-col ul{list-style:none;border:1px solid var(--border);border-top:none;border-radius:0 0 5px 5px;}
+.inc-col ul li{padding:5px 9px;font-size:11px;border-bottom:1px solid var(--border);}
+.inc-col ul li:last-child{border-bottom:none;}
+.inc-col.yes ul li::before{content:"✓ ";color:var(--green);font-weight:700;}
+.inc-col.no ul li::before{content:"✗ ";color:var(--coral);font-weight:700;}
+.warn-box{background:#FFF3CD;border-left:4px solid #E07A00;border-radius:0 6px 6px 0;padding:8px 12px;font-size:12px;margin-bottom:6px;color:#7A4500;}
+.info-box{background:var(--ocean-light);border-left:4px solid var(--ocean);border-radius:0 6px 6px 0;padding:8px 12px;font-size:12px;margin-bottom:6px;color:var(--ocean-dark);}
+.args-list{list-style:none;}
+.args-list li{padding:6px 0 6px 20px;position:relative;font-size:12px;border-bottom:1px solid var(--border);line-height:1.5;}
+.args-list li:last-child{border-bottom:none;}
+.args-list li::before{content:"→";position:absolute;left:0;color:var(--ocean);font-weight:700;}
+.qa-item{margin-bottom:10px;}
+.qa-q{font-weight:600;font-size:12px;color:var(--ocean-dark);margin-bottom:3px;}
+.qa-a{font-size:12px;line-height:1.6;color:var(--text);padding-left:14px;}
+.gear-box{background:var(--sand);border-radius:6px;padding:10px 14px;font-size:12px;line-height:1.6;border:1px solid var(--sand-dark);}
+
+/* FLASH */
+.flash-layout-wrap{max-width:680px;margin:0 auto;padding:24px 20px;}
+.flash-progress-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.flash-stat{font-size:12px;font-weight:600;white-space:nowrap;}
+.known-stat{color:var(--green);}
+.unknown-stat{color:var(--coral);}
+.flash-counter{font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:16px;}
+.flash-card{background:white;border-radius:16px;border:2px solid var(--border);padding:28px;transition:border-color 0.2s;}
+.flash-card.revealed{border-color:var(--ocean);}
+.flash-tour-label{display:inline-block;background:var(--ocean-light);color:var(--ocean-dark);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px;}
+.flash-question{font-size:17px;font-weight:600;line-height:1.5;color:var(--text);margin-bottom:4px;}
+.flash-divider{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;padding:14px 0 10px;border-top:1px dashed var(--border);}
+.flash-answer{font-size:15px;line-height:1.6;color:var(--text);background:var(--ocean-light);border-radius:8px;padding:14px 16px;border-left:4px solid var(--ocean);}
+.flash-judge-btn{border:2px solid;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.flash-judge-btn.known-btn{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.flash-judge-btn.known-btn:hover{background:var(--green);color:white;}
+.flash-judge-btn.unknown-btn{background:var(--coral-light);border-color:var(--coral);color:var(--coral);}
+.flash-judge-btn.unknown-btn:hover{background:var(--coral);color:white;}
+.flash-done{background:white;border-radius:16px;padding:40px;text-align:center;border:1px solid var(--border);}
+.flash-done h2{font-size:22px;font-weight:700;margin-bottom:20px;}
+.flash-score-row{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+.flash-score-item{text-align:center;padding:16px 24px;border-radius:12px;}
+.flash-score-item.known{background:var(--green-light);}
+.flash-score-item.unknown{background:var(--coral-light);}
+.fscore-num{font-size:36px;font-weight:700;}
+.flash-score-item.known .fscore-num{color:var(--green);}
+.flash-score-item.unknown .fscore-num{color:var(--coral);}
+.fscore-lbl{font-size:12px;color:var(--text-muted);}
+
+/* EXAM */
+.exam-layout{max-width:760px;margin:0 auto;padding:24px 20px;}
+.exam-start{background:white;border-radius:16px;padding:40px;text-align:center;border:1px solid var(--border);}
+.exam-start h2{font-size:22px;font-weight:700;margin-bottom:12px;}
+.exam-start p{color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:24px;max-width:500px;margin-left:auto;margin-right:auto;}
+.exam-info-row{display:flex;justify-content:center;gap:24px;margin-bottom:32px;}
+.exam-info-item{text-align:center;}
+.exam-info-item .num{font-size:28px;font-weight:700;color:var(--ocean);}
+.exam-info-item .lbl{font-size:12px;color:var(--text-muted);}
+.btn-primary{background:var(--ocean);color:white;border:none;border-radius:10px;padding:13px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-primary:hover{background:var(--ocean-dark);}
+.btn-secondary{background:white;color:var(--ocean);border:2px solid var(--ocean);border-radius:10px;padding:11px 24px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-secondary:hover{background:var(--ocean-light);}
+.exam-progress{background:white;border-radius:12px;padding:14px 18px;margin-bottom:16px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.progress-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--ocean);border-radius:4px;transition:width 0.4s ease;}
+.progress-text{font-size:12px;color:var(--text-muted);white-space:nowrap;}
+.question-card{background:white;border-radius:16px;padding:26px;border:1px solid var(--border);margin-bottom:14px;}
+.q-category{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ocean);margin-bottom:8px;}
+.q-text{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:18px;}
+.options{display:grid;gap:9px;}
+.option{background:var(--sand);border:2px solid var(--sand-dark);border-radius:10px;padding:11px 14px;cursor:pointer;font-size:13px;transition:all 0.15s;text-align:left;line-height:1.4;}
+.option:hover:not(.disabled){border-color:var(--ocean);background:var(--ocean-light);}
+.option.correct{border-color:var(--green);background:var(--green-light);color:var(--green);font-weight:600;}
+.option.wrong{border-color:var(--coral);background:var(--coral-light);color:var(--coral);}
+.option.disabled{cursor:default;}
+.option.reveal-correct{border-color:var(--green);background:var(--green-light);}
+.feedback-box{border-radius:10px;padding:12px 16px;margin-top:14px;font-size:13px;line-height:1.6;}
+.feedback-box.correct{background:var(--green-light);border:1px solid var(--green);color:#1A4A2E;}
+.feedback-box.wrong{background:var(--coral-light);border:1px solid var(--coral);color:#7A1A00;}
+.feedback-box strong{display:block;margin-bottom:3px;font-size:14px;}
+.exam-nav{display:flex;justify-content:flex-end;margin-top:14px;}
+.results-card{background:white;border-radius:16px;padding:32px;text-align:center;border:1px solid var(--border);}
+.score-circle{width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;font-weight:700;border:6px solid;}
+.score-circle.pass{border-color:var(--green);color:var(--green);background:var(--green-light);}
+.score-circle.fail{border-color:var(--coral);color:var(--coral);background:var(--coral-light);}
+.score-circle small{font-size:12px;font-weight:400;}
+.results-card h2{font-size:20px;font-weight:700;margin-bottom:8px;}
+.results-card>p{color:var(--text-muted);font-size:13px;margin-bottom:20px;}
+.results-breakdown{text-align:left;background:var(--sand);border-radius:10px;padding:14px;margin-bottom:20px;max-height:340px;overflow-y:auto;}
+.results-breakdown h4{font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;}
+.breakdown-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--sand-dark);}
+.breakdown-item:last-child{border-bottom:none;}
+.breakdown-result{font-weight:600;}
+.breakdown-result.ok{color:var(--green);}
+.breakdown-result.bad{color:var(--coral);}
+.results-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<!-- AUTH SCREEN -->
+<div id="screen-auth" class="screen active" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sand);flex-direction:column;">
+<div style="background:white;border-radius:16px;padding:40px;max-width:380px;width:100%;margin:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+  <div style="text-align:center;margin-bottom:28px;">
+    <div style="font-size:48px;margin-bottom:12px;">🌊</div>
+    <div style="font-size:22px;font-weight:700;color:var(--ocean-dark);">Sardor <span style="color:var(--ocean);">Travel</span></div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Обучение менеджеров</div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Логин</label>
+    <input id="auth-login" type="text" placeholder="Введи логин" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;outline:none;" onfocus="this.style.borderColor='var(--ocean)'" onblur="this.style.borderColor='var(--border)'">
+  </div>
+  <div style="margin-bottom:24px;">
+    <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Пароль</label>
+    <input id="auth-password" type="password" placeholder="Введи пароль" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;outline:none;" onfocus="this.style.borderColor='var(--ocean)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')doLogin()">
+  </div>
+  <button onclick="doLogin()" style="width:100%;background:var(--ocean);color:white;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;">Войти</button>
+  <div id="auth-error" style="display:none;margin-top:12px;background:var(--coral-light);border:1px solid var(--coral);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--coral);text-align:center;"></div>
+  <div id="auth-loading" style="display:none;margin-top:12px;text-align:center;font-size:13px;color:var(--text-muted);">Проверяем...</div>
+</div>
+
+<!-- SETTINGS GEAR — only visible to admin -->
+<div style="margin-top:8px;">
+  <button onclick="toggleSettings()" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:8px;opacity:0.5;">⚙️ Настройки</button>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="settings-panel" style="display:none;background:white;border-radius:12px;padding:20px;max-width:380px;width:100%;margin:0 20px 20px;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+  <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--ocean-dark);">⚙️ Настройки подключения</div>
+  <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Вставь URL из Google Apps Script. Это нужно сделать один раз — сохранится в браузере.</div>
+  <textarea id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:12px;height:70px;resize:none;outline:none;font-family:monospace;" onfocus="this.style.borderColor='var(--ocean)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+  <div style="display:flex;gap:8px;margin-top:10px;">
+    <button onclick="saveApiUrl()" style="flex:1;background:var(--ocean);color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">Сохранить</button>
+    <button onclick="testApiUrl()" style="flex:1;background:var(--green-light);color:var(--green);border:2px solid var(--green);border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">Проверить</button>
+  </div>
+  <div id="settings-status" style="display:none;margin-top:10px;font-size:12px;padding:8px 12px;border-radius:6px;"></div>
+  <div id="current-url-display" style="margin-top:10px;font-size:11px;color:var(--text-muted);word-break:break-all;"></div>
+</div>
+</div>
+
+<nav class="nav" style="display:none;">
+  <div class="nav-logo">Sardor <span>Travel</span></div>
+  <button class="nav-btn active" onclick="showScreen('home')">🏠 Главная</button>
+  <button class="nav-btn" onclick="showScreen('cards')">📋 Изучение</button>
+  <button class="nav-btn" onclick="showScreen('flash')">🃏 Флэш-карты</button>
+  <button class="nav-btn" onclick="showScreen('exam')">📝 Экзамен</button>
+  <div style="margin-left:auto;padding:0 16px;color:rgba(255,255,255,0.8);font-size:13px;">👤 <span id="user-name-display"></span></div>
+</nav>
+
+<div id="screen-home" class="screen">
+<div class="home">
+  <div class="home-hero">
+    <h1>Морские экскурсии — Обучение менеджеров</h1>
+    <p>Изучи все 14 морских экскурсий, проверь себя по флэш-картам, затем сдай экзамен.</p>
+  </div>
+  <div class="home-stats">
+    <div class="stat-card"><div class="stat-num">14</div><div class="stat-label">Экскурсий</div></div>
+    <div class="stat-card"><div class="stat-num">47</div><div class="stat-label">Флэш-карточек</div></div>
+    <div class="stat-card"><div class="stat-num">85%</div><div class="stat-label">Проходной балл</div></div>
+  </div>
+  <div class="home-actions">
+    <div class="action-card" onclick="showScreen('cards')">
+      <div class="step">Шаг 1</div>
+      <div class="icon">📋</div>
+      <h3>Изучение</h3>
+      <p>Открывай карточки туров и читай: программа, что включено, аргументы для продажи, типичные вопросы клиентов.</p>
+    </div>
+    <div class="action-card" onclick="showScreen('flash')">
+      <div class="step">Шаг 2</div>
+      <div class="icon">🃏</div>
+      <h3>Флэш-карты</h3>
+      <p>Читаешь вопрос, думаешь, раскрываешь ответ и сам оцениваешь — знал или нет. Карточки «не знал» возвращаются в колоду.</p>
+    </div>
+    <div class="action-card" onclick="showScreen('exam')">
+      <div class="step">Шаг 3</div>
+      <div class="icon">📝</div>
+      <h3>Экзамен</h3>
+      <p>20 вопросов с вариантами ответов. После каждого — объяснение. Проходной балл 85%.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="screen-cards" class="screen">
+<div class="cards-layout">
+  <div class="cards-header">
+    <h2>📋 Карточки экскурсий</h2>
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="filterCards('all',this)">Все (20)</button>
+      <button class="filter-btn" onclick="filterCards('day',this)">Дневные</button>
+      <button class="filter-btn" onclick="filterCards('evening',this)">Вечерние</button>
+      <button class="filter-btn" onclick="filterCards('twoday',this)">2 дня</button>
+    </div>
+  </div>
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+</div>
+
+<div id="screen-flash-sea" class="screen">
+<div class="flash-layout-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h2 style="font-size:20px;font-weight:700;">🃏 Флэш-карты</h2>
+    <button class="btn-secondary" onclick="initFlash()" style="font-size:12px;padding:7px 14px;">↺ Заново</button>
+  </div>
+  <div id="flash-layout-sea"></div>
+</div>
+</div>
+
+<div id="screen-exam" class="screen">
+<div class="exam-layout" id="exam-layout"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+const seaTours = [
+{id:1,num:"01",emoji:"🏝️",title:"5 жемчужин Андаманского моря",sub:"2 дня / 1 ночь — Джеймс Бонд + Краби + Пхи-Пхи",type:"twoday",
+tags:["2 дня","Ночёвка","Акулы"],
+timing:"Выезд ориентировочно 06:00–06:30 (± 1,5 часа). Комфорт — пирс Royal Phuket Marina (юго-восток). Стандарт — пирс Яму. Возврат день 2 ~17:00.",
+schedule:[["06:00–06:30","Выезд из отеля"],["~09:20","Пещера Ice Cream — ⚠️ только при отливе, гарантировать нельзя"],["~10:00","Остров Джеймса Бонда — высадка"],["~10:50","Каноэ у острова Талу — мангровые заросли"],["~11:30","Деревня Паньи — обед ВКЛЮЧЁН"],["~13:00","Остров Лао Ладинг — белый пляж, купание"],["~14:20","Остров Хонг — пляж, смотровая. Место съёмок «Джунглей» с Верой Брежневой"],["~16:10","Заселение в отель на Пхи-Пхи Дон"],["~18:50","Ужин — вино ВКЛЮЧЕНО"],["~20:15","Огненное шоу от чемпионов Таиланда + коктейль"],["~21:30","Ночная жизнь — бар «Слинки»"],["День 2 ~09:45","Бухта Майя — ⚠️ август-сентябрь закрыта, осмотр с лодки"],["~10:40","Лагуна Пиле — ⚠️ только при приливе"],["~11:30","Пляж обезьян — ТОЛЬКО С ЛОДКИ"],["~11:45","Плавание с акулами — рифовые, не опасные"],["~12:30","Обед на Пхи-Пхи Дон ВКЛЮЧЁН"],["~17:00","Возврат к пирсу, трансфер"]],
+included:["Трансфер + гид + страховка","Входные билеты в нацпарки","2 обеда + 1 ужин + 1 завтрак","Ночёвка в отеле","Напитки и фрукты на борту","Вино на ужин","Жилеты, маски, трубки"],
+excluded:["Смотровая Пхи-Пхи Дон — 50 бат","Доп. алкоголь на острове","Сувениры и личные расходы"],
+warnings:["Пещера Ice Cream — только при отливе. Лагуна Пиле — только при приливе. Гарантировать нельзя.","Бухта Майя — август-сентябрь закрыта, осмотр с лодки.","Пляж обезьян — ТОЛЬКО С ЛОДКИ, без высадки.","Акулы — рифовые, не опасные. Объяснять клиентам заранее.","Ночная программа — вечеринки и бар. Семьям с детьми уточнять ожидания.","Отель на Пхи-Пхи — несколько вариантов разной цены. Туристов предупреждаем: отель только для ночёвки.","Завтрак на пирсе — только тариф Комфорт."],
+infos:["Тариф Комфорт: завтрак, кофе, пиво, Wi-Fi, полотенца, загубники, дождевики, музыка, вино и мороженое по возвращении."],
+args:["«Всё лучшее за 2 дня» — Джеймс Бонд, деревня цыган, бухта Майя, плавание с акулами, ночная жизнь Пхи-Пхи.","Ночёвка на Пхи-Пхи — не просто дневной тур, полное погружение в атмосферу острова.","Бухта Майя — место съёмок фильма «Пляж» с ДиКаприо.","Плавание с акулами — безопасные рифовые акулы, невероятные фото.","Огненное шоу от чемпионов Таиланда."],
+qa:[["Акулы — опасно?","Нет. Рифовые акулы не агрессивны к людям. Уникальная возможность увидеть акул в естественной среде."],["Бухта Майя — та самая из «Пляжа»?","Да. В августе-сентябре закрыта — осмотр с лодки. В остальное время — высадка."],["Какой отель на Пхи-Пхи?","Несколько вариантов разной цены. Уровень примерно одинаковый. Отель только для ночёвки."]],
+gear:"Купальные принадлежности, крем, головной убор, полотенце (в Комфорте — на борту), фото/видеокамера, деньги, 50 бат на смотровую, лёгкая вечерняя одежда, вещи на 2 дня."},
+
+{id:2,num:"02",emoji:"🏝️",title:"4 жемчужины Андаманского моря",sub:"2 дня / 1 ночь — Джеймс Бонд + Краби + Пхи-Пхи",type:"twoday",
+tags:["2 дня","Краби","Рифы"],
+timing:"Выезд ориентировочно 06:50 (± 1,5 часа). Комфорт — Royal Phuket Marina. Стандарт — Яму. Возврат день 2 ~16:30.",
+schedule:[["~09:40","Остров Джеймса Бонда — высадка, рынок морских цыган"],["~10:30","Каноэ у острова Талу"],["~11:20","Деревня Паньи — обед ВКЛЮЧЁН"],["~13:20","Пляж Прананг (Райлей) — пещера плодородия. ⚠️ Добраться только на лодке"],["~15:30","Острова Близнецы и Курица — достопримечательности Краби"],["~15:40","Снорклинг у коралловых рифов"],["~16:20","Заселение в отель на Пхи-Пхи Дон"],["~18:50","Ужин ВКЛЮЧЁН"],["~20:50","Огненное шоу + коктейль"],["День 2 ~09:00","Бухта Майя — ⚠️ август-сентябрь закрыта"],["~10:00","Лагуна Пиле — ⚠️ только при приливе"],["~11:00","Пляж обезьян — ТОЛЬКО С ЛОДКИ"],["~11:20","Снорклинг у Пхи-Пхи Дон"],["~12:00","Обед ВКЛЮЧЁН"],["~13:50","Остров Бамбу — пляжный отдых"],["~16:30","Возврат к пирсу, трансфер"]],
+included:["Трансфер + гид + страховка","Входные билеты в нацпарки","2 обеда + 1 ужин + 1 завтрак","Ночёвка в отеле","Напитки и фрукты на борту","Жилеты, маски, трубки"],
+excluded:["Смотровая Пхи-Пхи Дон — 50 бат","Доп. алкоголь","Сувениры"],
+warnings:["Лагуна Пиле — только при приливе. Майя — август-сентябрь закрыта. Гарантировать нельзя.","Пляж обезьян — ТОЛЬКО С ЛОДКИ.","Пляж Райлей — добраться только на лодке, пешком не попасть.","Ночная программа поздняя. Семьям с детьми уточнять ожидания.","Завтрак — только тариф Комфорт."],
+infos:["Главное отличие от «5 жемчужин»: день 1 — Краби (пляж Райлей, рифы, острова Близнецы). Нет плавания с акулами."],
+args:["Краби в программе — пляж Райлей только на лодке, пещера плодородия, острова Близнецы.","Снорклинг у коралловых рифов.","Резиденция Короля Таиланда — осмотр с воды."],
+qa:[["Чем отличается от «5 жемчужин»?","В «4 жемчужинах» день 1 — Краби: пляж Райлей, рифы, острова Близнецы. В «5 жемчужинах» — больше островов и плавание с акулами."],["Пляж Райлей — сложно добраться?","Нет — на лодке. Пешком не попасть — окружён скалами. Это делает его особенным."]],
+gear:"Купальные принадлежности, крем, головной убор, полотенце (в Комфорте — на борту), деньги, 50 бат на смотровую, лёгкая вечерняя одежда, вещи на 2 дня."},
+
+{id:3,num:"03",emoji:"🌅",title:"Острова Пхи-Пхи: Рассветное приключение",sub:"2 дня / 1 ночь — Рассвет в море + Майя до толп + ночёвка",type:"twoday",
+tags:["2 дня","Рассвет","Ночёвка"],
+timing:"Сбор ориентировочно 04:00–04:30 (± 1,5 ч). Для северных отелей (Май Као, Найтон, Найянг) — около 03:00, т.к. пирс на юго-востоке. Возврат день 2 — 12:00 или 15:00 (уточнять накануне).",
+schedule:[["04:00–04:30","Сбор. Для северных (Май Као, Найтон, Найянг) — около 03:00"],["05:25","Пирс. ⚠️ Полноценный завтрак — только тариф Комфорт"],["~06:15","Рассвет в открытом море"],["~07:00","Бухта Майя — до наплыва туристов. ⚠️ Август-сентябрь — закрыта, осмотр с лодки"],["~08:30","Лагуна Пиле — ⚠️ только при приливе"],["~10:00","Высадка на Пхи-Пхи Дон. Обед ВКЛЮЧЁН"],["~14:00","Заселение в отель"],["~18:50","Ужин ВКЛЮЧЁН"],["~19:30","Огненное шоу от чемпионов Таиланда"],["День 2","Завтрак в отеле ВКЛЮЧЁН. Выселение."],["~12:20","Пляж обезьян — ТОЛЬКО С ЛОДКИ"],["~13:00","Остров Бамбу — купание"],["12:00 или 15:00","Возврат на Пхукет — уточнять накануне"]],
+included:["Трансфер + гид + страховка","Ночёвка в отеле","Брекфаст-бокс день 1 (Стандарт) / Полноценный завтрак (Комфорт)","Завтрак в отеле день 2","2 обеда + 1 ужин","Напитки + фрукты на борту","Жилеты, маски, трубки"],
+excluded:["Смотровая Пхи-Пхи Дон — 50 бат","Доп. алкоголь","Сувениры"],
+warnings:["Выезд 04:00–04:30. Для северных отелей (Май Као, Найтон, Найянг) — около 03:00. Обязательно предупреждать.","Майя Бэй в 07:00 — главное преимущество. Пляж почти пустой.","Лагуна Пиле — только при приливе. Майя — август-сентябрь закрыта. Гарантировать нельзя.","Пляж обезьян — ТОЛЬКО С ЛОДКИ.","Возврат день 2 — 12:00 или 15:00. Уточнять накануне.","Завтрак на пирсе — только тариф Комфорт."],
+infos:["Несколько вариантов отелей на Пхи-Пхи — разная цена. Отель только для ночёвки."],
+args:["Рассвет в море + ночёвка — полное погружение в Пхи-Пхи.","Майя Бэй без толп — в 07:00 пляж почти пустой.","Огненное шоу и вечерняя программа.","Два дня впечатлений — мини-отпуск."],
+qa:[["Чем отличается от однодневного рассветного тура?","Остаётесь ночевать — огненное шоу, утро на Пхи-Пхи, второй день на Бамбу."],["Когда возвращаемся на Пхукет?","Либо в 12:00, либо в 15:00 — сообщается накануне."]],
+gear:"Купальные принадлежности, вещи на 2 дня, крем, головной убор, полотенце (в Комфорте — на борту), деньги, 50 бат на смотровую."},
+
+{id:4,num:"04",emoji:"🏝️",title:"11 островов",sub:"1 день — Джеймс Бонд + Хонг + Пхи-Пхи",type:"day",
+tags:["1 день","11 островов","Поздний возврат"],
+timing:"Выезд ориентировочно 06:00–06:30 (± 1,5 ч). Комфорт — Royal Phuket Marina. Стандарт — Яму. Возврат ~18:10 — один из самых поздних.",
+schedule:[["~09:10","Пещера Ice Cream — ⚠️ только при отливе"],["~09:50","Остров Джеймса Бонда — высадка"],["~10:30","Каноэ у острова Талу"],["~11:10","Деревня Паньи — обед ВКЛЮЧЁН"],["~12:20","Остров Лао Ладинг — купание, снорклинг"],["~13:30","Остров Хонг — пляж, смотровая, снорклинг. Место съёмок «Джунглей» с Брежневой"],["~15:30","Пхи-Пхи Дон — ТОЛЬКО С ЛОДКИ"],["~15:40","Пляж обезьян — ТОЛЬКО С ЛОДКИ"],["~15:50","Пещера Викингов — осмотр с лодки"],["~16:00","Бухта Майя — ⚠️ август-сентябрь закрыта, осмотр с лодки"],["~16:50","Лагуна Пиле — ⚠️ только при приливе"],["~18:10","Пирс, трансфер"]],
+included:["Трансфер + гид + страховка","Входные билеты в нацпарки","Обед в деревне Паньи","Напитки и фрукты на борту","Жилеты, маски, трубки"],
+excluded:["Сувениры и личные расходы"],
+warnings:["Пещера Ice Cream — только при отливе. Лагуна Пиле — только при приливе. Гарантировать нельзя.","Бухта Майя — август-сентябрь закрыта, осмотр с лодки.","Пхи-Пхи Дон, пляж обезьян, пещера Викингов — ТОЛЬКО С ЛОДКИ.","Поздний возврат ~18:10 — предупреждать клиентов.","Завтрак — только тариф Комфорт."],
+infos:["Самый насыщенный однодневный морской тур — 11 островов без ночёвки."],
+args:["Максимум за один день — 11 островов.","Два «кино-места» — Майя («Пляж» с ДиКаприо) и Хонг («Джунгли» с Брежневой).","Деревня Паньи с обедом — живая культура."],
+qa:[["Как успеть 11 островов за день?","Часть точек — осмотр с лодки. На ключевых — высадка и купание."],["Во сколько возвращаемся?","~18:10 — один из самых поздних возвратов среди однодневных туров."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, полотенце (в Комфорте — на борту), деньги."},
+
+{id:5,num:"05",emoji:"🌅",title:"Рассветное путешествие на Пхи-Пхи",sub:"1 день — Утро без толп, возврат к 15:30",type:"day",
+tags:["1 день","Рассвет","Майя до толп"],
+timing:"Сбор ориентировочно 04:00–04:30 (± 1,5 ч). Для северных отелей (Май Као, Найтон, Найянг) — около 03:00. Возврат ~15:30 — вечер свободен.",
+schedule:[["04:00–04:30","Сбор. Для северных (Май Као, Найтон, Найянг) — около 03:00"],["05:25","Пирс. ⚠️ Полноценный завтрак — только тариф Комфорт"],["~06:15","Рассвет в открытом море"],["~07:00","Бухта Майя — до наплыва. ⚠️ Август-сентябрь — закрыта, осмотр с лодки"],["~08:30","Лагуна Пиле — ⚠️ только при приливе"],["~09:20","Снорклинг у архипелага Пхи-Пхи"],["~09:50","Пляж обезьян — ТОЛЬКО С ЛОДКИ"],["~10:00","Пхи-Пхи Дон — смотровая (50 бат) или прогулка"],["~11:30","Обед ВКЛЮЧЁН"],["~12:50","Остров Бамбу — купание, отдых"],["~15:30","Пирс, трансфер"]],
+included:["Трансфер + гид + страховка","Входные билеты в нацпарки","Обед","Напитки и фрукты на борту","Жилеты, маски, трубки"],
+excluded:["Смотровая Пхи-Пхи Дон — 50 бат","Сувениры"],
+warnings:["Выезд 04:00–04:30. Для северных отелей (Май Као, Найтон, Найянг) — около 03:00.","Майя Бэй в 07:00 — главное преимущество. Говорить: увидите Майя почти пустой.","Лагуна Пиле — только при приливе. Майя — август-сентябрь закрыта.","Пляж обезьян — ТОЛЬКО С ЛОДКИ.","Завтрак — только тариф Комфорт."],
+infos:["Возврат ~15:30 — вечер свободен. Хорошо сочетается с вечерними турами."],
+args:["Майя Бэй без толп — в 07:00 почти никого.","Рассвет в открытом море — редкий опыт.","Возврат в 15:30 — вечер свободен."],
+qa:[["Зачем такой ранний выезд?","Чтобы попасть в Майя Бэй до основного потока. В 07:00 там почти никого."],["Смотровая входит?","Нет — 50 бат отдельно. Кто не хочет — прогулка по деревне бесплатно."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, полотенце (в Комфорте — на борту), деньги, 50 бат на смотровую."},
+
+{id:6,num:"06",emoji:"🌴",title:"Тропический рай Краби",sub:"1 день — Острова без волн и закат",type:"day",
+tags:["1 день","Поздний сбор","Закат"],
+timing:"Прибытие на пирс ориентировочно 09:00 (± 1,5 ч). Самый поздний старт среди морских туров. Возврат ~18:30.",
+schedule:[["09:00","Пирс. ⚠️ Лёгкий завтрак — только тариф Комфорт"],["10:00","Выход с пирса"],["10:30","Остров Нака Яй — водные активности, волейбол, пляж. ~90 мин"],["12:40","Остров Пакбия — купание, фото, «морской лабиринт» при отливе, коктейль в кокосе ВКЛЮЧЁН. ⚠️ Лабиринт только при отливе"],["13:30","Остров Хонг — смотровая, снорклинг, обед ВКЛЮЧЁН. Место съёмок «Джунглей». ~2 ч"],["15:40","Снорклинг у острова Хонг"],["16:20","Остров Лао Ладинг — снорклинг у рифов, белый пляж"],["17:50","Песчаная коса острова Ко Паре — закат. ⚠️ Время корректируется по сезону"],["18:30","Отправление, трансфер"]],
+included:["Трансфер + гид + страховка","Входные билеты в нацпарки","Обед с видом на море","Коктейль в кокосе","Напитки и фрукты на борту","Жилеты, маски, трубки"],
+excluded:["Сувениры","Доп. водные активности на Нака Яй"],
+warnings:["Морской лабиринт на Пакбия — только при отливе. Гарантировать нельзя.","Закат на Ко Паре — время корректируется в зависимости от сезона.","Лёгкий завтрак — только тариф Комфорт."],
+infos:["Сбор в 09:00 — главное УТП для тех кто не хочет рано вставать.","Острова Краби — другие локации чем в Пханг Нга и Пхи-Пхи."],
+args:["Поздний сбор (09:00) — для тех кто не хочет вставать в 4–6 утра.","Острова Краби — уникальные локации.","Закат на песчаной косе — уникальный финал.","Коктейль в кокосе включён."],
+qa:[["Во сколько сбор?","В 09:00 — один из самых поздних стартов среди морских туров."],["Что такое морской лабиринт?","Природные каналы между скалами на Пакбия — только при отливе. Гарантировать нельзя."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, полотенце (в Комфорте — на борту), деньги."},
+
+{id:7,num:"07",emoji:"🏝️",title:"Симиланские острова",sub:"1 день — ⚠️ Закрыты 15 мая — октябрь",type:"day",
+tags:["1 день","Снорклинг","Сезонный"],
+timing:"Сбор 04:00–05:00 (± 1,5 ч). Для южных отелей (Найхарн, Ката, Ката Ной, Чалонг) — около 03:00, т.к. пирс на севере острова. Пирс — Симиланский (север). Возврат ~17:00.",
+schedule:[["04:00–05:00","Сбор. Для южных (Найхарн, Ката, Ката Ной, Чалонг) — около 03:00"],["05:30","Пирс. ⚠️ Полноценный шведский стол — только тариф Комфорт"],["06:00","Выход к Симиланскому архипелагу. Оба тарифа — спидбот."],["~08:00","Остров Мианг (№4) — белый пляж, тропа через джунгли, летучие лисицы"],["~10:10","Острова Ко Паю и Ко Ба Нгу — снорклинг. Шанс увидеть морских черепах"],["~11:30","Остров Симилан (№8) — обед ВКЛЮЧЁН. Подъём на Парусную скалу."],["14:00","Отправление. Перекус и напитки на борту."],["16:00–16:30","Пирс — лёгкий ужин ВКЛЮЧЁН"],["17:00","Трансфер"]],
+included:["Трансфер + гид + страховка","Входные билеты в нацпарки","Завтрак (Комфорт) + обед + перекус + ужин","Напитки и фрукты на борту","Жилеты, маски, трубки"],
+excluded:["Сувениры"],
+warnings:["СЕЗОННОСТЬ — КРИТИЧНО: закрыты с 15 мая по октябрь. ВСЕГДА проверять дату при бронировании!","Пирс на севере острова — для южных отелей (Найхарн, Ката, Ката Ной, Чалонг) самая длинная дорога. Выезд около 03:00.","Морские черепахи — по везению, гарантировать нельзя.","Оба тарифа — спидбот. Разница только в сервисе на борту.","Завтрак — только тариф Комфорт."],
+infos:["Тариф Комфорт даёт: завтрак, пиво, полотенца, ласты, Wi-Fi, вино и мороженое. Лодка — спидбот в обоих тарифах."],
+args:["Симиланские острова — топ-10 лучших мест для снорклинга в мире.","Прибываем первыми — пляжи почти пустые.","Морские черепахи в дикой природе.","Парусная скала — панорамные виды на архипелаг."],
+qa:[["Острова открыты?","Только с ноября по 15 мая. Всегда проверять дату при бронировании."],["Черепах точно увидим?","Шанс есть во время снорклинга. Дикая природа — гарантировать нельзя."],["Чем Комфорт отличается от Стандарта?","Лодка одинаковая — спидбот. Разница в сервисе: завтрак, пиво, полотенца, ласты, Wi-Fi, вино по возвращении."]],
+gear:"Купальные принадлежности, крем, головной убор, полотенце (в Комфорте — выдают), фото/видеокамера, деньги."},
+
+{id:8,num:"08",emoji:"🛥️",title:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",sub:"1 день — Премиальный катамаран, только Комфорт",type:"day",
+tags:["1 день","Катамаран","Только Комфорт"],
+timing:"Сбор ориентировочно 06:30–07:30 (± 1,5 ч). Пирс Чалонг (юг острова). Для северных отелей (Май Као, Найтон, Найянг) — выезд раньше. Возврат ~19:00.",
+schedule:[["До 08:30","Лаундж на пирсе Чалонг — завтрак шведский стол, кофе, пиво бесплатно"],["08:30","Выход на катамаране — горка, бассейн, SUP, каноэ, DJ-сет"],["09:00–11:00","Рача Яй — раннее прибытие без толп. ⚠️ При невозможности — замена на Coral + Bamboo"],["12:00–14:00","Пхи-Пхи Дон — обед в кафе «Море» ВКЛЮЧЁН"],["14:15","Пляж обезьян — ТОЛЬКО С ЛОДКИ"],["14:30","Пещера Викингов — ласточкины гнёзда, древние рисунки"],["15:00–15:40","Лагуна Пиле — ⚠️ только при приливе"],["16:00–17:00","Бухта Майя — когда основные туристы ушли. ⚠️ Август-сентябрь — закрыта, осмотр с лодки"],["17:45–19:00","Закатная вечеринка у Майтон — горка, бассейн, SUP, коктейль в бамбуковом стакане (подарок), закат"],["~19:00","Возвращение, трансфер"]],
+included:["Трансфер + гид","Завтрак шведский стол на пирсе","Полноценный обед","Напитки и фрукты на борту","Алкогольный коктейль (1 шт.) — подарок","Страховка, жилеты, маски, трубки","Загубники, полотенца, Wi-Fi, мороженое по возвращении","Пиво и натуральный кофе на пирсе"],
+excluded:["Сувениры","Доп. алкоголь на борту"],
+warnings:["Только тариф Комфорт — тарифа Стандарт нет.","Рача Яй — при невозможности высадки замена на Coral + Bamboo. Предупреждать клиентов.","Лагуна Пиле — только при приливе. Майя — август-сентябрь закрыта.","Пляж обезьян — ТОЛЬКО С ЛОДКИ.","Майтон — остров частный, высадки нет. Вечеринка на воде у острова.","Пирс Чалонг (юг) — для северных отелей выезд раньше."],
+infos:["Катамаран — не транспорт, а часть отдыха: горка, бассейн, SUP, прозрачные каноэ, DJ-сет.","Майя Бэй посещаем позже всех — когда основные туристы уже ушли."],
+args:["Катамаран с горкой, бассейном, SUP и DJ-сетом прямо на борту.","Майя Бэй в комфортное время — без основных толп.","Рача Яй без толп — раннее прибытие.","Закатная чилл-вечеринка у Майтон — уникальный финал."],
+qa:[["Чем катамаран отличается от обычной лодки?","Двухпалубный катамаран — горка, бассейн, SUP, прозрачные каноэ, мини-бар, музыка."],["Остров Майтон — высадка есть?","Нет, остров частный. Вечеринка на воде у острова."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, деньги."},
+
+{id:9,num:"09",emoji:"🌅",title:"Racha Coral Sunrise",sub:"1 день — Рассвет + Приватный Beach Club + Coral Island",type:"day",
+tags:["1 день","Рассвет","Beach Club"],
+timing:"Сбор ориентировочно 04:00–05:00 — ОЧЕНЬ РАННИЙ (± 1,5 ч). Пирс Чалонг (юг острова). Оба тарифа. Для северных отелей (Май Као, Найтон, Найянг) — выезд раньше. Возврат ~15:00–15:30 — вечер свободен.",
+schedule:[["04:00–05:00","Сбор. Пирс Чалонг (юг). Для северных (Май Као, Найтон, Найянг) — выезд раньше"],["05:00–05:20","Пирс — завтрак (только тариф Комфорт)"],["06:00","Выход в море — встреча рассвета"],["06:40–09:40","Остров Racha Yai — до толп. Купание. По желанию — морская рыбалка"],["10:00–11:00","Снорклинг у кораллов, водная горка, надувной бассейн"],["11:30–13:00","Приватный Beach Club — только наша группа. DJ-сет, пенная активность, лаунж. Обед на берегу ВКЛЮЧЁН. В аренду: каноэ, SUP, банан."],["13:30–14:30","Coral Island — купание, отдых"],["15:00–15:30","Возврат на пирс, трансфер"]],
+included:["Трансфер + гид + страховка","Входные билеты","Завтрак (Комфорт) + обед","Напитки и фрукты на борту","Жилеты, маски, трубки"],
+excluded:["Аренда активностей на пляже (каноэ, SUP, банан)","Доп. напитки в баре Beach Club","Сувениры"],
+warnings:["Выезд 04:00–05:00 — самый ранний морской тур. Чётко предупреждать. Пирс Чалонг (юг).","Активности на пляже (каноэ, SUP, банан) — в аренду за доп. плату.","Оба тарифа — пирс Чалонг.","Завтрак — только тариф Комфорт."],
+infos:["Private Beach Club — только наша группа. Сильный аргумент при продаже.","Возврат ~15:00 — вечер свободен."],
+args:["Рассвет в море — уникальный момент.","Racha Yai без толп — приезжаем до других туристов.","Приватный Beach Club — только своя группа.","Возврат в 15:00 — вечер свободен."],
+qa:[["Зачем такой ранний выезд?","Встретить рассвет в море и приехать на Racha Yai первыми."],["Каноэ и SUP входят?","Нет, аренда за доп. плату на месте."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, полотенце (в Комфорте — выдают), деньги на аренду активностей."},
+
+{id:10,num:"10",emoji:"🎣",title:"Ранняя морская рыбалка (лодка)",sub:"1 день — Только тариф Комфорт. Пирс Чалонг.",type:"day",
+tags:["1 день","Рыбалка","Только Комфорт"],
+timing:"Сбор ориентировочно 05:30–06:30 (± 1,5 ч). Пирс Чалонг (юг острова). Возврат ~15:00.",
+schedule:[["05:30–06:30","Сбор. Пирс Чалонг."],["06:45","Пирс — знакомство с гидом"],["07:00","Выход в море — лучшие рыболовные точки"],["07:00–11:00","Рыбалка: троллинг + донная + крабовые ловушки + подводная охота. ⚠️ Крабовые ловушки и подводная охота — может не состояться из-за погоды."],["11:00","Остановка у острова — купание, снорклинг"],["11:00–13:00","Обед на борту — сашими (⚠️ только если поймали подходящую рыбу), курица в кляре, тайский суп, гриль, рис, фрукты ВКЛЮЧЁН"],["13:00","Отправление на Пхукет — рыбалка по пути"],["15:00","Пирс — фото с уловом. По желанию готовка в ресторане (доп. плата)"]],
+included:["Трансфер + гид + страховка","Завтрак на борту","Обед из свежего улова","Напитки, фрукты, чай/кофе","Снаряжение для рыбалки","Маски, трубки, ласты","Wi-Fi, музыка, дождевики, полотенца, загубники","Мороженое по возвращении"],
+excluded:["Готовка рыбы в ресторане — доп. плата","Сувениры"],
+warnings:["Только тариф Комфорт — тарифа Стандарт нет.","Сашими — только если поймали подходящую рыбу. Гарантировать нельзя.","Улов не гарантирован — акцент при продаже на опыт, не на результат.","Крабовые ловушки и подводная охота — может не состояться из-за погоды. Предупреждать клиентов."],
+infos:["Крабовые ловушки — уникально, нет ни в одном другом туре линейки.","Пирс Чалонг (юг острова)."],
+args:["Настоящая рыбалка — троллинг + донная + крабовые ловушки + подводная охота.","Крабовые ловушки — уникально, нет ни в одном другом туре.","Обед из свежего улова прямо на борту.","Подходит для семей — рыбаки рыбачат, остальные купаются."],
+qa:[["Улов гарантирован?","Нет — это настоящая рыбалка. Опыт и программа гарантированы. Результат — нет."],["Сашими точно будет?","Только если поймали подходящую рыбу. Курица в кляре, тайский суп и рис — всегда."]],
+gear:"Купальник, шорты, рубашка, крем, солнцезащитные очки, головной убор, деньги."},
+
+{id:11,num:"11",emoji:"🎣",title:"Ранняя морская рыбалка (катамаран)",sub:"1 день — Идентична рыбалке на лодке, только на катамаране. Только Комфорт.",type:"day",
+tags:["1 день","Рыбалка","Катамаран"],
+timing:"Сбор ориентировочно 05:30–06:30 (± 1,5 ч). Пирс Чалонг (юг острова). Возврат ~15:00.",
+schedule:[["05:30–06:30","Сбор. Пирс Чалонг."],["07:00","Выход на катамаране — лучшие рыболовные точки"],["07:00–11:00","Рыбалка: троллинг + донная + крабовые ловушки + подводная охота. ⚠️ Может не состояться из-за погоды."],["11:00","Остановка — купание, снорклинг"],["11:00–13:00","Обед на борту ВКЛЮЧЁН"],["13:00","Отправление на Пхукет — рыбалка по пути"],["15:00","Пирс — фото с уловом"]],
+included:["Трансфер + гид + страховка","Завтрак на борту","Обед из свежего улова","Напитки, фрукты, чай/кофе","Снаряжение для рыбалки","Маски, трубки, ласты","Wi-Fi, музыка, дождевики, полотенца, загубники","Мороженое по возвращении"],
+excluded:["Готовка рыбы в ресторане — доп. плата","Сувениры"],
+warnings:["Только тариф Комфорт.","Сашими — только если поймали подходящую рыбу.","Улов не гарантирован.","Крабовые ловушки и подводная охота — может не состояться из-за погоды."],
+infos:["Катамаран устойчивее и просторнее — для тех кто боится качки.","Всё остальное идентично туру «Рыбалка на лодке»."],
+args:["Все аргументы как у рыбалки на лодке.","Катамаран — больше комфорта и устойчивости в море."],
+qa:[["Чем отличается от рыбалки на лодке?","Только тип судна — катамаран. Устойчивее, просторнее. Программа идентична."]],
+gear:"Купальник, шорты, рубашка, крем, солнцезащитные очки, головной убор, деньги."},
+
+{id:12,num:"12",emoji:"🤿",title:"Дейли-дайвинг",sub:"1 день — Лучшие дайв-сайты Пхукета. Пирс Чалонг.",type:"day",
+tags:["1 день","Дайвинг","Для всех"],
+timing:"Трансфер из отеля ориентировочно 07:00–08:00. Пирс Чалонг (юг острова). Включён из: Ката, Карон, Патонг, Раваи, Найхарн, Камала. Другие районы — доплата.",
+schedule:[["07:00–08:00","Трансфер из отеля на пирс Чалонг"],["На борту","Завтрак ВКЛЮЧЁН. Путь к дайв-сайту, брифинг."],["","1-е погружение"],["","Обед, поверхностный интервал ВКЛЮЧЁН"],["","2-е погружение"],["","Фрукты, напитки ВКЛЮЧЕНЫ"],["","3-е погружение (только сертифицированные)"],["","Возвращение в Чалонг, трансфер"]],
+included:["Трансфер из ряда районов","Русскоговорящий инструктор / дайв-мастер","Тур на дайв-боте (буфет, душ, туалет, зоны отдыха)","Снаряжение для новичков","4-разовое питание","Страховка"],
+excluded:["Трансфер из других районов — доплата","Аренда снаряжения для сертифицированных — +500 бат","Фото и видео — доп. плата","Персональный инструктор — +1500 бат","Нац. парк Пхи-Пхи — +600 бат (только среда, только сертифицированные)"],
+warnings:["ЗАПРЕЩЕНО: беременным, детям до 1 года, пожилым, людям с хроническими заболеваниями и проблемами ОДА. Отказ в посадке по здоровью не компенсируется!","Трансфер — только из Ката, Карон, Патонг, Раваи, Найхарн, Камала. Другие — доплата.","Снаряжение для новичков включено, для сертифицированных аренда +500 бат."],
+infos:["Дайв-сайты: Пхи-Пхи, Рача Яй, Рача Ной, Кинг Крузер (затонувший паром 30 м), Анемон Риф, Шарк Пойнт (леопардовые акулы), Ко Dok Май.","Персональный инструктор — хорошая допродажа для новичков (+1500 бат).","Нац. парк Пхи-Пхи — только среда, только сертифицированные, +600 бат."],
+args:["Подходит всем — и новичкам без сертификата, и опытным дайверам.","Шарк Пойнт — леопардовые акулы. Кинг Крузер — затонувший паром на 30 метрах.","Комфортный дайв-бот — буфет, душ, туалет, зоны отдыха.","Русскоговорящий инструктор."],
+qa:[["Нужен сертификат?","Нет. Для новичков — 2 погружения, снаряжение включено. Для сертифицированных — 3 погружения, аренда +500 бат."],["Акулы — опасно?","Леопардовые акулы не агрессивны к людям."],["Трансфер из нашего отеля включён?","Из Ката, Карон, Патонг, Раваи, Найхарн, Камала — да. Из других — доплата."]],
+gear:"Купальные принадлежности, полотенце, крем, деньги на личные расходы и опциональные услуги."},
+
+{id:13,num:"13",emoji:"🌊",title:"Гидроциклы — маршрут «9 островов» (Пхукет)",sub:"Морское сафари по 9 островам Пхукета. Два слота.",type:"day",
+tags:["1 день","Гидроциклы","Пхукет"],
+timing:"Утренний тур: 09:00–13:00. Дневной тур: 13:30–17:30. Старт/финиш — AA Marina. Трансфер включён только с ряда отелей — всегда уточнять.",
+schedule:[["AA Marina","Старт"],["Мангровый лес","Прохождение на гидроциклах"],["Ко Мали","Остановка на воде — фото"],["Ко Преа","Высадка — дикий остров с песчаной косой"],["Ао Пор","Остановка на воде — фото"],["Monkey Island","Высадка — обезьяны в естественной среде"],["Нака Яй","Остановка на воде — фото"],["Нака Ной","Высадка — обед ВКЛЮЧЁН"],["Ранг Ной","Остановка на воде — фото"],["Ранг Яй","Высадка — отдых и плавание"],["AA Marina","Финиш"]],
+included:["Русскоговорящий гид","Обед на острове","Трансфер из ряда отелей"],
+excluded:["Трансфер из удалённых отелей — уточнять","Сувениры"],
+warnings:["БЕРЕМЕННОСТЬ — ЗАПРЕЩЕНО на всех сроках. Уточнять при бронировании.","Трансфер — только с ряда отелей (Ката, Ката Ной, Патонг, Сурин и др.). Не включён с севера (Май Као, Найянг, Найтон), Найхарна, Чалонга. Всегда уточнять у оператора.","Маршрут и последовательность могут меняться из-за погоды и уровня моря."],
+infos:["Три модели: Yamaha VX-C 1100 (новички), Sea-Doo GTX 130 PRO, Yamaha FX 1900 Premium.","Опыт вождения не обязателен — гид сопровождает группу.","Два слота — утренний или дневной."],
+args:["Не прокат, а сафари — 9 островов с гидом, обед включён.","Три модели гидроциклов — выбор под уровень.","Остров обезьян — уникальная точка."],
+qa:[["Нужен опыт вождения?","Нет — гид сопровождает и помогает новичкам."],["Трансфер включён?","Зависит от района. Уточнять при бронировании."],["Можно беременным?","Нет — запрещено на всех сроках."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, водонепроницаемый чехол для телефона, деньги."},
+
+{id:14,num:"14",emoji:"🌊",title:"Гидроциклы — туры по островам (Паттайя)",sub:"3 программы: 3 часа / 4 часа / 8 часов. Цена за гидроцикл.",type:"day",
+tags:["Паттайя","Гидроциклы","3 программы"],
+timing:"3 часа: Вт, Сб 14:30. 4 часа: Пн/Чт/Вс или Ср/Пт в 09:30. 8 часов: ежедневно 10:00. Индивидуально — любой день (доплата если менее 5 гидроциклов).",
+schedule:[["3 часа","Ко Крок (фото) → Ко Сак (снорклинг) → Ко Лан (обед + обезьяны)"],["4 ч «Север» (Ср, Пт)","Храм Истины (фото) → Ко Сак (снорклинг) → Ко Лан (обед) → Ко Крок (фото)"],["4 ч «Юг» (Пн, Чт, Вс)","Крам Яй (снорклинг) → Крам Ной → Айра → Военный пляж (обед, ⚠️ нац. сбор 100 бат/чел) → Ко Пед (обезьяны)"],["8 часов","Север + Юг — все 9 островов. Только индивидуально."]],
+included:["Гидроцикл BRP Seadoo GTX PRO 130","Страховка жизни и здоровья","Русскоговорящий сопровождающий","Видео на GoPro + фото","Снорклинг","Трансфер (от Cholchan до Botany Beach)","Напитки"],
+excluded:["Обед","Съёмка на DJI дрон — доп. плата за гидроцикл","Нац. сбор 100 бат/чел на военном пляже (маршрут «Юг»)"],
+warnings:["Цена за гидроцикл, не за человека. До 2 взрослых + 1 ребёнок до 10 лет. Вес не более 200 кг.","БЕРЕМЕННОСТЬ — ЗАПРЕЩЕНО на всех сроках.","Маршрут «Юг» — нац. сбор 100 бат/чел на военном пляже. Предупреждать клиентов.","Групповые туры — только по расписанию. В другие дни — индивидуально с доплатой (если менее 5 гидроциклов).","Военные учения — очень редко южный маршрут заменяется на северный."],
+infos:["Гидроцикл BRP Seadoo GTX PRO 130, 1630 кубов, до 90 км/ч.","5 и более гидроциклов — индивидуальный тур без доплаты.","Съёмка на дрон — платная опция. Предлагать как допродажу."],
+args:["Новые мощные гидроциклы до 90 км/ч.","Три программы — выбор по времени и бюджету.","Цена за гидроцикл — двоим выгоднее.","Видео на GoPro и фото включены."],
+qa:[["Цена за человека или за гидроцикл?","За гидроцикл. До 2 взрослых + ребёнок до 10 лет, вес не более 200 кг."],["Можно в любой день?","Групповые — по расписанию. Индивидуально — любой день с доплатой (если менее 5 гидроциклов)."],["Обед включён?","Нет. На маршруте «Юг» — ещё нац. сбор 100 бат/чел."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, водонепроницаемый чехол для телефона, деньги на обед, 100 бат/чел если маршрут «Юг»."}
+];
+
+// ═══════════════════════════════════════════════
+// FLASH CARDS — 47 карточек
+// ═══════════════════════════════════════════════
+const seaFlashCards = [
+{tour:"5 жемчужин Андаманского моря",q:"На каком пирсе отправляется тур и чем отличаются тарифы по пирсу?",a:"Комфорт — пирс Royal Phuket Marina (юго-восток). Стандарт — пирс Яму."},
+{tour:"5 жемчужин Андаманского моря",q:"Пещера Ice Cream и лагуна Пиле — когда их можно посетить?",a:"Пещера Ice Cream — только при отливе. Лагуна Пиле — только при приливе. Оба объекта гарантировать нельзя."},
+{tour:"5 жемчужин Андаманского моря",q:"Плавание с акулами — опасно? Что говорить клиенту?",a:"Нет. Рифовые акулы не агрессивны к людям. Объяснять заранее — некоторые клиенты пугаются при слове «акулы»."},
+{tour:"5 жемчужин Андаманского моря",q:"Бухта Майя — когда закрыта и что делать в этот период?",a:"Закрыта примерно в августе-сентябре. В этот период — осмотр только с лодки. Обязательно говорить при бронировании."},
+{tour:"5 жемчужин Андаманского моря",q:"Пляж обезьян — какой формат посещения?",a:"Осмотр ТОЛЬКО С ЛОДКИ, без высадки. Везде во всех морских турах."},
+{tour:"5 жемчужин Андаманского моря",q:"Что важно сказать клиенту про отель на Пхи-Пхи?",a:"Несколько вариантов разной цены, уровень примерно одинаковый. Отель только для ночёвки — основное время на воде и острове."},
+{tour:"4 жемчужины Андаманского моря",q:"Чем принципиально отличается день 1 от тура «5 жемчужин»?",a:"Вместо островов Лао Ладинг и Хонг — провинция Краби: пляж Прананг (Райлей), пещера плодородия, острова Близнецы и Курица, снорклинг у коралловых рифов."},
+{tour:"4 жемчужины Андаманского моря",q:"Пляж Прананг (Райлей) — почему это интересный факт для клиента?",a:"Добраться можно только на лодке — пешком не попасть, окружён скалами. Это делает пляж особенным и эксклюзивным."},
+{tour:"Острова Пхи-Пхи: Рассветное приключение",q:"Для каких отелей выезд около 03:00 и почему?",a:"Для северных отелей (Май Као, Найтон, Найянг) — около 03:00, т.к. пирс находится на юго-востоке острова и дорога длиннее."},
+{tour:"Острова Пхи-Пхи: Рассветное приключение",q:"Когда уточняется время возврата на Пхукет на второй день?",a:"Накануне — возврат либо в 12:00, либо в 15:00. Уточнять у клиента и предупреждать заранее."},
+{tour:"Острова Пхи-Пхи: Рассветное приключение",q:"Чем этот тур лучше однодневного рассветного тура?",a:"Ночёвка на острове — огненное шоу, утро на Пхи-Пхи, второй день на островах. Полное погружение в атмосферу."},
+{tour:"11 островов",q:"Какие точки посещаются ТОЛЬКО С ЛОДКИ без высадки?",a:"Пхи-Пхи Дон, пляж обезьян, пещера Викингов — все три только с лодки."},
+{tour:"11 островов",q:"Во сколько возврат и почему важно предупреждать клиентов?",a:"Около 18:10 — один из самых поздних возвратов среди однодневных морских туров."},
+{tour:"11 островов",q:"Какие два «кино-места» есть в туре?",a:"Бухта Майя — «Пляж» с ДиКаприо. Остров Хонг — «Джунгли» с Верой Брежневой."},
+{tour:"Рассветное путешествие на Пхи-Пхи",q:"Для каких отелей выезд около 03:00 в этом туре и почему?",a:"Для северных отелей (Май Као, Найтон, Найянг) — около 03:00, т.к. пирс на юго-востоке острова и им дольше ехать."},
+{tour:"Рассветное путешествие на Пхи-Пхи",q:"Какое главное преимущество раннего выезда?",a:"Прибытие в Майя Бэй в 07:00 — до наплыва туристов. Пляж почти пустой. Те кто приедет позже увидят сотни людей."},
+{tour:"Рассветное путешествие на Пхи-Пхи",q:"Смотровая Пхи-Пхи Дон — входит в стоимость?",a:"Нет — 50 бат отдельно. Кто не хочет подниматься — прогулка по деревне острова бесплатно."},
+{tour:"Тропический рай Краби",q:"Почему тур хорошо продаётся тем кто не хочет рано вставать?",a:"Сбор в 09:00 — один из самых поздних стартов среди морских туров. Специально для тех кто хочет выспаться."},
+{tour:"Тропический рай Краби",q:"Морской лабиринт на острове Пакбия — когда можно посетить?",a:"Только при отливе. Это природный объект — гарантировать нельзя."},
+{tour:"Тропический рай Краби",q:"Что уникального на финале тура?",a:"Закат на песчаной косе острова Ко Паре — уникальный финал которого нет в других однодневных морских турах."},
+{tour:"Тропический рай Краби",q:"Коктейль в кокосе — входит в стоимость?",a:"Да, один коктейль в кокосе на острове Пакбия включён в стоимость."},
+{tour:"Симиланские острова",q:"С какого по какое время острова закрыты?",a:"С 15 мая по октябрь включительно. При бронировании ВСЕГДА проверять дату тура."},
+{tour:"Симиланские острова",q:"Для каких отелей выезд около 03:00 и почему — в отличие от других рассветных туров?",a:"Для южных отелей (Найхарн, Ката, Ката Ной, Чалонг) — около 03:00, т.к. пирс на СЕВЕРЕ острова. Противоположно другим рассветным турам."},
+{tour:"Симиланские острова",q:"Чем тариф Комфорт отличается от Стандарта в этом туре?",a:"Тип лодки одинаковый — спидбот в обоих тарифах. Разница только в сервисе: завтрак, пиво, полотенца, ласты, Wi-Fi, вино по возвращении."},
+{tour:"Симиланские острова",q:"Морские черепахи — гарантировать можно?",a:"Нет. Шанс есть во время снорклинга у островов Ко Паю и Ко Ба Нгу. Но это дикая природа — гарантировать нельзя."},
+{tour:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",q:"Какой тариф у этого тура и почему?",a:"Только тариф Комфорт — тарифа Стандарт нет. Это премиальный тур на катамаране."},
+{tour:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",q:"Остров Майтон — можно высадиться?",a:"Нет, остров частный. Закатная вечеринка проходит на воде у острова."},
+{tour:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",q:"Чем катамаран отличается от обычной лодки в этом туре?",a:"Двухпалубный катамаран с горкой, надувным бассейном, SUP-бордами, прозрачными каноэ, мини-баром и DJ-сетом."},
+{tour:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",q:"Что происходит если высадка на Рача Яй невозможна?",a:"Замена на острова Coral + Bamboo. Предупреждать клиентов заранее что такая замена возможна."},
+{tour:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",q:"С какого пирса отправляется тур?",a:"Пирс Чалонг (юг острова). Для северных отелей (Май Као, Найтон, Найянг) — выезд раньше."},
+{tour:"Racha Coral Sunrise",q:"С какого пирса отправляется тур и для каких отелей выезд раньше?",a:"Пирс Чалонг (юг острова) — оба тарифа. Для северных отелей (Май Као, Найтон, Найянг) — выезд раньше."},
+{tour:"Racha Coral Sunrise",q:"Приватный Beach Club — что это значит и почему это аргумент?",a:"Приватный пляж только для нашей группы — никаких чужих туристов. DJ-сет, пенная активность, лаунж-зоны, гамаки."},
+{tour:"Racha Coral Sunrise",q:"Каноэ, SUP и банан на пляже — входят в стоимость?",a:"Нет — аренда за дополнительную плату на месте. Обязательно уточнять клиентам заранее."},
+{tour:"Racha Coral Sunrise",q:"Почему ранний возврат — аргумент при продаже?",a:"Возврат ~15:00 — вечер полностью свободен. Можно совместить с вечерним туром или пляжем."},
+{tour:"Ранняя морская рыбалка",q:"Крабовые ловушки и подводная охота — гарантированы?",a:"Нет — может не состояться из-за погоды или других обстоятельств. Обязательно предупреждать клиентов."},
+{tour:"Ранняя морская рыбалка",q:"Сашими из улова — когда будет?",a:"Только если поймали рыбу подходящую для употребления в сыром виде. Курица в кляре, тайский суп и рис — всегда."},
+{tour:"Ранняя морская рыбалка",q:"Что уникального в этом туре чего нет в других морских турах?",a:"Проверка крабовых ловушек — уникальная активность которой нет ни в одном другом туре линейки."},
+{tour:"Ранняя морская рыбалка",q:"Рыбалка на катамаране — чем отличается от рыбалки на лодке?",a:"Только тип судна — катамаран устойчивее и просторнее. Программа полностью идентична. Для тех кто боится качки."},
+{tour:"Дейли-дайвинг",q:"Кому запрещён дайвинг и что происходит при отказе в посадке?",a:"Запрещён беременным, детям до 1 года, пожилым, людям с хроническими заболеваниями и проблемами ОДА. Отказ по здоровью не компенсируется."},
+{tour:"Дейли-дайвинг",q:"Снаряжение — кому включено, кому нет?",a:"Для новичков без сертификата — включено. Для сертифицированных — аренда +500 бат."},
+{tour:"Дейли-дайвинг",q:"Сколько погружений у новичков и у сертифицированных?",a:"Новички без сертификата — 2 погружения. Сертифицированные — 3 погружения."},
+{tour:"Дейли-дайвинг",q:"Нац. парк Пхи-Пхи — когда и для кого?",a:"Только по средам, только для сертифицированных дайверов. Доп. плата +600 бат."},
+{tour:"Дейли-дайвинг",q:"Трансфер — из каких районов включён?",a:"Включён из Ката, Карон, Патонг, Раваи, Найхарн, Камала. Из других районов — доплата."},
+{tour:"Гидроциклы — 9 островов (Пхукет)",q:"Беременным можно?",a:"Нет — запрещено на всех сроках беременности. Обязательно уточнять при бронировании."},
+{tour:"Гидроциклы — 9 островов (Пхукет)",q:"Трансфер — из каких отелей НЕ включён?",a:"Не включён с севера (Май Као, Найянг, Найтон), Найхарна, Чалонга и ряда других. Всегда уточнять у оператора до бронирования."},
+{tour:"Гидроциклы — туры по островам (Паттайя)",q:"Цена — за человека или за гидроцикл?",a:"За гидроцикл. На одном едут до 2 взрослых + 1 ребёнок до 10 лет. Общий вес не более 200 кг."},
+{tour:"Гидроциклы — туры по островам (Паттайя)",q:"Маршрут «Юг» — что важно сообщить клиенту?",a:"На военном пляже нац. сбор 100 бат/чел — не включён в стоимость. Предупреждать заранее."},
+{tour:"Гидроциклы — туры по островам (Паттайя)",q:"Когда индивидуальный тур без доплаты?",a:"При бронировании 5 и более гидроциклов — индивидуальный тур без доплаты."},
+];
+
+const seaExamQuestions = [
+// ── 5 ЖЕМЧУЖИН ──────────────────────────────────────────────
+{q:"На каком пирсе отправляется тур «5 жемчужин» в тарифе Комфорт?",opts:["Пирс Яму","Пирс Чалонг","Royal Phuket Marina (юго-восток)","AA Marina"],correct:2,cat:"5 жемчужин Андаманского моря",explain:"Комфорт — пирс Royal Phuket Marina (юго-восток). Стандарт — пирс Яму."},
+{q:"Пещера Ice Cream — когда можно попасть внутрь?",opts:["В любое время","Только при отливе","Только при приливе","Только утром до 10:00"],correct:1,cat:"5 жемчужин Андаманского моря",explain:"Пещера Ice Cream посещается только при отливе. Гарантировать нельзя."},
+{q:"Лагуна Пиле — когда посещается?",opts:["В любое время","Только при отливе","Только при приливе","Только в сухой сезон"],correct:2,cat:"5 жемчужин Андаманского моря",explain:"Лагуна Пиле — только при приливе. Гарантировать нельзя."},
+{q:"Плавание с акулами в туре «5 жемчужин» — насколько это опасно?",opts:["Очень опасно — нужна специальная подготовка","Не опасно — это рифовые акулы, не агрессивные к людям","Опасно только для детей","Зависит от сезона"],correct:1,cat:"5 жемчужин Андаманского моря",explain:"Рифовые акулы не агрессивны к людям. Объяснять клиентам заранее — некоторые пугаются при слове «акулы»."},
+{q:"Бухта Майя в туре «5 жемчужин» — в какой период закрыта?",opts:["Январь-февраль","Апрель-май","Август-сентябрь","Декабрь-январь"],correct:2,cat:"5 жемчужин Андаманского моря",explain:"Бухта Майя закрыта примерно в августе-сентябре. В этот период — осмотр только с лодки."},
+{q:"Пляж обезьян — какой формат посещения во всех морских турах?",opts:["Высадка на 30 минут","Осмотр только с лодки без высадки","Высадка включена в Комфорт","Зависит от сезона"],correct:1,cat:"5 жемчужин Андаманского моря",explain:"Пляж обезьян — ТОЛЬКО осмотр с лодки, без высадки. Правило для всех морских туров."},
+{q:"Что важно объяснить клиенту про отель на Пхи-Пхи?",opts:["Это пятизвёздочный отель с бассейном","Несколько вариантов разной цены, отель только для ночёвки","Отель выбирается клиентом самостоятельно","Включён только в тариф Комфорт"],correct:1,cat:"5 жемчужин Андаманского моря",explain:"Несколько вариантов разной цены, уровень примерно одинаковый. Предупреждать: отель только для ночёвки."},
+{q:"Что включает тариф Комфорт в морских турах в отличие от Стандарта?",opts:["Другой маршрут и больше островов","Завтрак на пирсе, кофе, пиво, Wi-Fi, полотенца, загубники, вино и мороженое по возвращении","Только другой пирс","Персональный гид"],correct:1,cat:"5 жемчужин Андаманского моря",explain:"Комфорт: завтрак, кофе, пиво, Wi-Fi, полотенца, загубники, дождевики, музыка, вино и мороженое по возвращении. Плюс пирс Royal Phuket Marina."},
+
+// ── 4 ЖЕМЧУЖИНЫ ─────────────────────────────────────────────
+{q:"Чем принципиально отличается день 1 в «4 жемчужинах» от «5 жемчужин»?",opts:["Другой пирс и другое время выезда","Вместо островов Лао Ладинг и Хонг — провинция Краби с пляжем Райлей, рифами и островами Близнецы","Нет ужина и огненного шоу","Другой отель на Пхи-Пхи"],correct:1,cat:"4 жемчужины Андаманского моря",explain:"В «4 жемчужинах» день 1 — Краби: пляж Прананг (Райлей), острова Близнецы и Курица, снорклинг у рифов. В «5 жемчужинах» — острова Лао Ладинг, Хонг и плавание с акулами."},
+{q:"Есть ли плавание с акулами в туре «4 жемчужины»?",opts:["Да, включено","Да, за доп. плату","Нет — только снорклинг у коралловых рифов","Только в тарифе Комфорт"],correct:2,cat:"4 жемчужины Андаманского моря",explain:"В «4 жемчужинах» плавания с акулами нет. Вместо него — снорклинг у коралловых рифов."},
+{q:"Пляж Прананг (Райлей) — как туда попасть?",opts:["Пешком от дороги","Только на лодке — пешком не попасть, окружён скалами","На тук-туке от Краби","На арендованном байке"],correct:1,cat:"4 жемчужины Андаманского моря",explain:"Пляж Райлей доступен только на лодке — пешком не попасть, он окружён скалами. Это делает его особенным."},
+
+// ── РАССВЕТНОЕ ПРИКЛЮЧЕНИЕ 2 ДНЯ ────────────────────────────
+{q:"В туре «Рассветное приключение 2 дня» — для каких отелей выезд около 03:00?",opts:["Для южных (Найхарн, Ката, Чалонг)","Для северных (Май Као, Найтон, Найянг) — т.к. пирс на юго-востоке","Для всех одинаково","Для центральных (Патонг, Камала)"],correct:1,cat:"Острова Пхи-Пхи: Рассветное приключение",explain:"Для северных отелей (Май Као, Найтон, Найянг) выезд около 03:00, т.к. пирс находится на юго-востоке острова — им дольше ехать."},
+{q:"Когда уточняется время возврата на Пхукет на второй день?",opts:["При бронировании","За неделю","Накануне — 12:00 или 15:00","Утром второго дня"],correct:2,cat:"Острова Пхи-Пхи: Рассветное приключение",explain:"Время возврата — 12:00 или 15:00 — сообщается накануне. Важно предупреждать клиентов заранее."},
+{q:"Чем двухдневный рассветный тур лучше однодневного?",opts:["Он дешевле","Ночёвка на острове, огненное шоу, второй день на островах","Больше точек за день","Раньше возвращаются"],correct:1,cat:"Острова Пхи-Пхи: Рассветное приключение",explain:"Ночёвка на Пхи-Пхи — огненное шоу, утро на острове, второй день на Бамбу. Полное погружение в атмосферу."},
+
+// ── 11 ОСТРОВОВ ─────────────────────────────────────────────
+{q:"В туре «11 островов» — Пхи-Пхи Дон, пляж обезьян и пещера Викингов посещаются как?",opts:["Высадка включена в Комфорт","Только осмотр с лодки без высадки","Высадка на 20 минут","Зависит от погоды"],correct:1,cat:"11 островов",explain:"Пхи-Пхи Дон, пляж обезьян, пещера Викингов — только осмотр с лодки. Именно так удаётся посетить 11 островов за один день."},
+{q:"Когда клиент возвращается из тура «11 островов»?",opts:["~14:00","~16:30","~18:10 — один из самых поздних","~20:00"],correct:2,cat:"11 островов",explain:"Возврат около 18:10 — один из самых поздних среди однодневных морских туров. Обязательно предупреждать клиентов."},
+{q:"Деревня Паньи в туре «11 островов» — обед включён?",opts:["Нет, обед за доп. плату","Да, обед в деревне включён","Только в тарифе Комфорт","Только ланч-бокс"],correct:1,cat:"11 островов",explain:"Обед в деревне морских цыган Паньи включён в стоимость обоих тарифов."},
+
+// ── РАССВЕТНОЕ ПУТЕШЕСТВИЕ НА ПХИ-ПХИ ──────────────────────
+{q:"В «Рассветном путешествии на Пхи-Пхи» — для каких отелей выезд около 03:00?",opts:["Для южных (Найхарн, Ката, Чалонг)","Для северных (Май Као, Найтон, Найянг) — т.к. пирс на юго-востоке","Для всех одинаково","Только для Патонга"],correct:1,cat:"Рассветное путешествие на Пхи-Пхи",explain:"Для северных отелей (Май Као, Найтон, Найянг) выезд около 03:00, т.к. пирс на юго-востоке острова."},
+{q:"В чём главное преимущество раннего выезда в «Рассветном путешествии»?",opts:["Дешевле в это время","Майя Бэй в 07:00 — до наплыва туристов, пляж почти пустой","Меньше волн в море","Лучше видно рыбу"],correct:1,cat:"Рассветное путешествие на Пхи-Пхи",explain:"Главный аргумент: прибытие в Майя Бэй в 07:00, когда пляж почти пустой. Те кто приедут позже увидят сотни туристов."},
+{q:"Когда возвращаются из «Рассветного путешествия на Пхи-Пхи» и почему это аргумент?",opts:["~19:00 — можно поужинать","~15:30 — вечер свободен для пляжа или вечернего тура","~12:00 — можно весь день отдыхать","~18:00 — стандартное время"],correct:1,cat:"Рассветное путешествие на Пхи-Пхи",explain:"Возврат ~15:30 — вечер свободен. Хорошо совмещается с вечерними турами."},
+{q:"Смотровая Пхи-Пхи Дон в «Рассветном путешествии» — входит в стоимость?",opts:["Да, включена","Нет — 50 бат отдельно","Только в Комфорт","Включена только для сертифицированных"],correct:1,cat:"Рассветное путешествие на Пхи-Пхи",explain:"Смотровая Пхи-Пхи Дон — 50 бат отдельно. Кто не хочет — прогулка по деревне бесплатно."},
+
+// ── ТРОПИЧЕСКИЙ РАЙ КРАБИ ───────────────────────────────────
+{q:"Во сколько прибытие на пирс в туре «Тропический рай Краби»?",opts:["06:00","07:30","09:00 — самый поздний старт среди морских","11:00"],correct:2,cat:"Тропический рай Краби",explain:"Сбор в 09:00 — один из самых поздних стартов среди морских туров. Главное УТП для тех кто не хочет рано вставать."},
+{q:"Морской лабиринт на острове Пакбия — когда посещается?",opts:["В любое время","Только при отливе — гарантировать нельзя","Только при приливе","Только в сухой сезон"],correct:1,cat:"Тропический рай Краби",explain:"Морской лабиринт — только при отливе. Природный объект, гарантировать нельзя."},
+{q:"Что уникального на финале тура «Тропический рай Краби»?",opts:["Плавание с акулами у Ко Паре","Закат на песчаной косе острова Ко Паре — нет в других однодневных турах","Огненное шоу","Ночная рыбалка"],correct:1,cat:"Тропический рай Краби",explain:"Закат на песчаной косе Ко Паре — уникальный финал, которого нет в других однодневных морских турах."},
+{q:"Коктейль в кокосе в «Тропическом рае Краби» — входит?",opts:["Нет, за доп. плату","Да, включён в стоимость на острове Пакбия","Только в тарифе Комфорт","Только для взрослых"],correct:1,cat:"Тропический рай Краби",explain:"Коктейль в кокосе включён в стоимость тура — выдаётся на острове Пакбия."},
+
+// ── СИМИЛАНСКИЕ ОСТРОВА ─────────────────────────────────────
+{q:"Симиланские острова — с какого по какое время закрыты?",opts:["С января по март","С 15 мая по октябрь включительно","С июня по август","С ноября по февраль"],correct:1,cat:"Симиланские острова",explain:"Острова закрыты с 15 мая по октябрь включительно. При бронировании ВСЕГДА проверять дату тура!"},
+{q:"Для каких отелей на Симиланах выезд около 03:00?",opts:["Для северных (Май Као, Найтон, Найянг)","Для южных (Найхарн, Ката, Ката Ной, Чалонг) — т.к. пирс на севере острова","Для центральных (Патонг)","Для всех одинаково"],correct:1,cat:"Симиланские острова",explain:"Пирс Симиланский на СЕВЕРЕ острова. Поэтому для южных отелей (Найхарн, Ката, Чалонг) самая длинная дорога — выезд около 03:00."},
+{q:"Чем тариф Комфорт отличается от Стандарта на Симиланах по типу лодки?",opts:["Комфорт — спидбот, Стандарт — обычная лодка","Оба тарифа — спидбот. Разница только в сервисе.","Комфорт — катамаран, Стандарт — спидбот","Оба — обычная лодка"],correct:1,cat:"Симиланские острова",explain:"На Симиланах оба тарифа — спидбот. Разница только в сервисе: завтрак, пиво, полотенца, ласты, Wi-Fi, вино по возвращении."},
+{q:"Морские черепахи на Симиланах — гарантированы?",opts:["Да, черепах там всегда много","Нет — шанс есть, но дикая природа, гарантировать нельзя","Только в тарифе Комфорт","Только в утренние часы"],correct:1,cat:"Симиланские острова",explain:"Шанс увидеть черепах есть во время снорклинга. Но это дикая природа — гарантировать нельзя."},
+{q:"Что такое Парусная скала на Симиланах?",opts:["Скала для прыжков в воду","Смотровая площадка с панорамными видами на архипелаг","Место для снорклинга","Историческое место"],correct:1,cat:"Симиланские острова",explain:"Парусная скала — знаменитая смотровая точка на острове Симилан (№8) с панорамными видами на весь архипелаг."},
+
+// ── КАТАМАРАН ЗАКАТ МАЙТОН ───────────────────────────────────
+{q:"Тур «Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон» — какой тариф доступен?",opts:["Только Стандарт","Только Комфорт","Оба тарифа","Нет тарифов — фиксированная цена"],correct:1,cat:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",explain:"Только тариф Комфорт — тарифа Стандарт нет. Это премиальный тур на катамаране."},
+{q:"С какого пирса отправляется тур на катамаране?",opts:["Royal Phuket Marina","Яму","Чалонг (юг острова)","AA Marina"],correct:2,cat:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",explain:"Пирс Чалонг (юг острова) — оба тарифа. Для северных отелей (Май Као, Найтон, Найянг) выезд раньше."},
+{q:"Остров Майтон — можно высадиться?",opts:["Да, включена экскурсия 1 час","Да, за доп. плату","Нет — остров частный, вечеринка на воде у острова","Только в тарифе Комфорт"],correct:2,cat:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",explain:"Остров Майтон частный — высадки нет. Закатная вечеринка проходит на воде у острова."},
+{q:"Что происходит если высадка на Рача Яй невозможна?",opts:["Тур отменяется","Возврат денег","Замена на острова Coral + Bamboo","Едут на Симиланы"],correct:2,cat:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",explain:"При невозможности высадки на Рача Яй — замена на острова Coral + Bamboo. Предупреждать клиентов заранее."},
+{q:"Что входит в алкогольный коктейль в туре на катамаране?",opts:["Два коктейля на выбор","Один коктейль в бамбуковом стакане — подарок","Безалкогольный коктейль","Коктейль в кокосе"],correct:1,cat:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",explain:"Один алкогольный коктейль в бамбуковом стакане — подарок. Включён в стоимость тура."},
+
+// ── RACHA CORAL SUNRISE ──────────────────────────────────────
+{q:"С какого пирса отправляется «Racha Coral Sunrise» и на каком тарифе?",opts:["Royal Phuket Marina — только Комфорт","Яму — только Стандарт","Чалонг — оба тарифа","AA Marina — только Комфорт"],correct:2,cat:"Racha Coral Sunrise",explain:"Пирс Чалонг (юг острова) — оба тарифа (Комфорт и Стандарт)."},
+{q:"Приватный Beach Club в «Racha Coral Sunrise» — что означает «приватный»?",opts:["Платный вход","Только для VIP-клиентов","Только для нашей группы — никаких чужих туристов","Закрытый бассейн"],correct:2,cat:"Racha Coral Sunrise",explain:"Приватный — значит только наша группа. Никаких чужих туристов. Это сильный аргумент при продаже."},
+{q:"Каноэ, SUP и банан на Beach Club — входят в стоимость?",opts:["Да, всё включено","Нет — аренда за доп. плату на месте","Только каноэ включено","Только в тарифе Комфорт"],correct:1,cat:"Racha Coral Sunrise",explain:"Аренда каноэ, SUP, банана и водного шара — за дополнительную плату на месте. Обязательно уточнять клиентам заранее."},
+{q:"Для каких отелей выезд раньше на «Racha Coral Sunrise»?",opts:["Для южных (Найхарн, Ката)","Для северных (Май Као, Найтон, Найянг) — т.к. пирс Чалонг на юге","Для всех одинаково","Для центральных (Патонг)"],correct:1,cat:"Racha Coral Sunrise",explain:"Пирс Чалонг на юге острова — для северных отелей (Май Као, Найтон, Найянг) дорога длиннее, выезд раньше."},
+
+// ── МОРСКАЯ РЫБАЛКА ─────────────────────────────────────────
+{q:"Крабовые ловушки и подводная охота в рыбалке — гарантированы?",opts:["Да, всегда включены","Нет — может не состояться из-за погоды или других обстоятельств","Только в Комфорт","Только при хорошем улове"],correct:1,cat:"Ранняя морская рыбалка",explain:"Крабовые ловушки и подводная охота могут не состояться из-за погоды или других обстоятельств. Предупреждать клиентов."},
+{q:"Сашими из улова в рыбалке — когда будет?",opts:["Всегда включено","Только если поймали рыбу подходящую для сырого употребления","Только в тарифе Комфорт","По желанию за доп. плату"],correct:1,cat:"Ранняя морская рыбалка",explain:"Сашими — только если поймали подходящую рыбу. Курица в кляре, тайский суп и рис — всегда."},
+{q:"Улов гарантирован в туре «Ранняя морская рыбалка»?",opts:["Да — гарантируем минимум 5 кг","Нет — это настоящая рыбалка. Акцент на опыт и процесс, не на результат","Только в хорошую погоду","Зависит от тарифа"],correct:1,cat:"Ранняя морская рыбалка",explain:"Улов не гарантирован — это реальная рыбалка в море. При продаже акцентировать опыт и процесс."},
+{q:"Что уникального есть в рыбалке чего нет ни в одном другом туре?",opts:["Плавание с акулами","Проверка крабовых ловушек","Катамаран","Огненное шоу"],correct:1,cat:"Ранняя морская рыбалка",explain:"Проверка крабовых ловушек — уникальная активность которой нет ни в одном другом туре морской линейки."},
+{q:"Тариф рыбалки (на лодке и на катамаране)?",opts:["Только Стандарт","Оба тарифа","Только Комфорт","Нет тарифов"],correct:2,cat:"Ранняя морская рыбалка",explain:"Оба тура рыбалки — только тариф Комфорт. Тарифа Стандарт нет."},
+{q:"Чем рыбалка на катамаране отличается от рыбалки на лодке?",opts:["Другой маршрут и другие острова","Только тип судна — катамаран устойчивее. Программа идентична.","Другое время выезда","Другой список включённого"],correct:1,cat:"Ранняя морская рыбалка",explain:"Разница только в судне — катамаран устойчивее и просторнее, для тех кто боится качки. Программа полностью идентична."},
+
+// ── ДАЙВИНГ ─────────────────────────────────────────────────
+{q:"Кому запрещён дайвинг?",opts:["Только детям до 10 лет","Беременным, детям до 1 года, пожилым, людям с хроническими заболеваниями и проблемами ОДА","Только тем у кого нет сертификата","Никому не запрещён"],correct:1,cat:"Дейли-дайвинг",explain:"Запрещён беременным, детям до 1 года, пожилым, людям с хроническими заболеваниями и проблемами ОДА. Отказ в посадке по здоровью не компенсируется!"},
+{q:"Сколько погружений у новичков без сертификата?",opts:["1 погружение","2 погружения","3 погружения","4 погружения"],correct:1,cat:"Дейли-дайвинг",explain:"Несертифицированные — 2 погружения, снаряжение включено. Сертифицированные — 3 погружения, аренда снаряжения +500 бат."},
+{q:"Аренда снаряжения для сертифицированных дайверов стоит сколько?",opts:["Включена бесплатно","+500 бат","+1000 бат","+1500 бат"],correct:1,cat:"Дейли-дайвинг",explain:"Снаряжение для новичков включено. Для сертифицированных — аренда +500 бат."},
+{q:"Нац. парк Пхи-Пхи в дайвинге — когда и для кого?",opts:["Ежедневно для всех","Только среда, только сертифицированные, +600 бат","Только Комфорт, ежедневно","Только новички, бесплатно"],correct:1,cat:"Дейли-дайвинг",explain:"Нац. парк Пхи-Пхи — только по средам, только для сертифицированных дайверов. Дополнительная плата +600 бат."},
+{q:"Трансфер в дайвинге — из каких районов включён?",opts:["Из всех районов Пхукета","Из Ката, Карон, Патонг, Раваи, Найхарн, Камала. Другие — доплата.","Только из Патонга","Не включён нигде — только самостоятельно"],correct:1,cat:"Дейли-дайвинг",explain:"Трансфер включён из Ката, Карон, Патонг, Раваи, Найхарн, Камала. Из других районов — доплата."},
+{q:"Какой дайв-сайт даёт шанс увидеть леопардовых акул?",opts:["Рача Яй","Анемон Риф","Шарк Пойнт","Ко Dok Май"],correct:2,cat:"Дейли-дайвинг",explain:"Шарк Пойнт — место где можно увидеть леопардовых акул. Они не агрессивны к людям."},
+{q:"Кинг Крузер — что это за дайв-сайт?",opts:["Коралловый риф у острова Пхи-Пхи","Затонувший паром на глубине 30 метров","Пещера с кораллами","Скала с анемонами"],correct:1,cat:"Дейли-дайвинг",explain:"Кинг Крузер — затонувший паром на глубине 30 метров. Уникальная точка для дайвинга."},
+{q:"Персональный инструктор в дайвинге — что это и сколько стоит?",opts:["Включён для всех бесплатно","Доп. опция +1500 бат. Один инструктор на одного гостя.","Включён только в Комфорт","+500 бат для новичков"],correct:1,cat:"Дейли-дайвинг",explain:"Персональный инструктор — дополнительная опция +1500 бат. Хорошая допродажа для новичков кто хочет максимального внимания."},
+
+// ── ГИДРОЦИКЛЫ ПХУКЕТ ───────────────────────────────────────
+{q:"Гидроциклы Пхукет — беременным можно?",opts:["Да, если срок до 3 месяцев","Нет — запрещено на всех сроках","Только на спокойной воде","Только на утреннем туре"],correct:1,cat:"Гидроциклы — 9 островов (Пхукет)",explain:"Запрещено на всех сроках беременности. Обязательно уточнять при бронировании."},
+{q:"Из каких районов трансфер НЕ включён на гидроциклы Пхукет?",opts:["Из Патонга","Из Маи Као, Найянга, Найтона, Найхарна, Чалонга и ряда других","Из Каты","Из Сурина"],correct:1,cat:"Гидроциклы — 9 островов (Пхукет)",explain:"Трансфер не включён с севера (Май Као, Найянг, Найтон), Найхарна, Чалонга и ряда других отелей. Всегда уточнять у оператора."},
+{q:"Сколько слотов у гидроциклов Пхукет и какое время?",opts:["Один слот в 10:00","Два слота: утренний 09:00–13:00 и дневной 13:30–17:30","Три слота на выбор","Только по записи"],correct:1,cat:"Гидроциклы — 9 островов (Пхукет)",explain:"Два слота: утренний 09:00–13:00 и дневной 13:30–17:30. Уточнять у клиента предпочтение."},
+{q:"Какие три модели гидроциклов доступны на Пхукете?",opts:["Все одинаковые — Yamaha VX-C","Yamaha VX-C 1100 (новички), Sea-Doo GTX 130 PRO, Yamaha FX 1900 Premium","Только Sea-Doo для туристов","BRP Seadoo GTX PRO 130"],correct:1,cat:"Гидроциклы — 9 островов (Пхукет)",explain:"Три модели: Yamaha VX-C 1100 (для новичков), Sea-Doo GTX 130 PRO (комфорт), Yamaha FX 1900 Premium (мощный)."},
+
+// ── ГИДРОЦИКЛЫ ПАТТАЙЯ ──────────────────────────────────────
+{q:"Гидроциклы Паттайя — цена за человека или за гидроцикл?",opts:["За человека","За гидроцикл — до 2 взрослых + 1 ребёнок до 10 лет, вес не более 200 кг","За группу","Зависит от программы"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Цена за гидроцикл. На одном едут до 2 взрослых + 1 ребёнок до 10 лет. Общий вес не более 200 кг."},
+{q:"Маршрут «Юг» в Паттайе — что важно сообщить клиенту?",opts:["Там нет снорклинга","Нац. сбор 100 бат/чел на военном пляже — не включён","Там нет обезьян","Только для опытных"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"На военном пляже маршрута «Юг» — нац. сбор 100 бат/чел. Не включён в стоимость. Предупреждать клиентов."},
+{q:"Когда индивидуальный тур на гидроциклах Паттайя без доплаты?",opts:["Всегда без доплаты","При бронировании 5 и более гидроциклов","Только по выходным","Только тур 8 часов"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"При бронировании 5 и более гидроциклов — индивидуальный тур без доплаты."},
+{q:"Тур 8 часов на гидроциклах Паттайя — групповой или индивидуальный?",opts:["Только групповой — Пн, Ср, Пт","Только индивидуальный, ежедневно в 10:00","Оба варианта","Только по предварительной записи за 3 дня"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Тур 8 часов — только индивидуально, ежедневно в 10:00. Маршрут: Север + Юг — все 9 островов."},
+{q:"Включён ли обед в гидроциклы Паттайя?",opts:["Да, обед включён","Нет, обед не включён","Только в туре 8 часов","Только в маршруте «Север»"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Обед не включён ни в одну программу гидроциклов Паттайя. Клиентам уточнять."},
+{q:"Видео на GoPro и фото в гидроциклах Паттайя — входят?",opts:["Нет, за доп. плату","Да, включены в стоимость","Только видео, фото за доп. плату","Только в туре 8 часов"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Видео на GoPro и фото включены в стоимость всех программ гидроциклов Паттайя."},
+
+// ── СРАВНЕНИЕ И ОБЩИЕ ВОПРОСЫ ────────────────────────────────
+{q:"Клиент хочет морской тур с рассветом, но живёт в Патонге. Что важно уточнить?",opts:["Ничего особенного","Точное время выезда — для Патонга оно будет позже чем для северных отелей","Патонг не обслуживается","Нужен отдельный трансфер"],correct:1,cat:"Сравнение морских туров",explain:"Патонг — центральный район. Время выезда на рассветные туры будет стандартным. Ранний выезд около 03:00 — только для северных отелей (Май Као, Найтон, Найянг)."},
+{q:"Клиент хочет увидеть острова за один день без ночёвки — самый насыщенный вариант?",opts:["Рассветное путешествие на Пхи-Пхи","11 островов","Тропический рай Краби","Racha Coral Sunrise"],correct:1,cat:"Сравнение морских туров",explain:"«11 островов» — самый насыщенный однодневный морской тур. 11 точек за один день без ночёвки."},
+{q:"Клиент хочет морской тур но не хочет рано вставать. Что предложить?",opts:["Рассветное путешествие на Пхи-Пхи","Racha Coral Sunrise","Тропический рай Краби — сбор в 09:00","5 жемчужин Андаманского моря"],correct:2,cat:"Сравнение морских туров",explain:"«Тропический рай Краби» — сбор в 09:00, самый поздний старт среди морских туров. Идеально для тех кто не хочет ранних подъёмов."},
+{q:"Клиент хочет дайвинг и живёт в Банг Тао. Трансфер включён?",opts:["Да, из всех районов","Нет — Банг Тао не в списке. Доплата за трансфер.","Только в тарифе Комфорт","Нет трансфера из Банг Тао ни за какую доплату"],correct:1,cat:"Сравнение морских туров",explain:"Трансфер включён только из Ката, Карон, Патонг, Раваи, Найхарн, Камала. Банг Тао не в списке — доплата."},
+{q:"Клиент хочет что-то уникальное чего нет в других турах. Что предложить из рыбалки?",opts:["Снорклинг","Проверку крабовых ловушек — нет ни в одном другом туре","Плавание с акулами","Лагуну Пиле"],correct:1,cat:"Сравнение морских туров",explain:"Проверка крабовых ловушек — уникальная активность которой нет ни в одном другом туре морской линейки."},
+{q:"В каком туре пляж Майя Бэй посещают позже всех — когда основные туристы уже ушли?",opts:["Рассветное путешествие на Пхи-Пхи","11 островов","Катамаран — Пхи-Пхи, Рача Яй и закатная вечеринка","5 жемчужин"],correct:2,cat:"Сравнение морских туров",explain:"В туре на катамаране Майя Бэй посещают позже всех (около 16:00) — когда основные туристы уже ушли. Пляж почти пустой."},
+{q:"Какие туры отправляются с пирса Чалонг?",opts:["Все туры с пирса Чалонг","Катамаран, Racha Coral Sunrise, рыбалка (лодка и катамаран) и дайвинг","Только дайвинг","Симиланы и дайвинг"],correct:1,cat:"Сравнение морских туров",explain:"Пирс Чалонг (юг острова): катамаран (закат Майтон), Racha Coral Sunrise, рыбалка на лодке и катамаране, дайвинг."},
+{q:"В каком туре катамаран является основным транспортом и частью развлечения?",opts:["Рыбалка на катамаране","Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон","Racha Coral Sunrise","5 жемчужин"],correct:1,cat:"Сравнение морских туров",explain:"Тур на катамаране — двухпалубный катамаран с горкой, бассейном, SUP, DJ-сетом. Катамаран не просто транспорт, а часть отдыха."},
+{q:"Клиент спрашивает о морском туре с ночёвкой и огненным шоу. Какие варианты?",opts:["Только 5 жемчужин","5 жемчужин, 4 жемчужины и Рассветное приключение 2 дня","Только Рассветное приключение 2 дня","Racha Coral Sunrise"],correct:1,cat:"Сравнение морских туров",explain:"Все три двухдневных тура включают ночёвку на Пхи-Пхи и огненное шоу: 5 жемчужин, 4 жемчужины и Рассветное приключение."},
+{q:"Завтрак на пирсе — в каком тарифе включён во всех морских турах?",opts:["В обоих тарифах","Только в тарифе Комфорт","Только в тарифе Стандарт","Нигде не включён"],correct:1,cat:"Сравнение морских туров",explain:"Завтрак на пирсе включён ТОЛЬКО в тариф Комфорт во всех морских турах без исключения."},
+{q:"Клиент с беременностью хочет морской тур. Что ответить?",opts:["Можно на спокойные туры","Нельзя на гидроциклы, остальные — можно","Все морские туры запрещены при беременности — только сухопутные","Зависит от срока беременности"],correct:2,cat:"Сравнение морских туров",explain:"Гидроциклы (Пхукет и Паттайя) запрещены на всех сроках беременности. Дайвинг тоже запрещён. Остальные морские туры уточнять с учётом состояния."},
+{q:"В каком туре есть Храм Истины?",opts:["Тропический рай Краби","Симиланские острова","Гидроциклы Паттайя — маршрут «Север»","Racha Coral Sunrise"],correct:2,cat:"Сравнение морских туров",explain:"Храм Истины — только в гидроциклах Паттайя, маршрут «Север» (среда и пятница)."},
+{q:"Какой тур предложить клиенту который хочет закат на воде?",opts:["Тропический рай Краби — закат на косе Ко Паре","Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон на катамаране","Оба варианта хорошо подходят","Racha Coral Sunrise"],correct:1,cat:"Сравнение морских туров",explain:"Оба тура предлагают закат, но катамаран у Майтон — это полноценная чилл-вечеринка на воде с музыкой и коктейлем. «Краби» — закат на песчаной косе острова."},
+{q:"Клиент хочет лучший снорклинг. Какой тур предложить если сезон позволяет?",opts:["Тропический рай Краби","Симиланские острова — топ-10 лучших мест для снорклинга в мире","Рассветное путешествие на Пхи-Пхи","Racha Coral Sunrise"],correct:1,cat:"Сравнение морских туров",explain:"Симиланские острова входят в топ-10 лучших мест для снорклинга в мире. Но только с ноября по 15 мая."},
+{q:"Пляж обезьян — правило во всех морских турах?",opts:["Высадка везде включена","Высадка только в Комфорт","Осмотр ТОЛЬКО С ЛОДКИ во всех морских турах","Зависит от тура"],correct:2,cat:"Сравнение морских туров",explain:"Пляж обезьян — осмотр ТОЛЬКО С ЛОДКИ без высадки. Правило для всех морских туров линейки."}
+];
+
+// ── ДОПОЛНИТЕЛЬНЫЕ ВОПРОСЫ ──────────────────────────────────
+seaExamQuestions.push(
+{q:"Бухта Майя во всех морских турах — в какой период и как посещается?",opts:["Открыта круглый год","Закрыта июнь-июль — осмотр с лодки","Закрыта август-сентябрь — осмотр с лодки","Закрыта только в шторм"],correct:2,cat:"Сравнение морских туров",explain:"Бухта Майя закрыта примерно в августе-сентябре. В этот период — осмотр только с лодки. Обязательно говорить клиентам при бронировании в этот период."},
+{q:"В какой программе гидроциклов Паттайя можно увидеть Храм Истины?",opts:["3 часа","4 часа маршрут «Север»","4 часа маршрут «Юг»","8 часов только"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Храм Истины — только в маршруте «Север» (4 часа, среда и пятница). В маршруте «Юг» его нет."},
+{q:"Что происходит если на Симиланах клиент забронировал тур в июне?",opts:["Тур проводится в обычном режиме","Тур отменяется — острова закрыты с 15 мая по октябрь. Предлагать альтернативу.","Едут на Пхи-Пхи вместо Симилан","Скидка за закрытый сезон"],correct:1,cat:"Симиланские острова",explain:"Острова закрыты с 15 мая по октябрь. Отказывать и предлагать альтернативный тур. ВСЕГДА проверять дату при бронировании."},
+{q:"Что входит в тур «Racha Coral Sunrise» из еды?",opts:["Только обед","Только завтрак (Комфорт)","Завтрак (Комфорт) + обед на берегу моря в Beach Club","Завтрак + обед + ужин"],correct:2,cat:"Racha Coral Sunrise",explain:"Завтрак включён только в тариф Комфорт. Обед на берегу моря в приватном Beach Club включён в оба тарифа."},
+{q:"Остров обезьян Monkey Island на гидроциклах Пхукет — какой формат?",opts:["Осмотр только с воды","Высадка — обезьяны в естественной среде","Кормление обезьян за доп. плату","Только фото с лодки"],correct:1,cat:"Гидроциклы — 9 островов (Пхукет)",explain:"На Monkey Island — высадка. Можно наблюдать обезьян в их естественной среде обитания."},
+{q:"Какой пирс у Симиланских островов и на каком конце острова?",opts:["Royal Phuket Marina — юго-восток","Яму — центр западного побережья","Симиланский пирс — север острова","Чалонг — юг"],correct:2,cat:"Симиланские острова",explain:"Симиланский пирс находится на севере острова Пхукет. Именно поэтому для южных отелей (Найхарн, Ката, Чалонг) самая длинная дорога."},
+{q:"Тур на катамаране «Пхи-Пхи, Рача Яй» — во сколько возврат?",opts:["~15:30","~17:00","~19:00","~21:00"],correct:2,cat:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",explain:"Возврат ~19:00 на пирс Чалонг + трансфер в отель. Учитывать при планировании — один из поздних возвратов."},
+{q:"Съёмка на DJI дрон в гидроциклах Паттайя — входит в стоимость?",opts:["Да, для всех включена","Нет — доп. плата за гидроцикл. Хорошая допродажа.","Только в туре 8 часов","Только в маршруте «Север»"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Съёмка на дрон — платная опция за доп. плату за гидроцикл. Предлагать как допродажу при продаже тура."},
+{q:"Летучие лисицы — в каком туре можно увидеть?",opts:["Рассветное путешествие на Пхи-Пхи","Симиланские острова — в джунглях острова Мианг","Тропический рай Краби","Racha Coral Sunrise"],correct:1,cat:"Симиланские острова",explain:"Летучие лисицы водятся в джунглях острова Мианг (№4) на Симиланах. Можно увидеть во время прогулки по тропе."},
+{q:"Что такое пещера Викингов на Пхи-Пхи?",opts:["Пещера для плавания","Пещера с ласточкиными гнёздами и древними рисунками — осмотр с лодки","Подводная пещера для дайвинга","Туристический ресторан"],correct:1,cat:"Сравнение морских туров",explain:"Пещера Викингов — ласточкины гнёзда, древние рисунки. Осмотр только с лодки во всех турах где она есть."},
+{q:"Клиент хочет морской тур и боится качки. Что предложить?",opts:["Рассветное путешествие — утром всегда тихо","Тур на катамаране — устойчивее чем обычная лодка","Гидроциклы","Симиланские острова — там нет волн"],correct:1,cat:"Сравнение морских туров",explain:"Катамаран значительно устойчивее обычной лодки на волнах. Также можно предложить рыбалку на катамаране — та же логика."},
+{q:"Деревня Паньи — что это и что там делают?",opts:["Туристическая деревня с сувенирами","Старейшее поселение морских цыган — обед включён, прогулка","Рыбный рынок на берегу","Закрытая военная зона"],correct:1,cat:"5 жемчужин Андаманского моря",explain:"Деревня Паньи — старейшее поселение морских цыган в заливе Пханг Нга. Обед в местном ресторане включён. Живая культура, не туристическая инсценировка."},
+{q:"Что включает стандартный обед на борту в рыбалке (всегда, независимо от улова)?",opts:["Только сашими","Только рис и фрукты","Курица в кляре, тайский суп, гриль, рис, фрукты — плюс сашими если повезло с уловом","Только то что поймали"],correct:2,cat:"Ранняя морская рыбалка",explain:"Базовый обед всегда: курица в кляре, тайский суп, рис, фрукты. Сашими — бонус при хорошем улове подходящей рыбы."},
+{q:"Гидроциклы Паттайя — обезьяны есть на каком маршруте?",opts:["Только «Север»","Только «Юг» — остров обезьян Ко Пед","На обоих маршрутах","Только в туре 3 часа"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Обезьяны на острове Ко Пед — только маршрут «Юг». На маршруте «Север» обезьян нет."},
+{q:"В туре «11 островов» — где проходит обед и включён ли он?",opts:["На борту лодки, не включён","В деревне морских цыган Паньи — ВКЛЮЧЁН","На острове Хонг, включён","На острове Бамбу, за доп. плату"],correct:1,cat:"11 островов",explain:"Обед в деревне морских цыган Паньи — включён в стоимость обоих тарифов."},
+{q:"Racha Coral Sunrise — рыбалка входит в программу?",opts:["Да, рыбалка включена обязательно","По желанию — морская донная рыбалка на Racha Yai","Нет рыбалки в этом туре","Только за доп. плату"],correct:1,cat:"Racha Coral Sunrise",explain:"Морская донная рыбалка на Racha Yai — по желанию. Не обязательная часть программы."},
+{q:"Пирс Royal Phuket Marina — на какой стороне острова?",opts:["Север","Запад (Патонг)","Юго-восток","Юг (Чалонг)"],correct:2,cat:"Сравнение морских туров",explain:"Royal Phuket Marina находится на юго-востоке острова Пхукет. Пирс тарифа Комфорт в большинстве морских туров."},
+{q:"Какой минимальный возраст для дайвинга в туре?",opts:["Нет ограничения по возрасту","Дети до 1 года — запрещено. Остальные — по состоянию здоровья.","Только от 18 лет","Только от 12 лет"],correct:1,cat:"Дейли-дайвинг",explain:"Дайвинг запрещён детям до 1 года. Для остальных — по состоянию здоровья. Также запрещён беременным, пожилым и людям с хроническими заболеваниями."},
+{q:"Гидроциклы Паттайя — видео на GoPro и фото включены?",opts:["Нет, только дрон за доп. плату","Да, видео на GoPro и фото включены в стоимость","Только в туре 8 часов","Только фото, видео за доп. плату"],correct:1,cat:"Гидроциклы — туры по островам (Паттайя)",explain:"Видео на GoPro и фото включены в стоимость всех программ гидроциклов Паттайя."},
+{q:"Остров Хонг — какой фильм там снимали?",opts:["«Пляж» с Леонардо ДиКаприо","«Джунгли» с Верой Брежневой и Светлаковым","«Кинг Конг»","«Мост Ватерлоо»"],correct:1,cat:"Сравнение морских туров",explain:"На острове Хонг снимали фильм «Джунгли» с Верой Брежневой и Светлаковым. Бухта Майя — «Пляж» с ДиКаприо."},
+{q:"Персональный инструктор в дайвинге — на сколько человек один инструктор?",opts:["Строго один к одному","До 3 новичков или до 5 профи на одного инструктора","На всю группу один","До 10 человек"],correct:1,cat:"Дейли-дайвинг",explain:"Персональный инструктор — до 3 новичков или до 5 профи на одного. +1500 бат. Позволяет заниматься с одним гостем."},
+{q:"В туре на катамаране «Пхи-Пхи, Рача Яй» — что даётся в подарок?",opts:["Магнит с логотипом","Алкогольный коктейль в бамбуковом стакане","Полотенце с надписью","Фото с гидом"],correct:1,cat:"Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",explain:"Алкогольный коктейль в бамбуковом стакане — подарок. Включён в стоимость тура."}
+);
+
+// ═══════════════════════════════════════════════
+// API URL — хранится в localStorage браузера
+// ═══════════════════════════════════════════════
+function getApiUrl() {
+  return localStorage.getItem('sardor_api_url') || '';
+}
+
+let currentUser = null;
+
+// ─── SETTINGS ────────────────────────────────────
+function toggleSettings() {
+  const panel = document.getElementById('settings-panel');
+  const input = document.getElementById('api-url-input');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    const saved = getApiUrl();
+    input.value = saved;
+    const display = document.getElementById('current-url-display');
+    if (saved) {
+      display.textContent = '✅ URL сохранён: ' + saved.substring(0, 50) + '...';
+    } else {
+      display.textContent = '❌ URL не настроен';
+    }
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+function saveApiUrl() {
+  const url = document.getElementById('api-url-input').value.trim();
+  if (!url || !url.startsWith('https://')) {
+    showSettingsStatus('❌ Введи правильный URL (начинается с https://)', 'error');
+    return;
+  }
+  localStorage.setItem('sardor_api_url', url);
+  showSettingsStatus('✅ URL сохранён! Теперь можно входить.', 'success');
+  document.getElementById('current-url-display').textContent = '✅ URL сохранён: ' + url.substring(0, 50) + '...';
+}
+
+async function testApiUrl() {
+  const url = document.getElementById('api-url-input').value.trim();
+  if (!url) {
+    showSettingsStatus('❌ Сначала введи URL', 'error');
+    return;
+  }
+  showSettingsStatus('⏳ Проверяем соединение...', 'info');
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'login', login: 'test', password: 'test' })
+    });
+    const data = await res.json();
+    // Any valid JSON response means connection works
+    showSettingsStatus('✅ Соединение работает! Сохрани URL.', 'success');
+  } catch(e) {
+    showSettingsStatus('❌ Не удалось подключиться. Проверь URL.', 'error');
+  }
+}
+
+function showSettingsStatus(msg, type) {
+  const el = document.getElementById('settings-status');
+  el.style.display = 'block';
+  el.textContent = msg;
+  const colors = {
+    success: { bg: 'var(--green-light)', color: 'var(--green)' },
+    error: { bg: 'var(--coral-light)', color: 'var(--coral)' },
+    info: { bg: 'var(--ocean-light)', color: 'var(--ocean-dark)' }
+  };
+  el.style.background = colors[type].bg;
+  el.style.color = colors[type].color;
+}
+
+// ─── LOGIN ────────────────────────────────────────
+async function doLogin() {
+  const login = document.getElementById('auth-login').value.trim();
+  const password = document.getElementById('auth-password').value.trim();
+  const errEl = document.getElementById('auth-error');
+  const loadEl = document.getElementById('auth-loading');
+  const apiUrl = getApiUrl();
+
+  errEl.style.display = 'none';
+
+  if (!login || !password) {
+    showAuthError('Введи логин и пароль');
+    return;
+  }
+
+  if (!apiUrl) {
+    showAuthError('Сначала настрой подключение — нажми ⚙️ Настройки внизу');
+    return;
+  }
+
+  loadEl.style.display = 'block';
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'login', login, password })
+    });
+    const data = await res.json();
+    loadEl.style.display = 'none';
+
+    if (data.success) {
+      currentUser = data.user;
+      document.getElementById('screen-auth').style.display = 'none';
+      document.querySelector('.nav').style.display = 'flex';
+      document.getElementById('user-name-display').textContent = currentUser.name;
+      showScreen('home');
+    } else {
+      showAuthError(data.error || 'Неверный логин или пароль');
+    }
+  } catch(e) {
+    loadEl.style.display = 'none';
+    showAuthError('Ошибка соединения. Проверь интернет.');
+  }
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ─── EXAM ATTEMPT CHECK ───────────────────────────
+async function startExamWithCheck() {
+  if (!currentUser) return;
+  const apiUrl = getApiUrl();
+
+  document.getElementById('exam-layout').innerHTML = `
+    <div style="text-align:center;padding:40px;color:var(--text-muted);">⏳ Проверяем попытки...</div>
+  `;
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'checkAttempt', userId: currentUser.id })
+    });
+    const data = await res.json();
+
+    if (data.hasAttempt) {
+      document.getElementById('exam-layout').innerHTML = `
+        <div class="exam-start">
+          <div style="font-size:48px;margin-bottom:16px">🔒</div>
+          <h2>Попытка уже использована</h2>
+          <p>Ты уже сдавал экзамен сегодня. Следующая попытка — завтра.</p>
+          <p style="margin-top:12px;font-size:13px;color:var(--text-muted);">Используй это время чтобы повторить материал по флэш-картам.</p>
+          <div style="margin-top:24px;">
+            <button class="btn-secondary" onclick="showScreen('flash')">🃏 Флэш-карты</button>
+          </div>
+        </div>
+      `;
+    } else {
+      startExam();
+    }
+  } catch(e) {
+    startExam();
+  }
+}
+
+async function saveExamResult(score, correct, total) {
+  if (!currentUser) return;
+  const apiUrl = getApiUrl();
+  if (!apiUrl) return;
+  try {
+    await fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'saveResult',
+        userId: currentUser.id,
+        userName: currentUser.name,
+        score, correct, total
+      })
+    });
+  } catch(e) {
+    console.log('Could not save result:', e);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const map = {home:'главн',cards:'изуч',flash:'флэш',exam:'экзам'};
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.textContent.toLowerCase().includes(map[name])) b.classList.add('active');
+  });
+  if (name === 'cards') renderCards('all');
+  if (name === 'flash') initFlash();
+  if (name === 'exam') renderExamStart();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════
+// CARDS
+// ═══════════════════════════════════════════════
+function filterCards(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(type);
+}
+
+function renderCards(filter) {
+  const grid = document.getElementById('cards-grid');
+  const filtered = filter === 'all' ? seaTours : seaTours.filter(t => t.type === filter);
+  const typeLabel = {day:'☀️ 1 день', twoday:'📅 2 дня'};
+  grid.innerHTML = filtered.map(t => `
+    <div class="tour-card" onclick="openModal(${t.id})">
+      <div class="card-top">
+        <div class="card-num">${t.num}</div>
+        <div>
+          <div class="card-title">${t.emoji} ${t.title}</div>
+          <div class="card-sub">${t.sub}</div>
+        </div>
+      </div>
+      <div class="card-tags">${t.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
+      <div class="card-bottom">
+        <span class="card-time">${typeLabel[t.type] || '☀️ 1 день'}</span>
+        <span style="color:var(--ocean)">→</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openModal(id) {
+  const t = seaTours.find(x => x.id === id);
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-header">
+      <h2>${t.emoji} ${t.title}</h2>
+      <p>${t.sub}</p>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>⏱ Тайминг и логистика</h3>
+        <div class="info-box">${t.timing}</div>
+      </div>
+      <div class="modal-section">
+        <h3>🗺️ Программа</h3>
+        <table class="schedule-table">
+          <tr><th>Период</th><th>Локация / Событие</th></tr>
+          ${t.schedule.map(([time, desc]) => `<tr><td>${time}</td><td>${desc}</td></tr>`).join('')}
+        </table>
+      </div>
+      <div class="modal-section">
+        <h3>✅ Включено / Не включено</h3>
+        <div class="inc-grid">
+          <div class="inc-col yes"><h4>ВКЛЮЧЕНО</h4><ul>${t.included.map(i => `<li>${i}</li>`).join('')}</ul></div>
+          <div class="inc-col no"><h4>НЕ ВКЛЮЧЕНО</h4><ul>${t.excluded.map(i => `<li>${i}</li>`).join('')}</ul></div>
+        </div>
+      </div>
+      ${(t.warnings.length || t.infos.length) ? `
+      <div class="modal-section">
+        <h3>⚠️ Важно менеджеру</h3>
+        ${t.warnings.map(w => `<div class="warn-box"><strong>⚠️</strong> ${w}</div>`).join('')}
+        ${t.infos.map(i => `<div class="info-box">${i}</div>`).join('')}
+      </div>` : ''}
+      <div class="modal-section">
+        <h3>💬 Аргументы для продажи</h3>
+        <ul class="args-list">${t.args.map(a => `<li>${a}</li>`).join('')}</ul>
+      </div>
+      <div class="modal-section">
+        <h3>❓ Типичные вопросы клиентов</h3>
+        ${t.qa.map(([q,a]) => `<div class="qa-item"><div class="qa-q">— ${q}</div><div class="qa-a">${a}</div></div>`).join('')}
+      </div>
+      <div class="modal-section">
+        <h3>🎒 Что взять клиенту</h3>
+        <div class="gear-box">${t.gear}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// FLASH CARDS
+// ═══════════════════════════════════════════════
+let flashState = { deck: [], index: 0, known: [], unknown: [], revealed: false };
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function initFlash() {
+  flashState.deck = shuffle([...seaFlashCards]);
+  flashState.known = [];
+  flashState.unknown = [];
+  renderFlash();
+}
+
+function renderFlash() {
+  const layout = document.getElementById('flash-layout');
+  const total = flashState.deck.length + flashState.known.length + flashState.unknown.length;
+  const done = flashState.known.length + flashState.unknown.length;
+
+  if (flashState.deck.length === 0) {
+    const kn = flashState.known.length;
+    const un = flashState.unknown.length;
+    layout.innerHTML = `
+      <div class="flash-done">
+        <div style="font-size:48px;margin-bottom:16px">🎯</div>
+        <h2>Колода пройдена!</h2>
+        <div class="flash-score-row">
+          <div class="flash-score-item known"><div class="fscore-num">${kn}</div><div class="fscore-lbl">Знал</div></div>
+          <div class="flash-score-item unknown"><div class="fscore-num">${un}</div><div class="fscore-lbl">Не знал</div></div>
+        </div>
+        ${un > 0 ? `<p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">Повтори ${un} карточек которые не знал</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-primary" onclick="repeatUnknown()">🔄 Повторить «Не знал»</button>
+          <button class="btn-secondary" onclick="initFlash()">↺ Начать заново</button>
+        </div>` : `<p style="color:var(--green);font-size:15px;font-weight:600;margin-bottom:20px">Отлично! Все карточки знаешь!</p>
+        <button class="btn-primary" onclick="initFlash()">↺ Пройти снова</button>`}
+      </div>
+    `;
+    return;
+  }
+
+  const card = flashState.deck[0];
+  const pct = Math.round(done / total * 100);
+  layout.innerHTML = `
+    <div class="flash-progress-row">
+      <span class="flash-stat known-stat">✅ Знал: ${flashState.known.length}</span>
+      <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <span class="flash-stat unknown-stat">❌ Не знал: ${flashState.unknown.length}</span>
+    </div>
+    <div class="flash-counter">Карточка ${done + 1} из ${total}</div>
+    <div class="flash-card" id="flash-card">
+      <div class="flash-tour-label">${card.tour}</div>
+      <div class="flash-question">${card.q}</div>
+      <div class="flash-answer-wrap" id="flash-answer-wrap" style="display:none">
+        <div class="flash-divider">Правильный ответ:</div>
+        <div class="flash-answer">${card.a}</div>
+      </div>
+      <div id="flash-btn-reveal" style="text-align:center;margin-top:24px">
+        <button class="btn-primary" onclick="revealAnswer()">Показать ответ</button>
+      </div>
+      <div id="flash-btn-judge" style="display:none;text-align:center;margin-top:20px">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Ты знал ответ?</p>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <button class="flash-judge-btn known-btn" onclick="judgeCard(true)">✅ Знал</button>
+          <button class="flash-judge-btn unknown-btn" onclick="judgeCard(false)">❌ Не знал</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function revealAnswer() {
+  document.getElementById('flash-answer-wrap').style.display = 'block';
+  document.getElementById('flash-btn-reveal').style.display = 'none';
+  document.getElementById('flash-btn-judge').style.display = 'block';
+  document.getElementById('flash-card').classList.add('revealed');
+}
+
+function judgeCard(knew) {
+  const card = flashState.deck.shift();
+  if (knew) { flashState.known.push(card); }
+  else { flashState.unknown.push(card); flashState.deck.push(card); }
+  renderFlash();
+  window.scrollTo(0, 0);
+}
+
+function repeatUnknown() {
+  flashState.deck = shuffle([...flashState.unknown]);
+  flashState.known = [];
+  flashState.unknown = [];
+  renderFlash();
+}
+
+// ═══════════════════════════════════════════════
+// EXAM
+// ═══════════════════════════════════════════════
+let exam = { questions: [], current: 0, answers: [] };
+
+function renderExamStart() {
+  document.getElementById('exam-layout').innerHTML = `
+    <div class="exam-start">
+      <div style="font-size:48px;margin-bottom:16px">📝</div>
+      <h2>Экзамен по морским экскурсиям</h2>
+      <p>Проверь знания по всем 14 морским экскурсиям. После каждого ответа увидишь объяснение. Проходной балл — 85%.</p>
+      <div class="exam-info-row">
+        <div class="exam-info-item"><div class="num">20</div><div class="lbl">Вопросов</div></div>
+        <div class="exam-info-item"><div class="num">85%</div><div class="lbl">Проходной балл</div></div>
+        <div class="exam-info-item"><div class="num">17</div><div class="lbl">Нужно правильно</div></div>
+      </div>
+      <button class="btn-primary" onclick="startExamWithCheck()">Начать экзамен →</button>
+    </div>
+  `;
+}
+
+function startExam() {
+  exam.questions = shuffle(seaExamQuestions).slice(0, 20);
+  exam.current = 0;
+  exam.answers = [];
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = exam.questions[exam.current];
+  const n = exam.current + 1;
+  const total = exam.questions.length;
+  const pct = Math.round((n - 1) / total * 100);
+  document.getElementById('exam-layout').innerHTML = `
+    <div class="exam-progress">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-text">Вопрос ${n} из ${total}</div>
+    </div>
+    <div class="question-card">
+      <div class="q-category">${q.cat}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options" id="options">
+        ${q.opts.map((opt, i) => `<button class="option" onclick="selectAnswer(${i})">${opt}</button>`).join('')}
+      </div>
+      <div id="feedback"></div>
+    </div>
+    <div class="exam-nav" id="exam-nav" style="display:none">
+      <button class="btn-primary" onclick="nextQuestion()">${n === total ? 'Завершить →' : 'Следующий →'}</button>
+    </div>
+  `;
+}
+
+function selectAnswer(idx) {
+  const q = exam.questions[exam.current];
+  const options = document.querySelectorAll('.option');
+  options.forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+  const isCorrect = idx === q.correct;
+  exam.answers.push({ correct: isCorrect, question: q });
+  options[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) options[q.correct].classList.add('reveal-correct');
+  document.getElementById('feedback').innerHTML = `
+    <div class="feedback-box ${isCorrect ? 'correct' : 'wrong'}">
+      <strong>${isCorrect ? '✅ Правильно!' : '❌ Неверно'}</strong>${q.explain}
+    </div>
+  `;
+  document.getElementById('exam-nav').style.display = 'flex';
+}
+
+function nextQuestion() {
+  exam.current++;
+  if (exam.current >= exam.questions.length) {
+    renderResults();
+  } else {
+    renderQuestion();
+    window.scrollTo(0, 0);
+  }
+}
+
+function renderResults() {
+  const correct = exam.answers.filter(a => a.correct).length;
+  const total = exam.answers.length;
+  const pct = Math.round(correct / total * 100);
+  const pass = pct >= 85;
+  saveExamResult(pct, correct, total);
+  document.getElementById('exam-layout').innerHTML = `
+    <div class="results-card">
+      <div class="score-circle ${pass ? 'pass' : 'fail'}">${pct}%<small>${correct}/${total}</small></div>
+      <h2>${pass ? '🎉 Тест сдан!' : '📚 Нужно повторить'}</h2>
+      <p>${pass
+        ? `Отличный результат! ${pct}% — выше проходного балла 85%.`
+        : `${pct}% — нужно минимум 85% (${Math.ceil(total*0.85)} из ${total}). Повтори флэш-карты и попробуй снова.`
+      }</p>
+      <div class="results-breakdown">
+        <h4>Разбор ответов</h4>
+        ${exam.answers.map((a, i) => `
+          <div class="breakdown-item">
+            <span>${a.correct ? '✅' : '❌'}</span>
+            <span style="flex:1">${i+1}. ${a.question.cat}</span>
+            <span class="breakdown-result ${a.correct ? 'ok' : 'bad'}">${a.correct ? 'Верно' : 'Неверно'}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="results-actions">
+        <button class="btn-primary" onclick="startExamWithCheck()">🔄 Пройти снова</button>
+        <button class="btn-secondary" onclick="showScreen('flash')">🃏 Флэш-карты</button>
+      </div>
+    </div>
+  `;
+  window.scrollTo(0, 0);
+}
+
+renderCards('all');
+</script>
+</body>
+</html>
