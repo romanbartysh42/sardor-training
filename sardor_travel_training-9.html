@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sardor Travel — Обучение менеджеров</title>
+<style>
+:root {
+  --ocean:#0A6E8A;--ocean-dark:#084F63;--ocean-light:#E8F4F8;
+  --sand:#F5EDD6;--sand-dark:#E8D9B5;--coral:#E05A2B;--coral-light:#FDEEE7;
+  --green:#2D7A4F;--green-light:#E8F5EE;--text:#1A1A1A;--text-muted:#666;
+  --border:#D5E5EA;--white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--sand);color:var(--text);min-height:100vh;}
+.nav{background:var(--ocean-dark);padding:0 16px;display:flex;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.3);flex-wrap:wrap;}
+.nav-logo{color:white;font-weight:700;font-size:17px;padding:14px 16px 14px 0;border-right:1px solid rgba(255,255,255,0.2);margin-right:6px;}
+.nav-logo span{color:#7DD3E8;}
+.nav-btn{background:none;border:none;color:rgba(255,255,255,0.7);padding:16px 12px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;border-bottom:3px solid transparent;}
+.nav-btn:hover{color:white;background:rgba(255,255,255,0.08);}
+.nav-btn.active{color:white;border-bottom-color:#7DD3E8;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* HOME */
+.home{max-width:900px;margin:0 auto;padding:40px 20px;}
+.home-hero{text-align:center;padding:48px 24px;background:linear-gradient(135deg,var(--ocean-dark) 0%,var(--ocean) 100%);border-radius:16px;color:white;margin-bottom:32px;position:relative;overflow:hidden;}
+.home-hero::before{content:"🌊";font-size:120px;position:absolute;right:-20px;top:-20px;opacity:0.1;}
+.home-hero h1{font-size:26px;font-weight:700;margin-bottom:8px;}
+.home-hero p{font-size:14px;opacity:0.85;max-width:500px;margin:0 auto;line-height:1.6;}
+.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+.stat-card{background:white;border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);}
+.stat-num{font-size:30px;font-weight:700;color:var(--ocean);}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.home-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.action-card{background:white;border-radius:12px;padding:20px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;text-align:center;}
+.action-card:hover{border-color:var(--ocean);box-shadow:0 4px 16px rgba(10,110,138,0.15);transform:translateY(-2px);}
+.action-card .icon{font-size:32px;margin-bottom:10px;}
+.action-card h3{font-size:15px;font-weight:600;margin-bottom:6px;}
+.action-card p{font-size:12px;color:var(--text-muted);line-height:1.5;}
+.action-card .step{font-size:11px;color:var(--ocean);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* CARDS */
+.cards-layout{max-width:1000px;margin:0 auto;padding:24px 20px;}
+.cards-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.cards-header h2{font-size:20px;font-weight:700;flex:1;}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{background:white;border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;color:var(--text-muted);transition:all 0.2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--ocean);border-color:var(--ocean);color:white;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.tour-card{background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.tour-card:hover{border-color:var(--ocean);box-shadow:0 4px 16px rgba(10,110,138,0.15);transform:translateY(-2px);}
+.card-top{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;}
+.card-num{width:30px;height:30px;background:var(--ocean);color:white;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.card-title{font-size:13px;font-weight:600;line-height:1.3;}
+.card-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.card-tags{padding:8px 16px;display:flex;gap:5px;flex-wrap:wrap;}
+.tag{background:var(--ocean-light);color:var(--ocean-dark);border-radius:4px;padding:2px 7px;font-size:10px;font-weight:500;}
+.card-bottom{padding:8px 16px;background:var(--sand);display:flex;justify-content:space-between;align-items:center;}
+.card-time{font-size:11px;color:var(--text-muted);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;overflow-y:auto;padding:20px;}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center;}
+.modal{background:white;border-radius:16px;max-width:760px;width:100%;margin:auto;overflow:hidden;}
+.modal-header{background:linear-gradient(135deg,var(--ocean-dark),var(--ocean));color:white;padding:18px 22px;position:relative;}
+.modal-header h2{font-size:17px;font-weight:700;padding-right:36px;}
+.modal-header p{font-size:12px;opacity:0.8;margin-top:4px;}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.2);border:none;color:white;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:18px 22px;max-height:72vh;overflow-y:auto;}
+.modal-section{margin-bottom:18px;}
+.modal-section h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--ocean);margin-bottom:8px;padding-bottom:5px;border-bottom:2px solid var(--ocean-light);}
+.schedule-table{width:100%;border-collapse:collapse;font-size:12px;}
+.schedule-table th{background:var(--ocean-dark);color:white;padding:7px 10px;text-align:left;}
+.schedule-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+.schedule-table tr:nth-child(even) td{background:var(--ocean-light);}
+.schedule-table td:first-child{font-weight:600;white-space:nowrap;width:110px;}
+.inc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.inc-col h4{font-size:11px;font-weight:700;padding:5px 9px;border-radius:5px 5px 0 0;}
+.inc-col.yes h4{background:var(--green);color:white;}
+.inc-col.no h4{background:var(--coral);color:white;}
+.inc-col ul{list-style:none;border:1px solid var(--border);border-top:none;border-radius:0 0 5px 5px;}
+.inc-col ul li{padding:5px 9px;font-size:11px;border-bottom:1px solid var(--border);}
+.inc-col ul li:last-child{border-bottom:none;}
+.inc-col.yes ul li::before{content:"✓ ";color:var(--green);font-weight:700;}
+.inc-col.no ul li::before{content:"✗ ";color:var(--coral);font-weight:700;}
+.warn-box{background:#FFF3CD;border-left:4px solid #E07A00;border-radius:0 6px 6px 0;padding:8px 12px;font-size:12px;margin-bottom:6px;color:#7A4500;}
+.info-box{background:var(--ocean-light);border-left:4px solid var(--ocean);border-radius:0 6px 6px 0;padding:8px 12px;font-size:12px;margin-bottom:6px;color:var(--ocean-dark);}
+.args-list{list-style:none;}
+.args-list li{padding:6px 0 6px 20px;position:relative;font-size:12px;border-bottom:1px solid var(--border);line-height:1.5;}
+.args-list li:last-child{border-bottom:none;}
+.args-list li::before{content:"→";position:absolute;left:0;color:var(--ocean);font-weight:700;}
+.qa-item{margin-bottom:10px;}
+.qa-q{font-weight:600;font-size:12px;color:var(--ocean-dark);margin-bottom:3px;}
+.qa-a{font-size:12px;line-height:1.6;color:var(--text);padding-left:14px;}
+.gear-box{background:var(--sand);border-radius:6px;padding:10px 14px;font-size:12px;line-height:1.6;border:1px solid var(--sand-dark);}
+
+/* FLASH */
+.flash-layout-wrap{max-width:680px;margin:0 auto;padding:24px 20px;}
+.flash-progress-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.flash-stat{font-size:12px;font-weight:600;white-space:nowrap;}
+.known-stat{color:var(--green);}
+.unknown-stat{color:var(--coral);}
+.flash-counter{font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:16px;}
+.flash-card{background:white;border-radius:16px;border:2px solid var(--border);padding:28px;transition:border-color 0.2s;}
+.flash-card.revealed{border-color:var(--ocean);}
+.flash-tour-label{display:inline-block;background:var(--ocean-light);color:var(--ocean-dark);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px;}
+.flash-question{font-size:17px;font-weight:600;line-height:1.5;color:var(--text);margin-bottom:4px;}
+.flash-divider{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;padding:14px 0 10px;border-top:1px dashed var(--border);}
+.flash-answer{font-size:15px;line-height:1.6;color:var(--text);background:var(--ocean-light);border-radius:8px;padding:14px 16px;border-left:4px solid var(--ocean);}
+.flash-judge-btn{border:2px solid;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.flash-judge-btn.known-btn{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.flash-judge-btn.known-btn:hover{background:var(--green);color:white;}
+.flash-judge-btn.unknown-btn{background:var(--coral-light);border-color:var(--coral);color:var(--coral);}
+.flash-judge-btn.unknown-btn:hover{background:var(--coral);color:white;}
+.flash-done{background:white;border-radius:16px;padding:40px;text-align:center;border:1px solid var(--border);}
+.flash-done h2{font-size:22px;font-weight:700;margin-bottom:20px;}
+.flash-score-row{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+.flash-score-item{text-align:center;padding:16px 24px;border-radius:12px;}
+.flash-score-item.known{background:var(--green-light);}
+.flash-score-item.unknown{background:var(--coral-light);}
+.fscore-num{font-size:36px;font-weight:700;}
+.flash-score-item.known .fscore-num{color:var(--green);}
+.flash-score-item.unknown .fscore-num{color:var(--coral);}
+.fscore-lbl{font-size:12px;color:var(--text-muted);}
+
+/* EXAM */
+.exam-layout{max-width:760px;margin:0 auto;padding:24px 20px;}
+.exam-start{background:white;border-radius:16px;padding:40px;text-align:center;border:1px solid var(--border);}
+.exam-start h2{font-size:22px;font-weight:700;margin-bottom:12px;}
+.exam-start p{color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:24px;max-width:500px;margin-left:auto;margin-right:auto;}
+.exam-info-row{display:flex;justify-content:center;gap:24px;margin-bottom:32px;}
+.exam-info-item{text-align:center;}
+.exam-info-item .num{font-size:28px;font-weight:700;color:var(--ocean);}
+.exam-info-item .lbl{font-size:12px;color:var(--text-muted);}
+.btn-primary{background:var(--ocean);color:white;border:none;border-radius:10px;padding:13px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-primary:hover{background:var(--ocean-dark);}
+.btn-secondary{background:white;color:var(--ocean);border:2px solid var(--ocean);border-radius:10px;padding:11px 24px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-secondary:hover{background:var(--ocean-light);}
+.exam-progress{background:white;border-radius:12px;padding:14px 18px;margin-bottom:16px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.progress-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--ocean);border-radius:4px;transition:width 0.4s ease;}
+.progress-text{font-size:12px;color:var(--text-muted);white-space:nowrap;}
+.question-card{background:white;border-radius:16px;padding:26px;border:1px solid var(--border);margin-bottom:14px;}
+.q-category{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ocean);margin-bottom:8px;}
+.q-text{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:18px;}
+.options{display:grid;gap:9px;}
+.option{background:var(--sand);border:2px solid var(--sand-dark);border-radius:10px;padding:11px 14px;cursor:pointer;font-size:13px;transition:all 0.15s;text-align:left;line-height:1.4;}
+.option:hover:not(.disabled){border-color:var(--ocean);background:var(--ocean-light);}
+.option.correct{border-color:var(--green);background:var(--green-light);color:var(--green);font-weight:600;}
+.option.wrong{border-color:var(--coral);background:var(--coral-light);color:var(--coral);}
+.option.disabled{cursor:default;}
+.option.reveal-correct{border-color:var(--green);background:var(--green-light);}
+.feedback-box{border-radius:10px;padding:12px 16px;margin-top:14px;font-size:13px;line-height:1.6;}
+.feedback-box.correct{background:var(--green-light);border:1px solid var(--green);color:#1A4A2E;}
+.feedback-box.wrong{background:var(--coral-light);border:1px solid var(--coral);color:#7A1A00;}
+.feedback-box strong{display:block;margin-bottom:3px;font-size:14px;}
+.exam-nav{display:flex;justify-content:flex-end;margin-top:14px;}
+.results-card{background:white;border-radius:16px;padding:32px;text-align:center;border:1px solid var(--border);}
+.score-circle{width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;font-weight:700;border:6px solid;}
+.score-circle.pass{border-color:var(--green);color:var(--green);background:var(--green-light);}
+.score-circle.fail{border-color:var(--coral);color:var(--coral);background:var(--coral-light);}
+.score-circle small{font-size:12px;font-weight:400;}
+.results-card h2{font-size:20px;font-weight:700;margin-bottom:8px;}
+.results-card>p{color:var(--text-muted);font-size:13px;margin-bottom:20px;}
+.results-breakdown{text-align:left;background:var(--sand);border-radius:10px;padding:14px;margin-bottom:20px;max-height:340px;overflow-y:auto;}
+.results-breakdown h4{font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;}
+.breakdown-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--sand-dark);}
+.breakdown-item:last-child{border-bottom:none;}
+.breakdown-result{font-weight:600;}
+.breakdown-result.ok{color:var(--green);}
+.breakdown-result.bad{color:var(--coral);}
+.results-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<!-- AUTH SCREEN -->
+<div id="screen-auth" class="screen active" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sand);flex-direction:column;">
+<div style="background:white;border-radius:16px;padding:40px;max-width:380px;width:100%;margin:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+  <div style="text-align:center;margin-bottom:28px;">
+    <div style="font-size:48px;margin-bottom:12px;">🌊</div>
+    <div style="font-size:22px;font-weight:700;color:var(--ocean-dark);">Sardor <span style="color:var(--ocean);">Travel</span></div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Обучение менеджеров</div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Логин</label>
+    <input id="auth-login" type="text" placeholder="Введи логин" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;outline:none;" onfocus="this.style.borderColor='var(--ocean)'" onblur="this.style.borderColor='var(--border)'">
+  </div>
+  <div style="margin-bottom:24px;">
+    <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Пароль</label>
+    <input id="auth-password" type="password" placeholder="Введи пароль" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;outline:none;" onfocus="this.style.borderColor='var(--ocean)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')doLogin()">
+  </div>
+  <button onclick="doLogin()" style="width:100%;background:var(--ocean);color:white;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;">Войти</button>
+  <div id="auth-error" style="display:none;margin-top:12px;background:var(--coral-light);border:1px solid var(--coral);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--coral);text-align:center;"></div>
+  <div id="auth-loading" style="display:none;margin-top:12px;text-align:center;font-size:13px;color:var(--text-muted);">Проверяем...</div>
+</div>
+
+<!-- SETTINGS GEAR — only visible to admin -->
+<div style="margin-top:8px;">
+  <button onclick="toggleSettings()" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:8px;opacity:0.5;">⚙️ Настройки</button>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="settings-panel" style="display:none;background:white;border-radius:12px;padding:20px;max-width:380px;width:100%;margin:0 20px 20px;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+  <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--ocean-dark);">⚙️ Настройки подключения</div>
+  <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Вставь URL из Google Apps Script. Это нужно сделать один раз — сохранится в браузере.</div>
+  <textarea id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:12px;height:70px;resize:none;outline:none;font-family:monospace;" onfocus="this.style.borderColor='var(--ocean)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+  <div style="display:flex;gap:8px;margin-top:10px;">
+    <button onclick="saveApiUrl()" style="flex:1;background:var(--ocean);color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">Сохранить</button>
+    <button onclick="testApiUrl()" style="flex:1;background:var(--green-light);color:var(--green);border:2px solid var(--green);border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">Проверить</button>
+  </div>
+  <div id="settings-status" style="display:none;margin-top:10px;font-size:12px;padding:8px 12px;border-radius:6px;"></div>
+  <div id="current-url-display" style="margin-top:10px;font-size:11px;color:var(--text-muted);word-break:break-all;"></div>
+</div>
+</div>
+
+<nav class="nav" style="display:none;">
+  <div class="nav-logo">Sardor <span>Travel</span></div>
+  <button class="nav-btn active" onclick="showScreen('home')">🏠 Главная</button>
+  <button class="nav-btn" onclick="showScreen('cards')">📋 Изучение</button>
+  <button class="nav-btn" onclick="showScreen('flash')">🃏 Флэш-карты</button>
+  <button class="nav-btn" onclick="showScreen('exam')">📝 Экзамен</button>
+  <div style="margin-left:auto;padding:0 16px;color:rgba(255,255,255,0.8);font-size:13px;">👤 <span id="user-name-display"></span></div>
+</nav>
+
+<div id="screen-home" class="screen">
+<div class="home">
+  <div class="home-hero">
+    <h1>Обучение менеджеров Sardor Travel</h1>
+    <p>Три шага: сначала изучи, потом проверь себя по флэш-картам, затем сдай экзамен.</p>
+  </div>
+  <div class="home-stats">
+    <div class="stat-card"><div class="stat-num">20</div><div class="stat-label">Экскурсий</div></div>
+    <div class="stat-card"><div class="stat-num">47</div><div class="stat-label">Флэш-карточек</div></div>
+    <div class="stat-card"><div class="stat-num">85%</div><div class="stat-label">Проходной балл</div></div>
+  </div>
+  <div class="home-actions">
+    <div class="action-card" onclick="showScreen('cards')">
+      <div class="step">Шаг 1</div>
+      <div class="icon">📋</div>
+      <h3>Изучение</h3>
+      <p>Открывай карточки туров и читай: программа, что включено, аргументы для продажи, типичные вопросы клиентов.</p>
+    </div>
+    <div class="action-card" onclick="showScreen('flash')">
+      <div class="step">Шаг 2</div>
+      <div class="icon">🃏</div>
+      <h3>Флэш-карты</h3>
+      <p>Читаешь вопрос, думаешь, раскрываешь ответ и сам оцениваешь — знал или нет. Карточки «не знал» возвращаются в колоду.</p>
+    </div>
+    <div class="action-card" onclick="showScreen('exam')">
+      <div class="step">Шаг 3</div>
+      <div class="icon">📝</div>
+      <h3>Экзамен</h3>
+      <p>20 вопросов с вариантами ответов. После каждого — объяснение. Проходной балл 85%.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="screen-cards" class="screen">
+<div class="cards-layout">
+  <div class="cards-header">
+    <h2>📋 Карточки экскурсий</h2>
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="filterCards('all',this)">Все (20)</button>
+      <button class="filter-btn" onclick="filterCards('day',this)">Дневные</button>
+      <button class="filter-btn" onclick="filterCards('evening',this)">Вечерние</button>
+      <button class="filter-btn" onclick="filterCards('twoday',this)">2 дня</button>
+    </div>
+  </div>
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+</div>
+
+<div id="screen-flash" class="screen">
+<div class="flash-layout-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h2 style="font-size:20px;font-weight:700;">🃏 Флэш-карты</h2>
+    <button class="btn-secondary" onclick="initFlash()" style="font-size:12px;padding:7px 14px;">↺ Заново</button>
+  </div>
+  <div id="flash-layout"></div>
+</div>
+</div>
+
+<div id="screen-exam" class="screen">
+<div class="exam-layout" id="exam-layout"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+
+const tours=[
+{id:1,num:"01",emoji:"🗺️",title:"Достопримечательности Пхукета",sub:"Обзорная без шопинга",type:"day",
+tags:["Без шопинга","Культура","Первый раз"],
+timing:"Выезд ориентировочно утром — время сбора может меняться в пределах 1,5 часов. Возврат ~15:00. Длительность 6 часов. Доп. час — 500 бат.",
+schedule:[["Утро","Смотровая Karon Viewpoint — виды на 3 пляжа: Ката Ной, Ката, Карон. ⚠️ Туристы с Раваи и Найхарн не едут сюда."],["","Смотровая «Ветряная Мельница» — панорама"],["","Мыс Пром Тхеп — самая южная точка Пхукета"],["","Рынок морских цыган «Чао Ле» — свежие морепродукты"],["","Смотровая у Большого Будды"],["","Кормление слонёнка"],["","Храм Ват Чалонг — ⚠️ ЗАКРЫТАЯ ОДЕЖДА"],["","Улица тайского бокса — обзорно"],["","Старый город — китайско-португальская архитектура"],["День","Гора Ранг-Хилл — смотровая + кормление диких обезьян"],["~15:00","Возврат в отель"]],
+included:["Трансфер (минивэн)","Русскоговорящий гид (в машине)","Тайский гид на локациях","Страховка"],
+excluded:["Еда и напитки","Сувениры","Доп. часы (500 бат/час)","Одежда в храме (если не взяли)"],
+warnings:["Гид только в машине — на локациях тайский гид. Предупреждать клиентов заранее.","Храм Ват Чалонг — закрытые плечи и колени. Если не взяли — дадут за деньги.","Туристы с Раваи/Найхарн не едут на Karon Viewpoint — другой маршрут."],
+infos:["Программа гибкая — можно организовать индивидуально."],
+args:["«Никакого шопинга» — главное УТП. Называть первым.","Максимум за один день — 10 точек.","Идеально для первого раза на Пхукете.","Слон + обезьяны — эмоциональные якоря для семей."],
+qa:[["Шопинга точно нет?","Абсолютно нет. Все 6 часов — только достопримечательности."],["Гид будет везде?","Русскоговорящий гид в минивэне. На каждой точке тайский гид."],["Что надеть в храм?","Закрытые плечи и колени. Если не взяли — в храме дадут за доплату."]],
+gear:"Головной убор, деньги на сувениры, фото/видеокамера, дождевик, одежда для храма."},
+
+{id:2,num:"02",emoji:"🐘",title:"Као Лак Safari",sub:"Самый короткий сухопутный тур",type:"day",
+tags:["Слоны","Джунгли","Семьям"],
+timing:"Выезд ранним утром — время сбора может меняться в пределах 1,5 часов. Возврат ~16:00–19:00 — САМЫЙ РАННИЙ возврат из всех сухопутных туров. Дорога ~2,5 часа.",
+schedule:[["Утро","Пещера обезьян + храм Суван Куха — сталактиты. Подношение 20 бат. ⚠️ Закрытая одежда."],["","Зоопарк — билеты включены"],["День","Слоновье СПА — грязь + купание + душ + шоу + катание. ВСЁ ВКЛЮЧЕНО."],["","Сплав на бамбуковых плотах / каноэ"],["","Фруктовые и каучуковые плантации — рассказ гида"],["","Обед в тайском ресторане — ВКЛЮЧЁН"],["","Мини-ферма черепах"],["","Водопад"],["","Мост Сарасин + смотровая + фруктовый рынок"],["~16–19","Возврат в отель"]],
+included:["Трансфер","Гид + страховка","Входные билеты в нацпарки","Обед в тайском ресторане","ПОЛНАЯ программа со слонами: грязь + купание + душ + шоу + катание"],
+excluded:["Подношение в храм — 20 бат","Сувениры и личные расходы","Одежда в храме (если не взяли)"],
+warnings:["Ранний выезд — если клиент не готов вставать рано, тур не для него.","Подношение в храм — 20 бат, единственная доплата на весь тур."],
+infos:["Слоновья программа ПОЛНАЯ — всё включено, никаких доплат на месте.","Самый короткий сухопутный тур — возврат засветло, вечер свободен."],
+args:["Слоновья программа полная — всё без доплат.","Выезд за Пхукет — Као Лак, настоящий Таиланд.","Семьям с детьми — черепахи, слонята, зоопарк, обезьяны.","Самый короткий сухопутный — вечер свободен."],
+qa:[["Катание на слонах включено?","Да, полностью: грязь, купание, душ, шоу, катание — без доплат."],["Обед входит?","Да, в тайском ресторане, включён."]],
+gear:"Полотенце, купальные принадлежности, сменная одежда, крем, головной убор, дождевик, одежда для храма, 20 бат."},
+
+{id:3,num:"03",emoji:"🏝️",title:"Удивительная Пхангнга + Smет Нангше",sub:"Деревня морских цыган, лонгтейл, слоны, пляж с самолётами",type:"day",
+tags:["Фото","Слоны","Морепродукты"],
+timing:"Выезд ранним утром — время сбора может меняться в пределах 1,5 часов. Возврат ~20:00–21:00.",
+schedule:[["Утро","Смотровая Самет Нангше — подъём на пикапе. Виды «Халонг/Аватар»."],["","Пещера обезьян + храм Суван Куха. ⚠️ Закрытая одежда."],["","Статуя Чёрного монаха"],["","Прогулка на лонгтейле по мангровым лесам"],["","Плавучая деревня морских цыган"],["День","Обед в деревне — краб, креветки, рыба, кальмары. ВКЛЮЧЁН."],["","Фруктовые и каучуковые плантации"],["","Слоновье СПА — грязь + купание + душ + шоу + катание. ВСЁ ВКЛЮЧЕНО."],["","Водопад"],["Вечер","Пляж с самолётами — самолёты над головой"],["~20–21","Возврат в отель"]],
+included:["Трансфер","Гид + страховка","Обед из морепродуктов в деревне","Входные билеты в нацпарки","Полная программа со слонами"],
+excluded:["Сувениры","Одежда в храме (если не взяли)"],
+warnings:["Ранний выезд — предупреждать клиентов.","Слоновья программа ПОЛНАЯ — всё включено без доплат."],
+infos:["Подъём на Самет Нангше — на пикапе, не пешком.","Пляж с самолётами — вирусный контент для соцсетей."],
+args:["Лучший тур для фото — 4 уникальных точки.","«Бухта Халонг за один день».","Обед из морепродуктов в реальной деревне — включён.","Слоновья программа полная."],
+qa:[["Чем отличается от Kao Lak Safari?","Смотровая Самет Нангше, лонгтейл и деревня морских цыган с обедом."],["Подъём на смотровую пешком?","Нет, на пикапе."],["Обед из морепродуктов включён?","Да — краб, креветки, рыба, кальмары в деревне цыган."]],
+gear:"Полотенце, купальные принадлежности, сменная одежда, крем, головной убор, дождевик, одежда для храма."},
+
+{id:4,num:"04",emoji:"🌉",title:"Удивительная Пхангнга + Stairwalk Skywalk",sub:"Как тур «Пхангнга + Samet Nangshe», но стеклянный мост вместо смотровой",type:"day",
+tags:["Фото","Адреналин","Слоны"],
+timing:"Выезд ранним утром — время сбора может меняться в пределах 1,5 часов. Возврат ~20:00–21:00.",
+schedule:[["Утро","Стеклянный мост Skywalk — стоишь на стекле над обрывом."],["","Пещера обезьян + храм Суван Куха. ⚠️ Закрытая одежда."],["","Статуя Чёрного монаха"],["","Прогулка на лонгтейле по мангровым лесам"],["","Плавучая деревня морских цыган"],["День","Обед в деревне — ВКЛЮЧЁН."],["","Фруктовые и каучуковые плантации"],["","Слоновье СПА — ВСЁ ВКЛЮЧЕНО."],["","Водопад"],["Вечер","Пляж с самолётами"],["~20–21","Возврат в отель"]],
+included:["Трансфер","Гид + страховка","Стеклянный мост Skywalk","Обед из морепродуктов в деревне","Входные билеты в нацпарки","Полная программа со слонами"],
+excluded:["Сувениры","Одежда в храме (если не взяли)"],
+warnings:["Ранний выезд — предупреждать клиентов."],
+infos:["Всё остальное идентично тур «Пхангнга + Samet Nangshe». Skywalk стоит дороже.",],
+args:["«Стекло под ногами над обрывом» — адреналин + виды.","«Кофе над пропастью» — для пар.","Более эффектные фото, чем на обычной смотровой."],
+qa:[["Чем отличается от тур «Пхангнга + Samet Nangshe»?","Только смотровая точка: Skywalk вместо обычной площадки. Всё остальное одинаково."]],
+gear:"Полотенце, купальные принадлежности, сменная одежда, крем, головной убор, дождевик, одежда для храма."},
+
+{id:5,num:"05",emoji:"🏞️",title:"Чео Лан + Самет Нангше",sub:"Чистая природа без слонов — озеро, скалы Гуилинь, сафари",type:"day",
+tags:["Природа","Без слонов","Озеро"],
+timing:"Выезд очень ранним утром — САМЫЙ РАННИЙ из всей линейки (время сбора может меняться в пределах 1,5 часов). Дорога ~3 часа. Возврат ~20:00–21:00.",
+schedule:[["Раннее утро","Смотровая Самет Нангше — на пикапе. Виды «Халонг/Аватар». Фото."],["","Смотровая с видом на озеро Чео Лан"],["","Пирс — посадка на традиционную лодку"],["День","Сафари по озеру — изумрудная вода, скалы, джунгли"],["","Скалы Гуилинь — известняковые скалы из воды"],["","Обед в плавучем ресторане — ВКЛЮЧЁН. Каноэ, плавание."],["Вечер","Храм Банг Тонг — один из самых грандиозных. ⚠️ Закрытая одежда."],["~20–21","Возврат в отель"]],
+included:["Трансфер","Гид + страховка","Обед в плавучем ресторане","Входные билеты в нацпарки","Катание на лодке"],
+excluded:["Сувениры","Одежда в храме (если не взяли)"],
+warnings:["Самый ранний выезд из всей линейки — предупреждать клиентов обязательно.","НЕТ СЛОНОВ — тур про природу и озеро. Хочет слонов — это не тот тур.","Дорога длинная ~3 часа — говорить заранее. Виды оправдывают."],
+infos:["Рыбалка на катушку с лодки — по желанию. НЕ акцентировать при продаже.","Заповедник Као Сок — один из старейших тропических лесов планеты."],
+args:["«Самая нетронутая природа Таиланда».","Два «Халонга» за один день.","Для тех, кто устал от туристической суеты.","Плавучий ресторан на озере."],
+qa:[["Нет слонов?","Этот тур про природу. Для слонов — туры «Kao Lak Safari», «Пхангнга + Samet Nangshe», «Рафтинг + СПА + ATV» и другие."],["Зачем такой ранний выезд?","Дорога ~3 часа. Виды полностью оправдывают."]],
+gear:"Полотенце, купальные принадлежности, сменная одежда, крем, головной убор, дождевик, одежда для храма."},
+
+{id:6,num:"06",emoji:"🏄",title:"Рафтинг + Слоновье СПА + ATV",sub:"Самый активный тур",type:"day",
+tags:["Адреналин","Активный","ATV"],
+timing:"Выезд ранним утром — время сбора может меняться в пределах 1,5 часов. Возврат ~19:00–20:00.",
+schedule:[["Утро","Храм Суван Куха — лежащий Будда, обезьяны, пещера. ⚠️ Закрытая одежда."],["","Парк у озера — кормление обезьян, детская площадка"],["","Тарзанка (ZIP Line)"],["","Инструктаж перед рафтингом"],["День","Рафтинг 5 км по горной реке — с инструкторами. БУДЕТ МОКРО."],["","Квадроциклы ATV 250 кубов — мосты, тоннель, препятствия"],["","Обед — ВКЛЮЧЁН"],["","⚠️ Слоновье СПА — ОДНА программа на выбор: СПА (грязь+купание+душ+шоу) ИЛИ катание+шоу. Обе — +300 бат."],["","Водопад"],["~19–20","Возврат в отель"]],
+included:["Трансфер","Гид + страховка","Обед","Входные билеты в нацпарки","Рафтинг 5 км","ATV квадроциклы 250 кубов","Слоновья программа — ОДНА на выбор"],
+excluded:["Доплата за вторую слоновью программу — 300 бат","Сувениры","Одежда в храме (если не взяли)"],
+warnings:["СЛОНЫ — включена ОДНА активность на выбор. Обе — доплата 300 бат. Проговаривать при продаже — иначе негатив.","Рафтинг — клиент промокнет гарантированно. Сменная одежда обязательна.","ATV 250 кубов — мощные, не детские. При ограничениях по здоровью уточнять."],
+infos:[],
+args:["«Самый активный тур» — для тех кто хочет адреналин.","5 активностей в одном дне.","ATV 250 кубов — реальная трасса с препятствиями.","Для компаний и пар."],
+qa:[["Слоны — что включено?","Одна активность на выбор: СПА (грязь, купание, душ, шоу) ИЛИ катание+шоу. Обе — доплата 300 бат."],["Рафтинг — опасно?","Нет, с инструкторами. Но промокнешь — взять сменную одежду."]],
+gear:"Полотенце, купальные принадлежности, СМЕННАЯ ОДЕЖДА (обязательно), крем, головной убор, одежда для храма, 300 бат если хочет обе слоновьи активности."},
+
+{id:7,num:"07",emoji:"🏄",title:"Рафтинг + Слоновье СПА (без ATV)",sub:"Идентичен тур «Рафтинг + СПА + ATV», без квадроциклов",type:"day",
+tags:["Адреналин","Активный"],
+timing:"Выезд ранним утром — время сбора может меняться в пределах 1,5 часов. Возврат ~19:00–20:00.",
+schedule:[["Утро","Храм Суван Куха. ⚠️ Закрытая одежда."],["","Парк у озера — кормление обезьян"],["","Тарзанка (ZIP Line)"],["День","Рафтинг 5 км — БУДЕТ МОКРО."],["","Обед — ВКЛЮЧЁН"],["","⚠️ Слоновье СПА — ОДНА программа на выбор. Обе — +300 бат."],["","Водопад"],["~19–20","Возврат в отель"]],
+included:["Трансфер","Гид + страховка","Обед","Входные билеты","Рафтинг 5 км","Слоновья программа — ОДНА на выбор"],
+excluded:["ATV — нет в этом туре","Доплата за вторую слоновью программу — 300 бат","Сувениры"],
+warnings:["СЛОНЫ — ОДНА программа на выбор. Доплата 300 бат за вторую. Обязательно проговаривать.","Рафтинг — сменная одежда обязательна."],
+infos:["Кто хочет квадроциклы — тур «Рафтинг + СПА + ATV». Кто не хочет — этот тур. Дешевле."],
+args:["Все аргументы как у тур «Рафтинг + СПА + ATV», минус ATV.","Подходит тем, у кого ограничения по здоровью."],
+qa:[["Чем отличается от тур «Рафтинг + СПА + ATV»?","Только нет квадроциклов ATV. Всё остальное одинаково."]],
+gear:"Полотенце, купальные принадлежности, СМЕННАЯ ОДЕЖДА (обязательно), крем, одежда для храма."},
+
+{id:8,num:"08",emoji:"🌿",title:"Мир Аватара",sub:"Закат, горячие источники, слоны, джунгли",type:"day",
+tags:["Пары","Романтика","Источники"],
+timing:"Выезд утром — время сбора может меняться в пределах 1,5 часов. Возврат ~21:00–22:00 — один из самых поздних. НЕ рекомендовать при раннем вылете.",
+schedule:[["Утро","Кафе Ma Doo Bua — гигантские лилии, 30 минут, фотозона (не лодка). ⚠️ Туристы с севера — сами или пропускают."],["","Белый храм. ⚠️ Туристы с севера — сами или пропускают. ЗАКРЫТЫ ПЛЕЧИ + КОЛЕНИ + ЖИВОТ."],["","Слоновье СПА — купание + шоу слонёнка"],["День","Обед — ВКЛЮЧЁН"],["","Смотровая Самет Нангше — на пикапе"],["","Сплав на бамбуковых плотах"],["","Квадроциклы ATV"],["","Водопад"],["Вечер","The Hotspring Beach Resort & Spa — горячие источники 40°C + ледяной 16°C + пресный + пляж Натай + закат"],["~21–22","Возврат в отель"]],
+included:["Трансфер + гид + страховка","Кафе Ma Doo Bua (фотозона)","Самет Нангше + нацпарк","Программа со слонами","Бамбуковые плоты + ATV","Горячие источники 40°C + ледяной 16°C + пресный","Обед"],
+excluded:["ПОЛОТЕНЦЕ — взять своё!","Массаж и СПА на источниках — доп.","Романтический ужин на пляже — доп.","Доп. напитки","Сувениры"],
+warnings:["ПОЛОТЕНЦЕ НЕ ВКЛЮЧЕНО — обязательно предупреждать.","Туристы с севера (Банг Тао, Сурин, Камала) — кафе и белый храм пропускают или едут сами. УТОЧНЯТЬ РАЙОН при бронировании.","Возврат ~21:00–22:00. При раннем вылете — не рекомендовать.","Белый храм — закрыты плечи, колени И ЖИВОТ. Строже, чем в других турах."],
+infos:["Горячие источники — единственные настоящие термальные в провинции Пханг Нга.","Романтический ужин — хорошая допродажа для пар."],
+args:["«Лучший тур для пар» — закат, горячие источники, романтический ужин.","Горячие источники — единственные настоящие в Пханг Нга.","Самый разнообразный день — 11 точек.","Идеален для контента."],
+qa:[["Полотенце дают?","Нет, берите своё — полотенце не включено."],["Горячие источники искусственные?","Нет, единственные настоящие природные в провинции Пханг Нга."],["Романтический ужин входит?","Нет, опция по желанию, оплачивается на месте."]],
+gear:"ПОЛОТЕНЦЕ (не включено!), купальные принадлежности, СМЕННАЯ ОДЕЖДА (обязательно), крем, дождевик, одежда для храма (плечи + колени + живот)."},
+
+{id:9,num:"09",emoji:"🌅",title:"Рассветное приключение",sub:"Самет Нангше на рассвете, Джеймс Бонд, пляж с самолётами",type:"day",
+tags:["Рассвет","Фото","Раннее утро"],
+timing:"Выезд НОЧЬЮ — ориентировочно 03:00–04:00, для южных и удалённых отелей возможно раньше. Возврат 13:00–13:30 — вечер свободен.",
+schedule:[["Ночь","Выезд из отеля"],["~05:45","Смотровая Самет Нангше — прибытие до рассвета"],["~06:15","Восход солнца — главный момент тура"],["~06:45","Завтрак с видом — чай, кофе, фрукты, печенье. ВКЛЮЧЁН."],["Утро","Прогулка на лонгтейле — остров Джеймса Бонда (ФОТО С ЛОДКИ, не высадка), пещеры, острова"],["","Пляж с самолётами — фото + купание"],["","Кафе Ma Doo Bua — 30 минут, фотозона (не лодка)"],["13:00–13:30","Возврат в отель — вечер свободен"]],
+included:["Трансфер + гид + страховка","Лёгкий завтрак на смотровой","Прогулка на лонгтейле","Пляж с самолётами","Кафе Ma Doo Bua"],
+excluded:["Доп. напитки и еда","Сувениры"],
+warnings:["Выезд 03:00–04:00 — чётко проговаривать. Многие не осознают насколько это рано.","Остров Джеймса Бонда — ФОТО С ЛОДКИ, не высадка.","Ma Doo Bua — 30 минут, фотозона. Никакой лодки нет."],
+infos:["Завтрак лёгкий — если клиент привык плотно есть, перекусить перед выездом.","Возврат к 13:00 — вечер свободен. Хорошо сочетается с пляжем или вечерним туром."],
+args:["«Рассвет на Самет Нангше» — мягкий свет, туман, никаких толп.","Завтрак с видом на залив — для пар.","«Утром приключение, вечером пляж».","Лучший тур для фотографов."],
+qa:[["Зачем выезд в 3–4 ночи?","Чтобы успеть на рассвет (~06:15). Дорога ~2 часа."],["Высадка на остров Джеймса Бонда есть?","Нет, фото с лодки. Высадка — отдельная программа."]],
+gear:"Полотенце, купальные принадлежности, сменная одежда, крем, головной убор, фото/видеокамера, дождевик."},
+
+{id:10,num:"10",emoji:"🌅",title:"Рассветное приключение + Skywalk",sub:"Идентичен тур «Рассветное приключение» — стеклянный мост вместо смотровой",type:"day",
+tags:["Рассвет","Фото","Адреналин"],
+timing:"Выезд НОЧЬЮ — ориентировочно 03:00–04:00, для южных отелей возможно раньше. Возврат 13:00–13:30.",
+schedule:[["Ночь","Выезд из отеля"],["~05:45","Стеклянный мост Skywalk — прибытие до рассвета. Рассвет стоя на стекле над обрывом."],["~06:15","Восход солнца"],["~06:45","Завтрак с видом — ВКЛЮЧЁН."],["Утро","Прогулка на лонгтейле — остров Джеймса Бонда (ФОТО С ЛОДКИ), пещеры"],["","Пляж с самолётами — фото + купание"],["","Кафе Ma Doo Bua — 30 минут, фотозона"],["13:00–13:30","Возврат в отель"]],
+included:["Трансфер + гид + страховка","Лёгкий завтрак","Стеклянный мост Skywalk","Прогулка на лонгтейле","Пляж с самолётами","Кафе Ma Doo Bua"],
+excluded:["Доп. напитки","Сувениры"],
+warnings:["Выезд 03:00–04:00 — для южных отелей возможно раньше.","Остров Джеймса Бонда — ФОТО С ЛОДКИ, не высадка."],
+infos:["Skywalk стоит дороже тур «Рассветное приключение». Рассвет на стекле — более эффектный опыт и контент."],
+args:["Рассвет на стеклянном мосту над обрывом — уникально.","Более эффектные фото."],
+qa:[["Чем отличается от тур «Рассветное приключение»?","Только смотровая точка: стеклянный мост Skywalk вместо обычной площадки. Всё остальное одинаково."]],
+gear:"Полотенце, купальные принадлежности, сменная одежда, крем, фото/видеокамера, дождевик."},
+
+{id:11,num:"11",emoji:"🌌",title:"Сияние планктона — Stairwalk + Горячие источники",sub:"Горячие источники, Diamond Cave, биолюминесцентный планктон",type:"day",
+tags:["Планктон","Источники","Любой сезон"],
+timing:"Сбор ориентировочно в первой половине дня. Возврат ~21:00–22:00. Не подходит при раннем вылете.",
+schedule:[["Утро","Пляж с самолётами — фото и купание"],["","Горячие источники + пляж — купели 40°C + ледяной 16°C + пресный"],["День","Стеклянный мост Beyond Skywalk — панорама залива. ОБЕД С ВИДОМ — ВКЛЮЧЁН."],["","Прогулка на лонгтейле — скалы залива Пханг Нга"],["","Пещера Diamond Cave — сталактиты-«бриллианты»"],["","Остров Джеймса Бонда — ФОТО С ЛОДКИ, не высадка"],["Вечер","Закат на пляже"],["После заката","Каякинг среди планктона — вода светится голубым"],["19:30","Пирс — фрукты, отправление"]],
+included:["Трансфер + гид + страховка","Горячие источники (40°C + 16°C + пресный)","Стеклянный мост — билеты","Обед с видом","Прогулка на лонгтейле","Каяки для планктона","Фрукты на пирсе"],
+excluded:["ПОЛОТЕНЦЕ — взять своё!","Доп. напитки","Сувениры"],
+warnings:["ПОЛОТЕНЦЕ НЕ ВКЛЮЧЕНО — горячие источники + купание + каякинг.","Остров Джеймса Бонда — ФОТО С ЛОДКИ.","Поздний возврат ~21:00–22:00."],
+infos:["ГЛАВНОЕ УТП: спокойная бухта без волн — работает в ЛЮБОЙ СЕЗОН. Особенно ценно с мая по октябрь.","Планктон — природное явление. Не обещать конкретную яркость."],
+args:["«Единственный тур со светящимся планктоном».","Работает в любой сезон — закрытая бухта.","Три «водных» опыта за один день.","Diamond Cave — редкая точка."],
+qa:[["Планктон точно будет светиться?","Это природное явление, интенсивность зависит от условий. Явление стабильное, яркость каждый раз разная."],["Тур работает в дождливый сезон?","Да — закрытая бухта без волн."]],
+gear:"ПОЛОТЕНЦЕ (не включено!), купальные принадлежности, СМЕННАЯ ОДЕЖДА, крем, фото/видеокамера, дождевик."},
+
+{id:12,num:"12",emoji:"🌌",title:"Сияние планктона — Samet Nangshe + Горячие источники",sub:"Идентичен тур «Сияние планктона — Skywalk + Источники» — смотровая вместо стеклянного моста",type:"day",
+tags:["Планктон","Источники","Любой сезон"],
+timing:"Сбор ориентировочно в первой половине дня. Возврат ~21:00–22:00.",
+schedule:[["Утро","Пляж с самолётами"],["","Горячие источники + пляж — купели 40°C + 16°C + пресный"],["День","Смотровая Самет Нангше — обед с видом. ВКЛЮЧЁН."],["","Прогулка на лонгтейле"],["","Пещера Diamond Cave"],["","Остров Джеймса Бонда — ФОТО С ЛОДКИ"],["Вечер","Закат на пляже"],["После заката","Каякинг среди планктона"],["19:30","Пирс — фрукты, отправление"]],
+included:["Трансфер + гид + страховка","Горячие источники","Обед с видом","Прогулка на лонгтейле","Каяки для планктона","Фрукты на пирсе"],
+excluded:["ПОЛОТЕНЦЕ — взять своё!","Доп. напитки","Сувениры"],
+warnings:["ПОЛОТЕНЦЕ НЕ ВКЛЮЧЕНО.","Поздний возврат ~21:00–22:00."],
+infos:["Дешевле тур «Сияние планктона — Skywalk + Источники». Всё остальное идентично.","Спокойная бухта — любой сезон."],
+args:["Все аргументы как у тур «Сияние планктона — Skywalk + Источники».","Дешевле версии со Skywalk."],
+qa:[["Чем отличается от тур «Сияние планктона — Skywalk + Источники»?","Только смотровая точка — Самет Нангше вместо стеклянного моста. Стоит дешевле."]],
+gear:"ПОЛОТЕНЦЕ (не включено!), купальные принадлежности, сменная одежда, крем, фото/видеокамера."},
+
+{id:13,num:"13",emoji:"🌌",title:"Сияние планктона — Stairwalk + Белый храм",sub:"Как тур «Сияние планктона — Skywalk + Источники», но вместо источников — белый храм. Старт позже.",type:"day",
+tags:["Планктон","Храм","Любой сезон"],
+timing:"Сбор позже — ориентировочно во второй половине утра (на ~2 часа позже туров «Сияние планктона — Skywalk + Источники»/12). Возврат ~21:00–22:00.",
+schedule:[["~11:20","Белый храм. ⚠️ ЗАКРЫТАЯ ОДЕЖДА. Туристы с севера — сами или пропускают."],["","Пляж с самолётами"],["День","Стеклянный мост Beyond Skywalk — обед с видом. ВКЛЮЧЁН."],["","Прогулка на лонгтейле"],["","Пещера Diamond Cave"],["","Остров Джеймса Бонда — ФОТО С ЛОДКИ"],["Вечер","Закат на пляже"],["После заката","Каякинг среди планктона"],["19:30","Пирс — фрукты, отправление"]],
+included:["Трансфер + гид + страховка","Стеклянный мост — билеты","Обед с видом","Прогулка на лонгтейле","Каяки для планктона","Фрукты на пирсе"],
+excluded:["Горячие источники — НЕТ в этой версии","ПОЛОТЕНЦЕ — взять своё!","Сувениры"],
+warnings:["НЕТ ГОРЯЧИХ ИСТОЧНИКОВ — обязательно уточнять клиенту.","ПОЛОТЕНЦЕ НЕ ВКЛЮЧЕНО.","Туристы с севера — до белого храма самостоятельно.","Поздний возврат."],
+infos:["Старт позже — для тех кто не любит рано вставать.","Спокойная бухта — любой сезон."],
+args:["Для тех кто хочет культуру (храм) + природу (планктон).","Старт позже — комфортнее."],
+qa:[["Чем отличается от тур «Сияние планктона — Skywalk + Источники»?","Вместо горячих источников — белый храм. Старт на ~2 часа позже."]],
+gear:"ПОЛОТЕНЦЕ (не включено!), купальные принадлежности, сменная одежда, одежда для храма, фото/видеокамера."},
+
+{id:14,num:"14",emoji:"🌌",title:"Сияние планктона — Samet Nangshe + Белый храм",sub:"Идентичен тур «Сияние планктона — Skywalk + Белый храм» — смотровая вместо стеклянного моста",type:"day",
+tags:["Планктон","Храм","Любой сезон"],
+timing:"Сбор позже — ориентировочно во второй половине утра. Возврат ~21:00–22:00.",
+schedule:[["~11:30","Белый храм. ⚠️ ЗАКРЫТАЯ ОДЕЖДА."],["","Пляж с самолётами"],["День","Смотровая Самет Нангше — обед с видом. ВКЛЮЧЁН."],["","Прогулка на лонгтейле"],["","Пещера Diamond Cave"],["","Остров Джеймса Бонда — ФОТО С ЛОДКИ"],["Вечер","Закат на пляже"],["После заката","Каякинг среди планктона"],["19:30","Пирс — фрукты, отправление"]],
+included:["Трансфер + гид + страховка","Обед с видом","Прогулка на лонгтейле","Каяки для планктона","Фрукты на пирсе"],
+excluded:["Горячие источники — НЕТ","ПОЛОТЕНЦЕ — взять своё!","Сувениры"],
+warnings:["НЕТ ГОРЯЧИХ ИСТОЧНИКОВ.","ПОЛОТЕНЦЕ НЕ ВКЛЮЧЕНО.","Поздний возврат."],
+infos:["Дешевле тур «Сияние планктона — Skywalk + Белый храм». Все нюансы идентичны."],
+args:["Дешевле версии со Skywalk.","Для тех кто хочет храм + планктон."],
+qa:[["Чем отличается от тур «Сияние планктона — Skywalk + Белый храм»?","Только смотровая точка — Самет Нангше вместо моста. Стоит дешевле."]],
+gear:"ПОЛОТЕНЦЕ (не включено!), купальные принадлежности, сменная одежда, одежда для храма, фото/видеокамера."},
+
+{id:15,num:"15",emoji:"🐘✨",title:"Пляж слонов + Stairwalk + Mantra Spa",sub:"Слоны, стеклянный мост, уникальный спа-комплекс",type:"day",
+tags:["Спа","Слоны","Пары"],
+timing:"Сбор ориентировочно с утра. Возврат ~19:00–20:00 — комфортное время.",
+schedule:[["Утро","Белый храм. ⚠️ ЗАКРЫТЫЕ ПЛЕЧИ И КОЛЕНИ."],["","Пляж с самолётами"],["День","Слоны — кормление, купание в искусственном водоёме (ВКЛЮЧЕНО). Купание в море — за доплату."],["","Стеклянный мост Beyond Skywalk. ОБЕД НА СТЕКЛЯННОМ МОСТУ — ВКЛЮЧЁН."],["Вечер","Mantra Spa — минеральные бассейны + травяные ванны + том-ям ванна + кофейные ванны + грязевые процедуры + сауны + озеро с кувшинками"],["~18:00","Отправление по отелям"]],
+included:["Трансфер + гид + страховка","Программа со слонами (водоём)","Вход на стеклянный мост","Обед на стеклянном мосту","Посещение Mantra Spa"],
+excluded:["Купание со слонами в море — за доплату","Доп. процедуры в Mantra Spa","Одежда в храме (если не взяли)","Сувениры"],
+warnings:["Купание со слонами — в ИСКУССТВЕННОМ ВОДОЁМЕ включено. Купание в МОРЕ — за доплату. Уточнять клиенту.","ОБЕД НА СТЕКЛЯННОМ МОСТУ (не на пляже слонов)."],
+infos:["Mantra Spa — том-ям ванна, кофейные ванны, озеро с кувшинками. Люди проводят там часами.","Возврат ~19:00–20:00 — комфортный для широкой аудитории."],
+args:["Mantra Spa — уникальный финал, нигде больше в линейке нет.","Том-ям ванна, кофейные ванны — рассказывают друзьям.","Баланс активности и релакса.","Отличный тур для женщин и пар."],
+qa:[["Слоны купаются в море?","Купание в водоёме — включено. Купание в море — за доплату по желанию."],["Что такое Mantra Spa?","Огромный спа-комплекс под открытым небом: минеральные бассейны, травяные ванны, том-ям ванна, кофейные ванны, грязевые процедуры, сауны, озеро с кувшинками."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, фото/видеокамера, одежда для храма."},
+
+{id:16,num:"16",emoji:"🐘✨",title:"Пляж слонов + Samet Nangshe + Mantra Spa",sub:"Идентичен тур «Пляж слонов + Skywalk + Mantra Spa» — смотровая вместо стеклянного моста",type:"day",
+tags:["Спа","Слоны","Пары"],
+timing:"Сбор ориентировочно с утра. Возврат ~19:00–20:00.",
+schedule:[["Утро","Белый храм. ⚠️ ЗАКРЫТЫЕ ПЛЕЧИ И КОЛЕНИ."],["","Пляж с самолётами"],["День","Слоны — кормление, купание в искусственном водоёме (ВКЛЮЧЕНО). Купание в море — за доплату."],["","ОБЕД НА ПЛЯЖЕ СЛОНОВ — ВКЛЮЧЁН."],["","Смотровая Самет Нангше"],["Вечер","Mantra Spa — полная программа"],["~18:00","Отправление по отелям"]],
+included:["Трансфер + гид + страховка","Программа со слонами (водоём)","Обед на пляже слонов","Посещение Mantra Spa"],
+excluded:["Купание со слонами в море — за доплату","Доп. процедуры в Mantra Spa","Одежда в храме","Сувениры"],
+warnings:["Купание со слонами — в ВОДОЁМЕ включено. В МОРЕ — за доплату.","ОБЕД НА ПЛЯЖЕ СЛОНОВ (не на смотровой) — не перепутать при объяснении."],
+infos:["Дешевле тур «Пляж слонов + Skywalk + Mantra Spa». Все нюансы по Mantra Spa идентичны."],
+args:["Дешевле версии со Skywalk.","Все аргументы как у тур «Пляж слонов + Skywalk + Mantra Spa»."],
+qa:[["Чем отличается от тур «Пляж слонов + Skywalk + Mantra Spa»?","Смотровая — Самет Нангше вместо стеклянного моста. Обед на пляже слонов, а не на мосту. Стоит дешевле."]],
+gear:"Купальные принадлежности, сменная одежда, крем, головной убор, фото/видеокамера, одежда для храма."},
+
+{id:17,num:"17",emoji:"🎪",title:"Carnival Magic — Вечернее шоу",sub:"40 миллионов огней, парад 300+ участников",type:"evening",
+tags:["Вечер","Семьям","Шоу"],
+timing:"Открытие парка ~17:00. Прибытие трансфером ~17:30. Главное шоу ~19:00. Возврат ~22:00. Расположение: Камала.",
+schedule:[["17:00","Открытие парка"],["~17:30","Прибытие трансфером"],["17:30–19:00","Свободное время: ярмарка, аттракционы, ужин (если включён)"],["~19:00","Парад «Речной карнавал» — 150 актёров + 150 команды. Костюмы до 8 м, сцена 70 м, 2 200 мест с кондиционером."],["После шоу","Королевство огней — прогулка с 40 млн огней"],["~22:00","Возврат в отель"]],
+included:["Трансфер","Входной билет в парк","Все шоу и зоны парка","Королевство огней"],
+excluded:["Ужин — по выбору при покупке (с ужином / без ужина)","Аттракционы с доп. оплатой","Сувениры"],
+warnings:["БИЛЕТЫ ДВУХ ВИДОВ: С УЖИНОМ и БЕЗ. Уточнять у клиента при продаже."],
+infos:["Масштаб шоу — мировой уровень. При продаже показывать фото и видео."],
+args:["«Что делать вечером?» — главный триггер.","Не занимает день — в любой день отпуска.","Для детей — лучший вечер на Пхукете.","40 миллионов огней — показывай фото."],
+qa:[["Ужин входит?","Зависит от билета. Уточнять при бронировании."],["Когда главное шоу?","~19:00. Парк открывается в 17:00 — до шоу свободное время."]],
+gear:"Лёгкая одежда, деньги на сувениры и еду, фото/видеокамера."},
+
+{id:18,num:"18",emoji:"🎭",title:"Phuket FantaSea — Вечернее шоу",sub:"Шоу в стиле Лас-Вегаса с 30 живыми слонами на сцене",type:"evening",
+tags:["Вечер","Слоны","Шоу"],
+timing:"Открытие ~17:30. Главное шоу «Фантазия Королевства» в 21:00. Возврат ~23:00 — позже Carnival Magic на 1 час.",
+schedule:[["17:30","Открытие парка"],["17:30–21:00","Tiger Jungle Adventure + Центр развлечений Симилан + Деревня Фестиваля"],["","Ужин в ресторане (если включён): «Золотые Кинари» или «Суриямас» (морепродукты)"],["21:00","Шоу «Фантазия Королевства» — 4D, пиротехника, трюки, балет, 30 ЖИВЫХ СЛОНОВ. 3 000 зрителей."],["~23:00","Возврат в отель"]],
+included:["Трансфер","Входной билет","Все зоны парка","Главное шоу в 21:00"],
+excluded:["Ужин — выбирается при покупке (с / без)","«Золотые места» — доплата за лучший обзор","Сувениры"],
+warnings:["Шоу в 21:00 — возврат ~23:00. Обязательно предупреждать клиентов.","Билеты двух видов. При ужине — уточнять ресторан: «Золотые Кинари» или «Суриямас»."],
+infos:["«Золотые места» — лучший обзор за доплату. Предлагать парам и тем кто хочет максимум."],
+args:["30 живых слонов на сцене — нигде на Пхукете больше нет.","Шоу в стиле Лас-Вегаса.","Работает круглый год.","Для детей — тигры, слоны, аттракционы."],
+qa:[["Чем отличается от Carnival Magic?","Главное — 30 живых слонов на сцене. FantaSea — стиль Лас-Вегаса, Carnival Magic — карнавал с 40 млн огней. Шоу позже (21:00 vs 19:00)."],["Ужин входит?","По выбору билета. При ужине выбор ресторана."]],
+gear:"Лёгкая одежда, деньги на сувениры и еду, фото/видеокамера."},
+
+{id:19,num:"19",emoji:"🌿",title:"Као Сок + Чео Лан — 2 дня / 1 ночь DELUXE",sub:"Горячие источники, сплав, бунгало с кондиционером",type:"twoday",
+tags:["2 дня","Ночёвка","Природа"],
+timing:"День 1 выезд — ориентировочно с утра (время сбора может меняться в пределах 1,5 часов). Возврат на 2-й день ~18:00–19:00. Дорога ~2,5–3 часа.",
+schedule:[["День 1","Пещера обезьян + храм Суван Куха. ⚠️ Закрытая одежда."],["","Храм Ват Банг Тонг. ⚠️ Закрытая одежда."],["","Смотровая на озеро → пирс → лодка → скалы Гуилинь"],["","Обед в плавучем ресторане + заселение. ВКЛЮЧЁН."],["","Свободное время — купание, каноэ"],["","Вечернее сафари — обезьяны, ночные коты, кабаны, птицы"],["","Ужин. ВКЛЮЧЁН."],["День 1 ночь","Ночь в бунгало на понтонах — звёздное небо, звуки джунглей. НЕТ СВЯЗИ."],["День 2","Завтрак + выселение. ВКЛЮЧЁН. → Лодка к причалу"],["","Пещерный храм Ванарам → Смотровая нацпарка → Водопад"],["","Горячие минеральные источники — купание, релакс"],["","⚠️ Слоны — ОДНА программа на выбор: СПА или катание. Обе — +300 бат."],["","Обед. ВКЛЮЧЁН. → Сплав на плотах / каноэ"],["~18–19","Возврат в отель"]],
+included:["Трансфер + гид + страховка","Сбор нацпарка","1 завтрак + 2 обеда + 1 ужин","Ночёвка в бунгало (кондиционер + свой душ/туалет)","Слоновья программа — одна на выбор"],
+excluded:["Доплата за вторую слоновью программу — 300 бат","Доплата за одноместное — уточнять в контракте Best","Одежда в храмах","Сувениры"],
+warnings:["НЕТ ИНТЕРНЕТА И МОБИЛЬНОЙ СВЯЗИ на озере. Уточнять у клиента.","Клиент уезжает на ночь — взять вещи на 2 дня.","Слоны — одна программа на выбор. +300 бат за вторую.","Доплата за одноместное — уточнять в контракте Best."],
+infos:["Размещение DELUXE: бунгало нового или старого типа — оба с кондиционером и своим душем/туалетом.","Бунгало нового типа дороже бунгало старого типа."],
+args:["«Ночь на воде в джунглях» — нигде больше в линейке нет.","Полное отключение от цивилизации.","Вечернее сафари — единственный тур с ночными животными с лодки.","Лучший тур для пар и романтиков."],
+qa:[["Что за бунгало?","DELUXE — кондиционер и свой душ/туалет. Есть бунгало нового и старого типа (разная цена)."],["Есть интернет?","Нет, на озере нет мобильной связи и интернета."],["Слоны — что включено?","Одна программа на выбор: СПА или катание. Обе — доплата 300 бат."]],
+gear:"Вещи на 2 дня: полотенце, купальные принадлежности, 2 комплекта одежды, средства гигиены, крем, фото/видеокамера, дождевик, одежда для храмов, наличные."},
+
+{id:20,num:"20",emoji:"🌿",title:"Као Сок + Чео Лан — 2 дня / 1 ночь STANDARD",sub:"Бюджетная версия — вентилятор, общий душ",type:"twoday",
+tags:["2 дня","Ночёвка","Бюджет"],
+timing:"День 1 выезд — ориентировочно с утра (время сбора может меняться в пределах 1,5 часов). Возврат на 2-й день ~14:00–15:00 — раньше чем DELUXE.",
+schedule:[["День 1","Мост Сарасин — смотровая"],["","⚠️ Слоны — ОДНА программа на выбор. Обе — +300 бат."],["","Храм Банг Тонг. ⚠️ Закрытая одежда."],["","Пирс → лодка → скалы Гуилинь"],["","Обед в плавучем ресторане + заселение. ВКЛЮЧЁН."],["","Свободное время — купание, каноэ"],["","Вечернее сафари"],["","Ужин. ВКЛЮЧЁН."],["День 1 ночь","Ночь в бунгало / капсуле. НЕТ СВЯЗИ."],["День 2","Завтрак + выселение. ВКЛЮЧЁН. → Лодка к причалу"],["","Смотровая с видом на озеро"],["","Храм Суван Куха + пещера. ⚠️ Закрытая одежда."],["~14–15","Возврат в отель"]],
+included:["Трансфер + гид + страховка","Сбор нацпарка","1 завтрак + 1 обед + 1 ужин","Ночёвка на понтонах","Слоновья программа — одна на выбор"],
+excluded:["Горячие источники — ТОЛЬКО в DELUXE","Сплав на плотах — ТОЛЬКО в DELUXE","Доплата за вторую слоновью программу — 300 бат","Доплата за одноместное — уточнять в контракте Best","Сувениры"],
+warnings:["ВЕНТИЛЯТОР, не кондиционер — ОБЩИЙ душ и туалет. Предупреждать чувствительных клиентов — иначе рекомендовать DELUXE.","НЕТ горячих источников и сплава — только в DELUXE.","НЕТ интернета и мобильной связи на озере.","Доплата за одноместное — уточнять в контракте Best."],
+infos:["Размещение: стандартные бунгало (вентилятор, общий душ) или капсулы (молодёжь, соло).","Возврат раньше — ~14:00 на второй день."],
+args:["Дешевле DELUXE.","Та же ночёвка на озере и вечернее сафари.","Возврат раньше (~14:00)."],
+qa:[["Чем отличается от DELUXE?","Размещение: вентилятор вместо кондиционера, общий душ/туалет. Нет горячих источников и сплава. Питания на один обед меньше. Зато дешевле и возврат раньше."],["Что такое капсулы?","Компактные спальные места на понтонах. Популярны у молодёжи и соло-путешественников."]],
+gear:"Вещи на 2 дня: полотенце, купальные принадлежности, 2 комплекта одежды, средства гигиены, крем, фото/видеокамера, дождевик, одежда для храмов, наличные."}
+];
+
+const examQuestions=[
+{q:"Какое главное УТП при продаже?",opts:["Там есть кормление слонёнка","«Никакого шопинга» — многие клиенты устали от туров с магазинами","Самый дешёвый тур","10 точек за один день"],correct:1,cat:"Достопримечательности Пхукета",explain:"«Никакого шопинга» — главное УТП. Называть первым, потому что многие устали от туров где половина времени — магазины."},
+{q:"Русскоговорящий гид сопровождает клиентов на каждой локации?",opts:["Да, везде","Нет — гид только в минивэне, на локациях тайский гид","Нет гида вообще","Гид только в храме"],correct:1,cat:"Достопримечательности Пхукета",explain:"Русскоговорящий гид в минивэне. На точках тайский гид. Предупреждать клиентов заранее."},
+{q:"Туристы с каких районов не едут на Karon Viewpoint?",opts:["Патонг и Камала","Раваи и Найхарн","Карон и Ката","Сурин и Банг Тао"],correct:1,cat:"Достопримечательности Пхукета",explain:"Туристы с Раваи и Найхарн — у них другой маршрут без Karon Viewpoint."},
+{q:"Что входит в слоновью программу и есть ли доплаты?",opts:["Только наблюдение","Только купание и шоу","Грязь + купание + душ + шоу + катание — ВСЁ включено","Только катание"],correct:2,cat:"Kao Lak Safari",explain:"Слоновья программа в Kao Lak ПОЛНАЯ без доплат: грязь + купание + душ + шоу + катание."},
+{q:"Какой из перечисленных дневных сухопутных туров имеет самый ранний возврат в отель?",opts:["Мир Аватара","Чео Лан + Самет Нангше","Kao Lak Safari","Рассветное приключение"],correct:3,cat:"Сравнение туров",explain:"Рассветное приключение — возврат к 13:00–13:30, так как тур стартует ночью и заканчивается к обеду. Kao Lak Safari возвращает ~16:00–19:00."},
+{q:"Подъём на Самет Нангше — пешком или на транспорте?",opts:["Пешком","На пикапе","На канатной дороге","На мотоцикле"],correct:1,cat:"Пхангнга + Samet Nangshe",explain:"Подъём на Самет Нангше — на пикапе, не пешком."},
+{q:"Обед из морепродуктов — где проходит и что в него входит?",opts:["В тайском ресторане","В туристическом кафе у смотровой","Прямо в плавучей деревне морских цыган","На борту лонгтейла"],correct:2,cat:"Пхангнга + Samet Nangshe",explain:"Обед — краб, креветки, рыба, кальмары — прямо в плавучей деревне морских цыган."},
+{q:"Чем «Пхангнга + Skywalk» отличается от «Пхангнга + Samet Nangshe»?",opts:["Другие слоны и другой маршрут","Только смотровая точка: Skywalk вместо обычной площадки","Нет лонгтейла и деревни цыган","Другой обед и другое время"],correct:1,cat:"Пхангнга + Skywalk",explain:"Туры «Пхангнга + Samet Nangshe» и «Пхангнга + Skywalk» идентичны. Единственное отличие — Skywalk вместо обычной площадки."},
+{q:"В туре есть слоны?",opts:["Да, полная программа","Да, только наблюдение","Нет — тур полностью про природу","Да, за доплату"],correct:2,cat:"Чео Лан + Самет Нангше",explain:"В тур «Чео Лан + Самет Нангше» слонов нет. Тур про природу: озеро Чео Лан, скалы, сафари, джунгли."},
+{q:"Дорога до озера Чео Лан занимает примерно:",opts:["1 час","1,5 часа","3 часа","4 часа"],correct:2,cat:"Чео Лан + Самет Нангше",explain:"Дорога ~3 часа в одну сторону. Говорить клиентам заранее. Виды оправдывают."},
+{q:"Сколько слоновьих программ включено в стоимость?",opts:["Две — купание и катание","Одна на выбор: СПА (грязь+купание+душ+шоу) ИЛИ катание+шоу","Три полных программы","Ни одной — слоны за отдельную плату"],correct:1,cat:"Рафтинг + СПА + ATV",explain:"Включена ОДНА слоновья программа на выбор. Хочет обе — доплата 300 бат. Критично проговаривать."},
+{q:"Почему важно предупреждать клиента о рафтинге?",opts:["Рафтинг опасен и требует справки","На рафтинге клиент промокнет гарантированно — нужна сменная одежда","Рафтинг только для детей","Нужно платить дополнительно"],correct:1,cat:"Рафтинг + СПА + ATV",explain:"На рафтинге промокнешь гарантированно. Сменная одежда обязательна."},
+{q:"Чем «Рафтинг + СПА» отличается от «Рафтинг + СПА + ATV»?",opts:["Нет рафтинга","Нет слонов","Нет квадроциклов ATV","Нет обеда"],correct:2,cat:"Рафтинг + СПА",explain:"тур «Рафтинг + СПА» = тур «Рафтинг + СПА + ATV» без квадроциклов ATV. Всё остальное одинаково."},
+{q:"Полотенце включено в тур?",opts:["Да","Нет — взять своё","Да, при VIP билете","Да, одно на двоих"],correct:1,cat:"Мир Аватара",explain:"Полотенце НЕ включено в тур «Мир Аватара». Обязательно предупреждать."},
+{q:"Клиент из отеля в Банг Тао хочет тур «Мир Аватара». Что важно?",opts:["Банг Тао не обслуживается","Туристы с севера (Банг Тао, Сурин, Камала) кафе и белый храм пропускают или добираются сами","Им нужен другой тур","Ничего особенного"],correct:1,cat:"Мир Аватара",explain:"Туристы с севера до кафе Ma Doo Bua и белого храма добираются сами или пропускают. Уточнять район при бронировании."},
+{q:"Горячие источники в туре «Мир Аватара» — что это?",opts:["Обычный аквапарк","Искусственные ванны при отеле","Единственные настоящие природные термальные источники в провинции Пханг Нга","Городской бассейн с подогревом"],correct:2,cat:"Мир Аватара",explain:"Единственные настоящие природные термальные источники в провинции Пханг Нга. Сильный аргумент при продаже."},
+{q:"В «Рассветном приключении» выезд происходит примерно когда?",opts:["В 6 утра","В 4–5 утра","В 3–4 ночи — точное время зависит от района отеля","В полночь"],correct:2,cat:"Рассветное приключение",explain:"Выезд ночью ~03:00–04:00, для южных и удалённых отелей возможно раньше."},
+{q:"В «Рассветном приключении» — можно высадиться на остров Джеймса Бонда?",opts:["Да, включено","Да, за доплату","Нет, только фото с лодки","Да, экскурсия по острову"],correct:2,cat:"Рассветное приключение",explain:"Только фото с лодки. Высадка не предусмотрена. Предупреждать клиентов."},
+{q:"Когда возвращаются из «Рассветного приключения»?",opts:["Поздно вечером","К обеду (~13:00–13:30) — вечер свободен","К ужину (~19:00)","На следующий день"],correct:1,cat:"Рассветное приключение",explain:"Возврат к 13:00–13:30 — вечер свободен. «Утром приключение, вечером пляж»."},
+{q:"Все версии тура «Сияние планктона» — в чём их главное преимущество над другими морскими турами?",opts:["Самые дешёвые туры","Спокойная бухта без волн — работают в любой сезон, включая сезон дождей","Самые длинные туры","Единственные с горячим ужином"],correct:1,cat:"Сравнение туров — Сияние планктона",explain:"Спокойная закрытая бухта без волн — работают в ЛЮБОЙ сезон. Особенно ценно с мая по октябрь."},
+{q:"Где проходит обед?",opts:["На пляже с самолётами","В деревне морских цыган","На стеклянном мосту Beyond Skywalk с видом на залив","В плавучем ресторане"],correct:2,cat:"Сияние планктона — Skywalk + Источники",explain:"Обед — на стеклянном мосту Beyond Skywalk с видом на залив. Включён."},
+{q:"Чем отличаются версия с горячими источниками от версии с белым храмом?",opts:["Разный маршрут лодки","В «Сияние планктона — Skywalk + Источники» горячие источники, в «Сияние планктона — Skywalk + Белый храм» белый храм. Сбор в «Сияние планктона — Skywalk + Белый храм» на ~2 часа позже.","В «Сияние планктона — Skywalk + Источники» нет планктона","В «Сияние планктона — Skywalk + Белый храм» нет лонгтейла"],correct:1,cat:"Сравнение туров — Сияние планктона",explain:"Туры идентичны за двумя исключениями: в «Сияние планктона — Skywalk + Источники» горячие источники, в «Сияние планктона — Skywalk + Белый храм» белый храм. Сбор в «Сияние планктона — Skywalk + Белый храм» позже."},
+{q:"В турах «Пляж слонов + Skywalk + Mantra Spa» и «Пляж слонов + Samet Nangshe + Mantra Spa» — купание со слонами как происходит?",opts:["Слоны купаются в море — включено","Купание в искусственном водоёме — включено. В море — за доплату.","Только наблюдение","Купания нет"],correct:1,cat:"Пляж слонов + Mantra Spa",explain:"Купание в искусственном водоёме — включено. Купание в море — за доплату по желанию. Уточнять клиенту."},
+{q:"Где проходит обед — на пляже слонов или на мосту?",opts:["На пляже слонов","На стеклянном мосту Skywalk","В Mantra Spa","В плавучем ресторане"],correct:1,cat:"Пляж слонов + Skywalk + Mantra Spa",explain:"В тур «Пляж слонов + Skywalk + Mantra Spa» (со Skywalk) обед — на стеклянном мосту. Важно не путать с туром «Пляж слонов + Samet Nangshe + Mantra Spa»."},
+{q:"Где проходит обед — на пляже слонов или на смотровой?",opts:["На стеклянном мосту","На смотровой Самет Нангше","На пляже слонов","В Mantra Spa"],correct:2,cat:"Пляж слонов + Samet Nangshe + Mantra Spa",explain:"В тур «Пляж слонов + Samet Nangshe + Mantra Spa» (с Самет Нангше) обед — на пляже слонов. Отличие от тур «Пляж слонов + Skywalk + Mantra Spa»."},
+{q:"Что такое Mantra Spa в турах «Пляж слонов + Skywalk + Mantra Spa» и «Пляж слонов + Samet Nangshe + Mantra Spa»?",opts:["Обычный отель со спа","Огромный спа-комплекс под открытым небом: минеральные бассейны, том-ям ванна, кофейные ванны, травяные ванны, сауны, озеро с кувшинками","Массажный кабинет на пляже","Бассейн при отеле"],correct:1,cat:"Пляж слонов + Mantra Spa",explain:"Mantra Spa — огромный комплекс под открытым небом с минеральными бассейнами, том-ям ванной, кофейными ваннами, саунами, озером с кувшинками."},
+{q:"Carnival Magic — когда начинается главное шоу «Речной карнавал»?",opts:["В 21:00","~19:00","В 22:00","В 18:00"],correct:1,cat:"Carnival Magic",explain:"Главное шоу ~19:00. Парк открывается в 17:00, трансфер привозит ~17:30."},
+{q:"Carnival Magic — сколько вариантов билетов?",opts:["Один вариант","Два: с ужином и без ужина. Уточнять у клиента.","Три: эконом, стандарт, VIP","Только VIP"],correct:1,cat:"Carnival Magic",explain:"Билеты двух видов: с ужином и без. Уточнять у клиента при продаже."},
+{q:"Phuket FantaSea — главная уникальная особенность шоу?",opts:["40 миллионов огней","30 живых слонов на сцене","Сцена шириной 100 метров","Шоу идёт 4 часа"],correct:1,cat:"Phuket FantaSea",explain:"Главная фишка FantaSea — 30 живых слонов в зале и на сцене. Нигде на Пхукете больше такого нет."},
+{q:"В Phuket FantaSea шоу начинается в:",opts:["19:00","20:00","21:00","22:00"],correct:2,cat:"Phuket FantaSea",explain:"Шоу «Фантазия Королевства» в 21:00. Возврат ~23:00 — позже Carnival Magic на ~1 час."},
+{q:"Тур «Као Сок DELUXE» — какое размещение?",opts:["Палатки в джунглях","Бунгало нового или старого типа — оба с кондиционером и своим душем/туалетом","Обычная гостиница","Хостел"],correct:1,cat:"Kao Sok DELUXE",explain:"В DELUXE два варианта: бунгало нового типа (дороже) или старого типа. Оба с кондиционером и своим душем/туалетом."},
+{q:"В туре «Као Сок DELUXE» на озере есть мобильная связь?",opts:["Да, Wi-Fi включён","Нет — нет мобильной связи и интернета. Уточнять у клиента.","Только мобильная","Слабый 3G"],correct:1,cat:"Kao Sok DELUXE",explain:"На озере нет мобильной связи и интернета. Для одних плюс, для других стресс. Уточнять заранее."},
+{q:"Чем «Као Сок STANDARD» отличается от DELUXE по размещению?",opts:["Только разные виды","STANDARD: вентилятор + общий душ/туалет. DELUXE: кондиционер + свой душ/туалет.","STANDARD: двухместный, DELUXE: одноместный","Никакой разницы"],correct:1,cat:"Kao Sok STANDARD",explain:"Ключевое отличие: STANDARD — вентилятор, общий душ и туалет. DELUXE — кондиционер, свой душ/туалет. Обязательно предупреждать клиентов."},
+{q:"Какие активности есть в «Као Сок DELUXE» но нет в «STANDARD»?",opts:["Вечернее сафари и обед","Горячие минеральные источники и сплав на плотах","Слоны и каноэ","Смотровая и пещерный храм"],correct:1,cat:"Kao Sok STANDARD",explain:"В DELUXE на 2-й день: горячие источники и сплав на плотах. В STANDARD этого нет."},
+{q:"Клиент: «Хочу слонов, и чтобы всё включено без доплат». Какой тур?",opts:["Рафтинг + ATV (тур «Рафтинг + СПА + ATV»)","Kao Lak Safari (тур «Kao Lak Safari») — единственный со ВСЕЙ слоновьей программой без доплат","Пхангнга + Смотровая (тур «Пхангнга + Samet Nangshe»)","Мир Аватара (тур «Мир Аватара»)"],correct:1,cat:"Сравнение туров",explain:"Kao Lak Safari (тур «Kao Lak Safari») — единственный где слоновья программа полностью включена без доплат: грязь, купание, душ, шоу, катание."},
+{q:"Клиент: «Хочу адреналин, активный отдых». Какой тур?",opts:["Достопримечательности Пхукета (тур «Достопримечательности Пхукета»)","Рафтинг + СПА + ATV (тур «Рафтинг + СПА + ATV») или Рафтинг + СПА (тур «Рафтинг + СПА»)","Сияние планктона (тур «Сияние планктона — Skywalk + Источники»)","Carnival Magic (тур «Carnival Magic»)"],correct:1,cat:"Сравнение туров",explain:"Туры «Рафтинг + СПА + ATV» и «Рафтинг + СПА» — самые активные: рафтинг 5 км, тарзанка, ATV (в тур «Рафтинг + СПА + ATV»). Для тех кто хочет адреналин."},
+{q:"Клиент хочет вечернее с детьми 7 лет. Что посоветовать?",opts:["Рассветное приключение","Carnival Magic — аттракционы, животные, яркое шоу","Сияние планктона — ночной каякинг","Чео Лан — природа для всей семьи"],correct:1,cat:"Сравнение туров",explain:"Carnival Magic — лучший вечер для семей с детьми: аттракционы, Animal Funhouse, яркий карнавальный парад. Не занимает дневное время."},
+{q:"Клиентка: «Хочу романтику, красивый закат, расслабиться». Что предложить?",opts:["Рафтинг + ATV","Мир Аватара (тур «Мир Аватара») — закат на пляже, горячие источники, романтический ужин","Достопримечательности Пхукета","Carnival Magic"],correct:1,cat:"Сравнение туров",explain:"Мир Аватара — лучший тур для пар. Закат, горячие источники, романтический ужин по желанию."},
+{q:"Клиент: «Хочу уехать на 2 дня, отключиться от телефона». Что предложить?",opts:["Carnival Magic 2 дня","Kao Sok + Cheo Lan (тур «Kao Sok DELUXE» DELUXE или «Kao Sok STANDARD» STANDARD) — на озере нет связи и интернета","Рассветное приключение","Сияние планктона"],correct:1,cat:"Сравнение туров",explain:"туры «Kao Sok» — единственные 2-дневные туры с ночёвкой. На озере нет мобильной связи и интернета."},
+{q:"Что общего у всех четырёх версий этого тура?",opts:["Все включают горячие источники","Спокойная бухта без волн (любой сезон) + финальный каякинг среди биолюминесцентного планктона","Во всех есть белый храм","Все начинаются в одно время"],correct:1,cat:"Сравнение туров — Сияние планктона",explain:"Общее у всех версий: закрытая бухта (любой сезон) и финал — каякинг с планктоном. Отличаются смотровой точкой и второй точкой (источники или белый храм)."},
+{q:"В туре «Мир Аватара» кафе Ma Doo Bua — что там происходит и сколько времени?",opts:["Обед из морепродуктов, 1 час","30 минут, фотозона на фоне гигантских лилий (не на лодке)","Купание в пруду с лилиями, 45 минут","Экскурсия на лодке по пруду, 30 минут"],correct:1,cat:"Мир Аватара",explain:"Кафе Ma Doo Bua — 30 минут, специальная фотозона на фоне гигантских лилий. Никакой лодки нет."},
+{q:"Чем Carnival Magic отличается от Phuket FantaSea по времени шоу?",opts:["Оба начинаются в 21:00","Carnival Magic ~19:00, FantaSea 21:00 — FantaSea позже на ~2 часа","FantaSea в 19:00, Carnival Magic в 21:00","Оба начинаются в 19:00"],correct:1,cat:"Вечерние шоу",explain:"Carnival Magic ~19:00, Phuket FantaSea 21:00. FantaSea позже на ~2 часа, возврат ~23:00 vs ~22:00."}
+];
+
+
+// ═══════════════════════════════════════════════
+// API URL — хранится в localStorage браузера
+// ═══════════════════════════════════════════════
+function getApiUrl() {
+  return localStorage.getItem('sardor_api_url') || '';
+}
+
+let currentUser = null;
+
+// ─── SETTINGS ────────────────────────────────────
+function toggleSettings() {
+  const panel = document.getElementById('settings-panel');
+  const input = document.getElementById('api-url-input');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    const saved = getApiUrl();
+    input.value = saved;
+    const display = document.getElementById('current-url-display');
+    if (saved) {
+      display.textContent = '✅ URL сохранён: ' + saved.substring(0, 50) + '...';
+    } else {
+      display.textContent = '❌ URL не настроен';
+    }
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+function saveApiUrl() {
+  const url = document.getElementById('api-url-input').value.trim();
+  if (!url || !url.startsWith('https://')) {
+    showSettingsStatus('❌ Введи правильный URL (начинается с https://)', 'error');
+    return;
+  }
+  localStorage.setItem('sardor_api_url', url);
+  showSettingsStatus('✅ URL сохранён! Теперь можно входить.', 'success');
+  document.getElementById('current-url-display').textContent = '✅ URL сохранён: ' + url.substring(0, 50) + '...';
+}
+
+async function testApiUrl() {
+  const url = document.getElementById('api-url-input').value.trim();
+  if (!url) {
+    showSettingsStatus('❌ Сначала введи URL', 'error');
+    return;
+  }
+  showSettingsStatus('⏳ Проверяем соединение...', 'info');
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'login', login: 'test', password: 'test' })
+    });
+    const data = await res.json();
+    // Any valid JSON response means connection works
+    showSettingsStatus('✅ Соединение работает! Сохрани URL.', 'success');
+  } catch(e) {
+    showSettingsStatus('❌ Не удалось подключиться. Проверь URL.', 'error');
+  }
+}
+
+function showSettingsStatus(msg, type) {
+  const el = document.getElementById('settings-status');
+  el.style.display = 'block';
+  el.textContent = msg;
+  const colors = {
+    success: { bg: 'var(--green-light)', color: 'var(--green)' },
+    error: { bg: 'var(--coral-light)', color: 'var(--coral)' },
+    info: { bg: 'var(--ocean-light)', color: 'var(--ocean-dark)' }
+  };
+  el.style.background = colors[type].bg;
+  el.style.color = colors[type].color;
+}
+
+// ─── LOGIN ────────────────────────────────────────
+async function doLogin() {
+  const login = document.getElementById('auth-login').value.trim();
+  const password = document.getElementById('auth-password').value.trim();
+  const errEl = document.getElementById('auth-error');
+  const loadEl = document.getElementById('auth-loading');
+  const apiUrl = getApiUrl();
+
+  errEl.style.display = 'none';
+
+  if (!login || !password) {
+    showAuthError('Введи логин и пароль');
+    return;
+  }
+
+  if (!apiUrl) {
+    showAuthError('Сначала настрой подключение — нажми ⚙️ Настройки внизу');
+    return;
+  }
+
+  loadEl.style.display = 'block';
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'login', login, password })
+    });
+    const data = await res.json();
+    loadEl.style.display = 'none';
+
+    if (data.success) {
+      currentUser = data.user;
+      document.getElementById('screen-auth').style.display = 'none';
+      document.querySelector('.nav').style.display = 'flex';
+      document.getElementById('user-name-display').textContent = currentUser.name;
+      showScreen('home');
+    } else {
+      showAuthError(data.error || 'Неверный логин или пароль');
+    }
+  } catch(e) {
+    loadEl.style.display = 'none';
+    showAuthError('Ошибка соединения. Проверь интернет.');
+  }
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ─── EXAM ATTEMPT CHECK ───────────────────────────
+async function startExamWithCheck() {
+  if (!currentUser) return;
+  const apiUrl = getApiUrl();
+
+  document.getElementById('exam-layout').innerHTML = `
+    <div style="text-align:center;padding:40px;color:var(--text-muted);">⏳ Проверяем попытки...</div>
+  `;
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'checkAttempt', program: 'land', userId: currentUser.id })
+    });
+    const data = await res.json();
+
+    if (data.hasAttempt) {
+      document.getElementById('exam-layout').innerHTML = `
+        <div class="exam-start">
+          <div style="font-size:48px;margin-bottom:16px">🔒</div>
+          <h2>Попытка уже использована</h2>
+          <p>Ты уже сдавал экзамен сегодня. Следующая попытка — завтра.</p>
+          <p style="margin-top:12px;font-size:13px;color:var(--text-muted);">Используй это время чтобы повторить материал по флэш-картам.</p>
+          <div style="margin-top:24px;">
+            <button class="btn-secondary" onclick="showScreen('flash')">🃏 Флэш-карты</button>
+          </div>
+        </div>
+      `;
+    } else {
+      startExam();
+    }
+  } catch(e) {
+    startExam();
+  }
+}
+
+async function saveExamResult(score, correct, total) {
+  if (!currentUser) return;
+  const apiUrl = getApiUrl();
+  if (!apiUrl) return;
+  try {
+    await fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'saveResult',
+        program: 'land',
+        userId: currentUser.id,
+        userName: currentUser.name,
+        score, correct, total
+      })
+    });
+  } catch(e) {
+    console.log('Could not save result:', e);
+  }
+}
+
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const map = {home:'главн',cards:'карточ',flash:'флэш',exam:'экзам'};
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.textContent.toLowerCase().includes(map[name])) b.classList.add('active');
+  });
+  if (name === 'cards') renderCards('all');
+  if (name === 'flash') initFlash();
+  if (name === 'exam') renderExamStart();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════
+// CARDS — ИЗУЧЕНИЕ
+// ═══════════════════════════════════════════════
+function filterCards(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(type);
+}
+
+function renderCards(filter) {
+  const grid = document.getElementById('cards-grid');
+  const filtered = filter === 'all' ? tours : tours.filter(t => t.type === filter);
+  const typeLabel = {day:'☀️ Дневной', evening:'🌙 Вечерний', twoday:'📅 2 дня'};
+  grid.innerHTML = filtered.map(t => `
+    <div class="tour-card" onclick="openModal(${t.id})">
+      <div class="card-top">
+        <div class="card-num">${t.num}</div>
+        <div>
+          <div class="card-title">${t.emoji} ${t.title}</div>
+          <div class="card-sub">${t.sub}</div>
+        </div>
+      </div>
+      <div class="card-tags">${t.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
+      <div class="card-bottom">
+        <span class="card-time">${typeLabel[t.type]}</span>
+        <span style="color:var(--ocean)">→</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openModal(id) {
+  const t = tours.find(x => x.id === id);
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-header">
+      <h2>${t.emoji} ${t.title}</h2>
+      <p>${t.sub}</p>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>⏱ Тайминг</h3>
+        <div class="info-box">${t.timing}</div>
+      </div>
+      <div class="modal-section">
+        <h3>🗺️ Программа</h3>
+        <table class="schedule-table">
+          <tr><th>Период</th><th>Локация / Событие</th></tr>
+          ${t.schedule.map(([time, desc]) => `<tr><td>${time}</td><td>${desc}</td></tr>`).join('')}
+        </table>
+      </div>
+      <div class="modal-section">
+        <h3>✅ Включено / Не включено</h3>
+        <div class="inc-grid">
+          <div class="inc-col yes"><h4>ВКЛЮЧЕНО</h4><ul>${t.included.map(i => `<li>${i}</li>`).join('')}</ul></div>
+          <div class="inc-col no"><h4>НЕ ВКЛЮЧЕНО</h4><ul>${t.excluded.map(i => `<li>${i}</li>`).join('')}</ul></div>
+        </div>
+      </div>
+      ${(t.warnings.length || t.infos.length) ? `
+      <div class="modal-section">
+        <h3>⚠️ Важно менеджеру</h3>
+        ${t.warnings.map(w => `<div class="warn-box"><strong>⚠️</strong> ${w}</div>`).join('')}
+        ${t.infos.map(i => `<div class="info-box">${i}</div>`).join('')}
+      </div>` : ''}
+      <div class="modal-section">
+        <h3>💬 Аргументы для продажи</h3>
+        <ul class="args-list">${t.args.map(a => `<li>${a}</li>`).join('')}</ul>
+      </div>
+      <div class="modal-section">
+        <h3>❓ Типичные вопросы клиентов</h3>
+        ${t.qa.map(([q,a]) => `<div class="qa-item"><div class="qa-q">— ${q}</div><div class="qa-a">${a}</div></div>`).join('')}
+      </div>
+      <div class="modal-section">
+        <h3>🎒 Что взять клиенту</h3>
+        <div class="gear-box">${t.gear}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// FLASH CARDS — ПРОВЕРКА СЕБЯ
+// ═══════════════════════════════════════════════
+const flashCards = [
+  {tour:"Достопримечательности Пхукета", q:"Какое главное УТП тура и почему его называют первым?", a:"«Никакого шопинга» — многие клиенты устали от туров, где половина времени магазины. Называть первым."},
+  {tour:"Достопримечательности Пхукета", q:"Гид сопровождает клиентов на каждой точке маршрута?", a:"Нет. Русскоговорящий гид только в минивэне. На локациях сопровождает тайский гид."},
+  {tour:"Достопримечательности Пхукета", q:"Туристы из каких районов не едут на Karon Viewpoint?", a:"Туристы с Раваи и Найхарн — у них другой маршрут."},
+  {tour:"Достопримечательности Пхукета", q:"Что обязательно сказать клиенту перед посещением храма Ват Чалонг?", a:"Закрытые плечи и колени обязательны. Если не взяли — в храме дадут за деньги."},
+  {tour:"Kao Lak Safari", q:"Что входит в слоновью программу и нужны ли доплаты?", a:"Грязь + купание + душ + шоу слонёнка + катание — ВСЁ включено, никаких доплат на месте."},
+  {tour:"Kao Lak Safari", q:"Какая единственная обязательная доплата на весь тур?", a:"Подношение в храм Суван Куха — 20 бат."},
+  {tour:"Kao Lak Safari", q:"Почему этот тур хорошо продаётся клиентам, которые хотят вечер свободным?", a:"Самый короткий сухопутный тур. Возврат ~16:00–19:00 — вечер свободен."},
+  {tour:"Удивительная Пхангнга + Samet Nangshe", q:"Подъём на Самет Нангше — пешком или на транспорте?", a:"На пикапе, не пешком."},
+  {tour:"Удивительная Пхангнга + Samet Nangshe", q:"Где проходит обед и что в него входит?", a:"Прямо в плавучей деревне морских цыган. Краб, креветки, рыба, кальмары — включён."},
+  {tour:"Удивительная Пхангнга + Samet Nangshe", q:"Слоновья программа — что включено и есть ли доплаты?", a:"Полная программа: грязь + купание + душ + шоу + катание. Всё включено без доплат."},
+  {tour:"Удивительная Пхангнга + Skywalk", q:"Чем этот тур отличается от тура с обычной смотровой Самет Нангше?", a:"Только смотровая точка: стеклянный мост Skywalk вместо обычной площадки. Всё остальное одинаково."},
+  {tour:"Чео Лан + Самет Нангше", q:"Есть ли в этом туре слоны?", a:"Нет. Тур полностью про природу и озеро. Клиент хочет слонов — это не тот тур."},
+  {tour:"Чео Лан + Самет Нангше", q:"Сколько занимает дорога до озера и как это преподносить клиенту?", a:"Около 3 часов в одну сторону. Говорить заранее, но добавлять: виды Самет Нангше и озеро полностью оправдывают."},
+  {tour:"Чео Лан + Самет Нангше", q:"Что нельзя акцентировать при продаже этого тура и почему?", a:"Рыбалку на катушку с лодки — упоминать только если клиент сам спросит."},
+  {tour:"Рафтинг + Слоновье СПА + ATV", q:"Сколько слоновьих программ включено и что будет если клиент хочет обе?", a:"Включена ОДНА на выбор: СПА (грязь+купание+душ+шоу) ИЛИ катание+шоу. Хочет обе — доплата 300 бат. Обязательно проговаривать при продаже."},
+  {tour:"Рафтинг + Слоновье СПА + ATV", q:"Что нужно обязательно сказать клиенту про рафтинг?", a:"На рафтинге клиент промокнет гарантированно. Сменная одежда обязательна."},
+  {tour:"Рафтинг + Слоновье СПА", q:"Чем этот тур отличается от тура с ATV?", a:"Нет квадроциклов ATV. Всё остальное одинаково. Стоит дешевле."},
+  {tour:"Мир Аватара", q:"Полотенце включено в тур?", a:"Нет. Полотенце НЕ включено — обязательно предупреждать. На горячих источниках без полотенца никак."},
+  {tour:"Мир Аватара", q:"Клиент живёт в Банг Тао. Что важно уточнить при бронировании?", a:"Туристы с севера (Банг Тао, Сурин, Камала) до кафе Ma Doo Bua и белого храма добираются сами или пропускают эти точки."},
+  {tour:"Мир Аватара", q:"Что особенного в горячих источниках в этом туре?", a:"Единственные настоящие природные термальные источники в провинции Пханг Нга."},
+  {tour:"Мир Аватара", q:"Почему этот тур не рекомендовать клиенту с ранним вылетом?", a:"Возврат ~21:00–22:00 — один из самых поздних в линейке."},
+  {tour:"Мир Аватара", q:"Одежда для белого храма — в чём отличие от других храмов?", a:"Закрыты плечи, колени И ЖИВОТ — строже, чем в других турах."},
+  {tour:"Мир Аватара", q:"Кафе Ma Doo Bua — сколько времени и что там происходит?", a:"30 минут, фотозона на фоне гигантских лилий. Никакой лодки нет."},
+  {tour:"Рассветное приключение", q:"Когда примерно происходит выезд и от чего зависит точное время?", a:"Ночью, ориентировочно 03:00–04:00. Для южных и удалённых отелей возможно раньше. Точное время зависит от района."},
+  {tour:"Рассветное приключение", q:"Можно ли высадиться на остров Джеймса Бонда?", a:"Нет. Только фото с лодки. Обязательно предупреждать клиентов заранее."},
+  {tour:"Рассветное приключение", q:"Когда клиент вернётся и почему это аргумент для продажи?", a:"К 13:00–13:30 — вечер полностью свободен. «Утром приключение, вечером пляж»."},
+  {tour:"Рассветное приключение + Skywalk", q:"Чем этот тур отличается от обычного Рассветного приключения?", a:"Только смотровая точка: стеклянный мост Skywalk вместо обычной площадки Самет Нангше. Стоит дороже, зато рассвет стоя на стекле над обрывом."},
+  {tour:"Сияние планктона", q:"Какое главное УТП всех версий тура «Сияние планктона»?", a:"Спокойная закрытая бухта без волн — тур работает в ЛЮБОЙ сезон, даже когда морские туры отменяются."},
+  {tour:"Сияние планктона", q:"Можно ли гарантировать клиенту яркость свечения планктона?", a:"Нет. Планктон — природное явление. Интенсивность зависит от условий воды каждый раз. Не обещать конкретную яркость."},
+  {tour:"Сияние планктона", q:"Чем отличаются версии тура со Skywalk и с Самет Нангше?", a:"Только смотровая точка: стеклянный мост Skywalk или обычная площадка Самет Нангше. Версия с Самет Нангше дешевле."},
+  {tour:"Сияние планктона", q:"Чем отличаются версии тура с горячими источниками и с белым храмом?", a:"В версии с источниками: релакс, купание, старт раньше. В версии с белым храмом: нет источников, старт на ~2 часа позже. Для тех кто не любит рано вставать."},
+  {tour:"Сияние планктона", q:"Полотенце включено?", a:"Нет. Горячие источники + купание + каякинг — полотенце обязательно взять своё."},
+  {tour:"Пляж слонов + Mantra Spa", q:"Купание со слонами — как оно происходит и что за доплату?", a:"Купание в искусственном водоёме — включено. Купание в море — за доплату по желанию."},
+  {tour:"Пляж слонов + Stairwalk + Mantra Spa", q:"Обед проходит на пляже слонов или на стеклянном мосту?", a:"На стеклянном мосту Skywalk — включён."},
+  {tour:"Пляж слонов + Samet Nangshe + Mantra Spa", q:"Обед проходит на пляже слонов или на смотровой?", a:"На пляже слонов — включён."},
+  {tour:"Пляж слонов + Mantra Spa", q:"Что такое Mantra Spa и почему это сильный аргумент при продаже?", a:"Огромный спа-комплекс под открытым небом: минеральные бассейны, том-ям ванна, кофейные ванны, травяные ванны, сауны, озеро с кувшинками. Нигде больше в линейке такого нет."},
+  {tour:"Carnival Magic", q:"Когда начинается главное шоу и во сколько возврат?", a:"Главное шоу «Речной карнавал» ~19:00. Возврат ~22:00."},
+  {tour:"Carnival Magic", q:"Сколько вариантов билетов и что нужно уточнить у клиента?", a:"Два варианта: с ужином и без ужина. Уточнять при продаже."},
+  {tour:"Phuket FantaSea", q:"Главная уникальная особенность шоу FantaSea?", a:"30 живых слонов в зале и на сцене. Нигде на Пхукете больше такого нет."},
+  {tour:"Phuket FantaSea", q:"В котором часу начинается главное шоу и во сколько возврат?", a:"Шоу в 21:00. Возврат ~23:00 — на час позже Carnival Magic."},
+  {tour:"Phuket FantaSea", q:"Что такое «Золотые места» и кому их предлагать?", a:"Лучший обзор в зале за доплату. Предлагать парам и тем, кто хочет максимум от шоу."},
+  {tour:"Kao Sok + Cheo Lan DELUXE", q:"Какое размещение в DELUXE и в чём разница между типами бунгало?", a:"Два варианта: бунгало нового типа (дороже) или старого типа. Оба с кондиционером и своим душем/туалетом."},
+  {tour:"Kao Sok + Cheo Lan DELUXE", q:"Есть ли интернет и связь на озере?", a:"Нет — на озере нет мобильной связи и интернета. Уточнять реакцию клиента заранее."},
+  {tour:"Kao Sok + Cheo Lan DELUXE", q:"Слоновья программа — что включено?", a:"Одна программа на выбор: СПА (грязь+купание+душ+шоу) или катание+шоу. Обе — доплата 300 бат."},
+  {tour:"Kao Sok + Cheo Lan STANDARD", q:"Чем размещение STANDARD отличается от DELUXE?", a:"STANDARD: вентилятор (не кондиционер), общий душ и туалет. DELUXE: кондиционер, свой душ/туалет."},
+  {tour:"Kao Sok + Cheo Lan STANDARD", q:"Какие активности есть в DELUXE, но нет в STANDARD?", a:"Горячие минеральные источники и сплав на бамбуковых плотах."},
+  {tour:"Kao Sok + Cheo Lan STANDARD", q:"Когда возврат и почему это может быть аргументом при продаже?", a:"~14:00–15:00 на второй день — раньше чем DELUXE (~18:00–19:00)."},
+];
+
+let flashState = { deck: [], index: 0, known: [], unknown: [], revealed: false };
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function initFlash() {
+  flashState.deck = shuffle([...flashCards]);
+  flashState.index = 0;
+  flashState.known = [];
+  flashState.unknown = [];
+  flashState.revealed = false;
+  renderFlash();
+}
+
+function renderFlash() {
+  const layout = document.getElementById('flash-layout');
+  const total = flashState.deck.length + flashState.known.length + flashState.unknown.length;
+  const done = flashState.known.length + flashState.unknown.length;
+
+  if (flashState.deck.length === 0) {
+    // все пройдены
+    const knownCount = flashState.known.length;
+    const unknownCount = flashState.unknown.length;
+    layout.innerHTML = `
+      <div class="flash-done">
+        <div style="font-size:48px;margin-bottom:16px">🎯</div>
+        <h2>Колода пройдена!</h2>
+        <div class="flash-score-row">
+          <div class="flash-score-item known"><div class="fscore-num">${knownCount}</div><div class="fscore-lbl">Знал</div></div>
+          <div class="flash-score-item unknown"><div class="fscore-num">${unknownCount}</div><div class="fscore-lbl">Не знал</div></div>
+        </div>
+        ${unknownCount > 0 ? `<p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">Повтори ${unknownCount} карточек которые не знал</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-primary" onclick="repeatUnknown()">🔄 Повторить «Не знал»</button>
+          <button class="btn-secondary" onclick="initFlash()">↺ Начать заново</button>
+        </div>` : `<p style="color:var(--green);font-size:15px;font-weight:600;margin-bottom:20px">Отлично! Все карточки знаешь!</p>
+        <button class="btn-primary" onclick="initFlash()">↺ Пройти снова</button>`}
+      </div>
+    `;
+    return;
+  }
+
+  const card = flashState.deck[0];
+  const pct = Math.round(done / total * 100);
+
+  layout.innerHTML = `
+    <div class="flash-progress-row">
+      <span class="flash-stat known-stat">✅ Знал: ${flashState.known.length}</span>
+      <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <span class="flash-stat unknown-stat">❌ Не знал: ${flashState.unknown.length}</span>
+    </div>
+    <div class="flash-counter">Карточка ${done + 1} из ${total}</div>
+
+    <div class="flash-card" id="flash-card">
+      <div class="flash-tour-label">${card.tour}</div>
+      <div class="flash-question">${card.q}</div>
+
+      <div class="flash-answer-wrap" id="flash-answer-wrap" style="display:none">
+        <div class="flash-divider">Правильный ответ:</div>
+        <div class="flash-answer">${card.a}</div>
+      </div>
+
+      <div id="flash-btn-reveal" style="text-align:center;margin-top:24px">
+        <button class="btn-primary" onclick="revealAnswer()">Показать ответ</button>
+      </div>
+
+      <div id="flash-btn-judge" style="display:none;text-align:center;margin-top:20px">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Ты знал ответ?</p>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <button class="flash-judge-btn known-btn" onclick="judgeCard(true)">✅ Знал</button>
+          <button class="flash-judge-btn unknown-btn" onclick="judgeCard(false)">❌ Не знал</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function revealAnswer() {
+  document.getElementById('flash-answer-wrap').style.display = 'block';
+  document.getElementById('flash-btn-reveal').style.display = 'none';
+  document.getElementById('flash-btn-judge').style.display = 'block';
+  document.getElementById('flash-card').classList.add('revealed');
+}
+
+function judgeCard(knew) {
+  const card = flashState.deck.shift();
+  if (knew) {
+    flashState.known.push(card);
+  } else {
+    flashState.unknown.push(card);
+    flashState.deck.push(card); // возвращаем в конец колоды
+  }
+  renderFlash();
+  window.scrollTo(0, 0);
+}
+
+function repeatUnknown() {
+  flashState.deck = shuffle([...flashState.unknown]);
+  flashState.known = [];
+  flashState.unknown = [];
+  renderFlash();
+}
+
+// ═══════════════════════════════════════════════
+// EXAM
+// ═══════════════════════════════════════════════
+let exam = { questions: [], current: 0, answers: [] };
+
+function renderExamStart() {
+  document.getElementById('exam-layout').innerHTML = `
+    <div class="exam-start">
+      <div style="font-size:48px;margin-bottom:16px">📝</div>
+      <h2>Экзамен по экскурсиям</h2>
+      <p>Проверь знания по всем 20 сухопутным экскурсиям. После каждого ответа увидишь объяснение. Проходной балл — 85%.</p>
+      <div class="exam-info-row">
+        <div class="exam-info-item"><div class="num">20</div><div class="lbl">Вопросов</div></div>
+        <div class="exam-info-item"><div class="num">85%</div><div class="lbl">Проходной балл</div></div>
+        <div class="exam-info-item"><div class="num">17</div><div class="lbl">Нужно правильно</div></div>
+      </div>
+      <button class="btn-primary" onclick="startExamWithCheck()">Начать экзамен →</button>
+    </div>
+  `;
+}
+
+function startExam() {
+  exam.questions = shuffle(examQuestions).slice(0, 20);
+  exam.current = 0;
+  exam.answers = [];
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = exam.questions[exam.current];
+  const n = exam.current + 1;
+  const total = exam.questions.length;
+  const pct = Math.round((n - 1) / total * 100);
+  document.getElementById('exam-layout').innerHTML = `
+    <div class="exam-progress">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-text">Вопрос ${n} из ${total}</div>
+    </div>
+    <div class="question-card">
+      <div class="q-category">${q.cat}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options" id="options">
+        ${q.opts.map((opt, i) => `<button class="option" onclick="selectAnswer(${i})">${opt}</button>`).join('')}
+      </div>
+      <div id="feedback"></div>
+    </div>
+    <div class="exam-nav" id="exam-nav" style="display:none">
+      <button class="btn-primary" onclick="nextQuestion()">${n === total ? 'Завершить →' : 'Следующий →'}</button>
+    </div>
+  `;
+}
+
+function selectAnswer(idx) {
+  const q = exam.questions[exam.current];
+  const options = document.querySelectorAll('.option');
+  options.forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+  const isCorrect = idx === q.correct;
+  exam.answers.push({ correct: isCorrect, question: q });
+  options[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) options[q.correct].classList.add('reveal-correct');
+  document.getElementById('feedback').innerHTML = `
+    <div class="feedback-box ${isCorrect ? 'correct' : 'wrong'}">
+      <strong>${isCorrect ? '✅ Правильно!' : '❌ Неверно'}</strong>${q.explain}
+    </div>
+  `;
+  document.getElementById('exam-nav').style.display = 'flex';
+}
+
+function nextQuestion() {
+  exam.current++;
+  if (exam.current >= exam.questions.length) {
+    renderResults();
+  } else {
+    renderQuestion();
+    window.scrollTo(0, 0);
+  }
+}
+
+function renderResults() {
+  const correct = exam.answers.filter(a => a.correct).length;
+  const total = exam.answers.length;
+  const pct = Math.round(correct / total * 100);
+  const pass = pct >= 85;
+  saveExamResult(pct, correct, total);
+  document.getElementById('exam-layout').innerHTML = `
+    <div class="results-card">
+      <div class="score-circle ${pass ? 'pass' : 'fail'}">${pct}%<small>${correct}/${total}</small></div>
+      <h2>${pass ? '🎉 Тест сдан!' : '📚 Нужно повторить'}</h2>
+      <p>${pass
+        ? `Отличный результат! ${pct}% — выше проходного балла 85%.`
+        : `${pct}% — нужно минимум 85% (${Math.ceil(total*0.85)} из ${total}). Повтори флэш-карты и попробуй снова.`
+      }</p>
+      <div class="results-breakdown">
+        <h4>Разбор ответов</h4>
+        ${exam.answers.map((a, i) => `
+          <div class="breakdown-item">
+            <span>${a.correct ? '✅' : '❌'}</span>
+            <span style="flex:1">${i+1}. ${a.question.cat}</span>
+            <span class="breakdown-result ${a.correct ? 'ok' : 'bad'}">${a.correct ? 'Верно' : 'Неверно'}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="results-actions">
+        <button class="btn-primary" onclick="startExamWithCheck()">🔄 Пройти снова</button>
+        <button class="btn-secondary" onclick="showScreen('flash')">🃏 Флэш-карты</button>
+      </div>
+    </div>
+  `;
+  window.scrollTo(0, 0);
+}
+
+renderCards('all');
+</script>
+</body>
+</html>
