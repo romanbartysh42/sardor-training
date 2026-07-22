@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Приватные экскурсии · Sardor Travel</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2f2f7; color: #1c1c1e; }
+.page { max-width: 600px; margin: 0 auto; padding: 16px 12px 60px; }
+.hero { background: #1c1c1e; color: #fff; border-radius: 14px; padding: 18px 16px; margin-bottom: 14px; }
+.hero h1 { font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+.hero p { font-size: 13px; opacity: 0.5; }
+
+/* ACCORDION via checkbox */
+input[type="checkbox"] { display: none; }
+
+.acc { background: #fff; border-radius: 12px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+.acc label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.acc label::after {
+  content: '›';
+  font-size: 22px;
+  color: #bbb;
+  transition: transform 0.2s;
+  line-height: 1;
+}
+
+.acc-body {
+  display: none;
+  border-top: 1px solid #f0f0f0;
+  padding: 14px 14px 16px;
+}
+
+input[type="checkbox"]:checked + label::after { transform: rotate(90deg); }
+input[type="checkbox"]:checked ~ .acc-body { display: block; }
+
+/* default open */
+#s0:checked + label::after { transform: rotate(90deg); }
+#s0 { display: none; }
+
+/* CONTENT STYLES */
+.card { background: #f7f7f7; border-radius: 10px; padding: 12px 13px; margin-bottom: 10px; }
+.card:last-child { margin-bottom: 0; }
+.ct { font-size: 14px; font-weight: 600; margin-bottom: 9px; }
+.alert { background: #fff8e1; border-left: 3px solid #f59e0b; border-radius: 8px; padding: 9px 11px; font-size: 13px; color: #78350f; margin-bottom: 10px; line-height: 1.5; }
+.note { font-size: 12px; color: #888; background: #efefef; border-radius: 7px; padding: 7px 9px; margin-top: 8px; line-height: 1.5; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 600; color: #888; padding: 5px 6px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+td { padding: 7px 6px; border-bottom: 1px solid #efefef; line-height: 1.4; vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.vc { background: #f7f7f7; border-radius: 10px; padding: 11px; }
+.vc.hi { border: 2px solid #1c1c1e; background: #fff; }
+.vl { font-size: 10px; text-transform: uppercase; font-weight: 700; color: #888; margin-bottom: 5px; }
+.vt { font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+.vr { font-size: 12px; color: #555; margin-bottom: 3px; }
+.pill { display: inline-block; background: #1c1c1e; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; margin-bottom: 5px; }
+
+.step { display: flex; gap: 9px; margin-bottom: 9px; }
+.sn { width: 24px; height: 24px; min-width: 24px; border-radius: 50%; background: #1c1c1e; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.st { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.sd { font-size: 12px; color: #666; line-height: 1.5; }
+
+.t2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.tc { background: #fff; border-radius: 10px; padding: 11px; border: 1px solid #e5e5e5; }
+.tb { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 6px; }
+.tb.s { background: #dbeafe; color: #1e40af; }
+.tb.c { background: #fef3c7; color: #92400e; }
+.tsb { font-size: 11px; color: #888; margin-bottom: 7px; }
+.er { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+.er:last-child { border-bottom: none; }
+.el { color: #888; }
+.ev { font-weight: 600; }
+.tot { border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; }
+.tot.s { background: #dbeafe; }
+.tot.c { background: #fef3c7; }
+.tot.n { background: #f0fdf4; }
+.totl { font-size: 12px; font-weight: 600; }
+.totv { font-size: 16px; font-weight: 700; }
+.tot.s .totl, .tot.s .totv { color: #1e40af; }
+.tot.c .totl, .tot.c .totv { color: #92400e; }
+.tot.n .totv { color: #15803d; }
+
+.fbox { background: #fff; border: 2px dashed #ddd; border-radius: 10px; padding: 13px; text-align: center; margin-bottom: 10px; }
+.ft { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.fs { font-size: 11.5px; color: #888; }
+
+.ts { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-right: 2px; }
+.tc2 { display: inline-block; background: #fef3c7; color: #92400e; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-right: 2px; }
+
+.fi { display: flex; gap: 9px; }
+.fic { width: 26px; height: 26px; min-width: 26px; border-radius: 50%; background: #efefef; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.fb { flex: 1; padding-bottom: 11px; border-left: 1.5px solid #e0e0e0; margin-left: 13px; padding-left: 11px; }
+.fi:last-child .fb { border-left: 1.5px solid transparent; padding-bottom: 0; }
+.fitl { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.fidc { font-size: 12px; color: #666; line-height: 1.5; }
+
+.ptbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ptbl th { font-size: 10px; text-transform: uppercase; font-weight: 700; color: #888; padding: 5px 6px; text-align: left; border-bottom: 1px solid #e0e0e0; background: #efefef; }
+.ptbl td { padding: 6px 6px; border-bottom: 1px solid #f0f0f0; }
+.ptbl tr:last-child td { border-bottom: none; }
+.sell { font-weight: 700; color: #15803d; }
+
+.sb { background: #fff; border-left: 3px solid #1c1c1e; border-radius: 0 8px 8px 0; padding: 9px 11px; margin: 6px 0; font-size: 13px; line-height: 1.6; }
+.obj { background: #fff1f2; border-radius: 8px; padding: 8px 11px; font-size: 13px; font-weight: 600; color: #be123c; margin-bottom: 6px; }
+.ans { background: #f0fdf4; border-radius: 8px; padding: 9px 11px; font-size: 13px; line-height: 1.6; color: #166534; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <h1>Приватные экскурсии</h1>
+  <p>Sardor Travel · Пхукет · Для менеджеров</p>
+</div>
+
+<!-- 1 Групповая vs приватная -->
+<div class="acc">
+  <input type="checkbox" id="s0" checked>
+  <label for="s0">Групповая vs приватная</label>
+  <div class="acc-body">
+    <div class="g2">
+      <div class="vc">
+        <div class="vl">Групповая</div>
+        <div class="vt">Стандартный тур</div>
+        <div class="vr">👥 Большие группы</div>
+        <div class="vr">🕐 Фиксированное время</div>
+        <div class="vr">🗺 Стандартный маршрут</div>
+        <div class="vr">💰 Дешевле на чел.</div>
+        <div class="vr">📷 Фото среди толпы</div>
+      </div>
+      <div class="vc hi">
+        <div class="vl"><span class="pill">Приоритет</span></div>
+        <div class="vt">Приватный тур</div>
+        <div class="vr">✅ Только ваша компания</div>
+        <div class="vr">✅ Любое время</div>
+        <div class="vr">✅ Маршрут под клиента</div>
+        <div class="vr">✅ Выше чек для нас</div>
+        <div class="vr">✅ Личные фото</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">💡 Кому предлагать приватную</div>
+      <table>
+        <tr><th>Сигнал</th><th>Что говорит</th></tr>
+        <tr><td>«Нас двое / семья с детьми»</td><td>Хотят свой темп</td></tr>
+        <tr><td>«Хотим выбирать время»</td><td>Запрос на гибкость</td></tr>
+        <tr><td>«Были на групповой»</td><td>Готовы платить больше</td></tr>
+        <tr><td>«Дети маленькие»</td><td>Нужен свой темп</td></tr>
+        <tr><td>«Хотим красивые фото»</td><td>Группа мешает кадру</td></tr>
+        <tr><td>Высокий бюджет</td><td>Приватная как норма</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 2 Бест море -->
+<div class="acc">
+  <input type="checkbox" id="s1">
+  <label for="s1">⚓ Бест · Морские туры</label>
+  <div class="acc-body">
+    <div class="alert">⚠️ Таблица Беста — из договора на текущий сезон. Актуальную версию получить у старшего менеджера.</div>
+    <div class="card">
+      <div class="ct">Алгоритм расчёта</div>
+      <div class="step"><div class="sn">1</div><div><div class="st">Раздел Private Sea Tours</div><div class="sd">Находим программу по названию.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Определяем тариф</div><div class="sd"><span class="ts">Стандарт</span> — цена за 5 чел., extra pax сверх 5.<br><br><span class="tc2">Комфорт</span> — цена за 2 чел., extra pax сверх 2.</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Тип лодки</div><div class="sd">2 Engine / 3 Engine / Catamaran / Aqua Friend.</div></div></div>
+      <div class="step"><div class="sn">4</div><div><div class="st">Цена Беста × 1.35, округляем вверх до 100 ฿</div></div></div>
+    </div>
+    <div class="card">
+      <div class="ct">Пример: Phi Phi Don – Phi Phi Ley · 2 Engine · 6 чел.</div>
+      <div class="t2">
+        <div class="tc">
+          <div class="tb s">Стандарт · 5 чел.</div>
+          <div class="tsb">+1 extra pax</div>
+          <div class="er"><span class="el">База</span><span class="ev">26 500 ฿</span></div>
+          <div class="er"><span class="el">Extra 1×1000</span><span class="ev">1 000 ฿</span></div>
+          <div class="er"><span class="el">Себест.</span><span class="ev">27 500 ฿</span></div>
+          <div class="er"><span class="el">× 1.35 = 37 125 ฿</span><span class="ev">↑ до 100</span></div><div class="tot s"><span class="totl">Клиенту</span><span class="totv">37 200 ฿</span></div>
+        </div>
+        <div class="tc">
+          <div class="tb c">Комфорт · 2 чел.</div>
+          <div class="tsb">+4 extra pax</div>
+          <div class="er"><span class="el">База</span><span class="ev">31 500 ฿</span></div>
+          <div class="er"><span class="el">Extra 4×1200</span><span class="ev">4 800 ฿</span></div>
+          <div class="er"><span class="el">Себест.</span><span class="ev">36 300 ฿</span></div>
+          <div class="er"><span class="el">× 1.35 = 49 005 ฿</span><span class="ev">↑ до 100</span></div><div class="tot c"><span class="totl">Клиенту</span><span class="totv">49 100 ฿</span></div>
+        </div>
+      </div>
+      <div class="note">Aqua Friend «please ask» — уточняем у Беста перед ответом.</div>
+    </div>
+    <div class="card">
+      <div class="ct">⚠️ Важно</div>
+      <table><tr><td>Наценка 35% — не меньше без согласования со старшим менеджером</td></tr><tr><td>Округляем вверх до 100 ฿</td></tr><tr><td>Скидки — только через старшего менеджера</td></tr></table>
+    </div>
+  </div>
+</div>
+
+<!-- 3 Бест суша -->
+<div class="acc">
+  <input type="checkbox" id="s2">
+  <label for="s2">🚗 Бест · Сухопутные туры</label>
+  <div class="acc-body">
+    <div class="alert">⚠️ Таблица Беста — из договора на текущий сезон. Актуальную версию получить у старшего менеджера.</div>
+    <div class="card">
+      <div class="ct">Алгоритм расчёта</div>
+      <div class="step"><div class="sn">1</div><div><div class="st">Раздел Private Land Tours</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Тариф и транспорт</div><div class="sd"><span class="ts">Стандарт</span> — Minivan/Car, за 2 чел. Extra pax сверх 2. Большие группы — доплата Midi-bus/Big Bus.<br><br><span class="tc2">Комфорт</span> — H1/Fortuner/Alphard, за 2 чел. Extra pax сверх 2.</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Цена Беста × 1.35, округляем вверх до 100 ฿</div></div></div>
+    </div>
+    <div class="card">
+      <div class="ct">Пример: Cheow Lan Lake + Samet Nangshe · 6 чел.</div>
+      <div class="t2">
+        <div class="tc">
+          <div class="tb s">Стандарт · Minivan</div>
+          <div class="tsb">+4 extra pax</div>
+          <div class="er"><span class="el">База</span><span class="ev">13 700 ฿</span></div>
+          <div class="er"><span class="el">Extra 4×1350</span><span class="ev">5 400 ฿</span></div>
+          <div class="er"><span class="el">Себест.</span><span class="ev">19 100 ฿</span></div>
+          <div class="er"><span class="el">× 1.35 = 25 785 ฿</span><span class="ev">↑ до 100</span></div><div class="tot s"><span class="totl">Клиенту</span><span class="totv">25 800 ฿</span></div>
+        </div>
+        <div class="tc">
+          <div class="tb c">Комфорт · H1</div>
+          <div class="tsb">+4 extra pax</div>
+          <div class="er"><span class="el">База</span><span class="ev">17 300 ฿</span></div>
+          <div class="er"><span class="el">Extra 4×1850</span><span class="ev">7 400 ฿</span></div>
+          <div class="er"><span class="el">Себест.</span><span class="ev">24 700 ฿</span></div>
+          <div class="er"><span class="el">× 1.35 = 33 345 ฿</span><span class="ev">↑ до 100</span></div><div class="tot c"><span class="totl">Клиенту</span><span class="totv">33 400 ฿</span></div>
+        </div>
+      </div>
+      <div class="note">Midi-bus и Big Bus — доплата поверх базовой цены, не замена.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4 Лонгтейлы -->
+<div class="acc">
+  <input type="checkbox" id="s3">
+  <label for="s3">⛵ Лонгтейлы</label>
+  <div class="acc-body">
+    <div class="alert">⚠️ Прайсы — в рабочем чате, ветка «Приватные туры на лонгтейлах». Сверяйся перед расчётом.</div>
+    <div class="card">
+      <div class="ct">Алгоритм</div>
+      <div class="step"><div class="sn">1</div><div><div class="st">Net price — из ветки рабочего чата</div><div class="sd">Цены на 2 и на 4 гостей.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Net price × 1.35, округляем до 100 ฿</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Более 4 гостей — индивидуально с оператором</div></div></div>
+    </div>
+    <div class="fbox">
+      <div class="ft">Net price × 1.35 = цена клиенту</div>
+      <div class="fs">Округляем вверх до 100 ฿</div>
+    </div>
+    <div class="card">
+      <div class="ct">На 2 гостей</div>
+      <table class="ptbl">
+        <tr><th>Маршрут</th><th>Net</th><th>Клиенту</th></tr>
+        <tr><td>Яо Яй</td><td>10 000</td><td class="sell">13 500 ฿</td></tr>
+        <tr><td>Джеймс Бонд</td><td>11 500</td><td class="sell">15 600 ฿</td></tr>
+        <tr><td>Корал (Банана)</td><td>6 000</td><td class="sell">8 100 ฿</td></tr>
+        <tr><td>Рача / Корал</td><td>8 000</td><td class="sell">10 800 ฿</td></tr>
+        <tr><td>Закатный тур</td><td>5 000</td><td class="sell">6 800 ฿</td></tr>
+        <tr><td>Снорклинг</td><td>8 000</td><td class="sell">10 800 ฿</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="ct">На 4 гостей</div>
+      <table class="ptbl">
+        <tr><th>Маршрут</th><th>Net</th><th>Клиенту</th></tr>
+        <tr><td>Яо Яй</td><td>11 500</td><td class="sell">15 600 ฿</td></tr>
+        <tr><td>Джеймс Бонд</td><td>13 500</td><td class="sell">18 300 ฿</td></tr>
+        <tr><td>Корал (Банана)</td><td>8 000</td><td class="sell">10 800 ฿</td></tr>
+        <tr><td>Рача + Корал</td><td>10 000</td><td class="sell">13 500 ฿</td></tr>
+        <tr><td>Закатный тур</td><td>6 000</td><td class="sell">8 100 ฿</td></tr>
+        <tr><td>Снорклинг</td><td>10 000</td><td class="sell">13 500 ฿</td></tr>
+      </table>
+      <div class="note">Цены на март 2025 — сверяй с последним сообщением в ветке.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 5 Гидроциклы -->
+<div class="acc">
+  <input type="checkbox" id="s4">
+  <label for="s4">🌊 Гидроциклы · Jetski</label>
+  <div class="acc-body">
+    <div class="card">
+      <div class="ct">Алгоритм</div>
+      <div class="step"><div class="sn">1</div><div><div class="st">Цены на гидроциклы — уже цена клиенту</div><div class="sd">Называем как есть. Наценка внутри.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Хочет приватную — +7 500 ฿ фиксированно</div><div class="sd">Не процент. Независимо от кол-ва гидроциклов.</div></div></div>
+    </div>
+    <div class="fbox">
+      <div class="ft">Цена гидроцикла(ов) + 7 500 ฿ = итого клиенту</div>
+      <div class="fs">7 500 = 5 500 net Jetski + 2 000 наша наценка</div>
+    </div>
+    <div class="card">
+      <div class="ct">Пример: 2 × Sea-Doo + приватная</div>
+      <div class="er"><span class="el">Sea-Doo × 2</span><span class="ev">17 000 ฿</span></div>
+      <div class="er"><span class="el">Приватный пакет</span><span class="ev">7 500 ฿</span></div>
+      <div class="er"><span class="el">+ 7 500 ฿ приватный пакет</span><span class="ev">= 24 500 ฿</span></div><div class="tot n" style="margin-top:8px"><span class="totl">Итого клиенту</span><span class="totv">24 500 ฿</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">⚠️ Важно</div>
+      <table><tr><td>Цены на гидроциклы — как есть, наценка внутри</td></tr><tr><td>+7 500 ฿ — всегда фиксированно</td></tr><tr><td>Приватный пакет предлагаем всегда</td></tr></table>
+    </div>
+  </div>
+</div>
+
+<!-- 6 THAIKATER -->
+<div class="acc">
+  <input type="checkbox" id="s5">
+  <label for="s5">🚢 THAIKATER</label>
+  <div class="acc-body">
+    <div class="card">
+      <div class="ct">Как работаем</div>
+      <div class="fi"><div class="fic">💬</div><div class="fb"><div class="fitl">Шаг 1 — Узнаём у туриста</div><div class="fidc">Маршрут, кол-во человек, лодку. Примерный бюджет — для себя, партнёру не передаём.</div></div></div>
+      <div class="fi"><div class="fic">📤</div><div class="fb"><div class="fitl">Шаг 2 — Запрос в чат THAIKATER</div><div class="fidc">Дата, кол-во человек, маршрут, лодка.</div></div></div>
+      <div class="fi"><div class="fic">📋</div><div class="fb"><div class="fitl">Шаг 3 — Получаем варианты</div><div class="fidc">Маршрут, лодка и net price. Отбираем что вписывается в бюджет.</div></div></div>
+      <div class="fi"><div class="fic">🧮</div><div class="fb"><div class="fitl">Шаг 4 — Net price × 1.35, до 100 ฿</div><div class="fidc">Презентуем 2–3 варианта.</div></div></div>
+    </div>
+    <div class="fbox">
+      <div class="ft">Net price THAIKATER × 1.35 = цена клиенту</div>
+      <div class="fs">Округляем вверх до 100 ฿</div>
+    </div>
+    <div class="card">
+      <div class="ct">Пример: Coral Island · net 28 000 ฿</div>
+      <div class="er"><span class="el">Net price</span><span class="ev">28 000 ฿</span></div>
+      <div class="er"><span class="el">× 1.35</span><span class="ev">37 800 ฿</span></div>
+      <div class="tot n"><span class="totl">Клиенту</span><span class="totv">37 800 ฿</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">⚠️ Важно</div>
+      <table><tr><td>Net price — себестоимость, клиенту не называем</td></tr><tr><td>Бюджет туриста партнёру не передаём</td></tr><tr><td>Наценка 35%, округляем до 100 ฿</td></tr></table>
+    </div>
+  </div>
+</div>
+
+<!-- 7 Рыбалка -->
+<div class="acc">
+  <input type="checkbox" id="s6">
+  <label for="s6">🎣 Рыбалка · Рауф</label>
+  <div class="acc-body">
+    <div class="card">
+      <div class="ct">Как работаем</div>
+      <div class="fi"><div class="fic">💬</div><div class="fb"><div class="fitl">Шаг 1 — Узнаём у клиента</div><div class="fidc">Кол-во человек, дата, предпочтения по лодке если есть.</div></div></div>
+      <div class="fi"><div class="fic">📤</div><div class="fb"><div class="fitl">Шаг 2 — Запрос Рауфу</div><div class="fidc">Дата, кол-во человек. Рауф присылает варианты с лодкой и net price.</div></div></div>
+      <div class="fi"><div class="fic">🧮</div><div class="fb"><div class="fitl">Шаг 3 — Net price × 1.35, до 100 ฿</div><div class="fidc">Несколько вариантов — презентуем с разбивкой по лодкам.</div></div></div>
+    </div>
+    <div class="fbox">
+      <div class="ft">Net price Рауфа × 1.35 = цена клиенту</div>
+      <div class="fs">Округляем вверх до 100 ฿</div>
+    </div>
+    <div class="card">
+      <div class="ct">⚠️ Важно</div>
+      <table><tr><td>Net price — себестоимость, клиенту не называем</td></tr><tr><td>Цена зависит от лодки — всегда уточняем у Рауфа</td></tr><tr><td>Наценка 35%, округляем до 100 ฿</td></tr></table>
+    </div>
+  </div>
+</div>
+
+<!-- 8 Авиатуры -->
+<div class="acc">
+  <input type="checkbox" id="s7">
+  <label for="s7">🚁 Авиатуры</label>
+  <div class="acc-body">
+    <div class="alert">⚠️ Все цены — в рабочем чате, ветка «Авиатуры». Уже с нашей комиссией.</div>
+    <div class="card">
+      <div class="ct">Как работаем</div>
+      <div class="step"><div class="sn">1</div><div><div class="st">Узнаём у клиента</div><div class="sd">Маршрут, кол-во человек, дата.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Открываем ветку «Авиатуры»</div><div class="sd">Цены финальные — ничего считать не нужно.</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Называем цену из ветки</div><div class="sd">Перед закрытием — уточнить условия предоплаты у партнёра.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="ct">⚠️ Важно</div>
+      <table><tr><td>Цены из ветки — финальные, ничего не добавляем</td></tr><tr><td>Всегда сверяй актуальные цены в чате</td></tr><tr><td>Уточнить условия предоплаты перед закрытием</td></tr></table>
+    </div>
+  </div>
+</div>
+
+<!-- 9 Скрипт -->
+<div class="acc">
+  <input type="checkbox" id="s8">
+  <label for="s8">💬 Скрипт продажи</label>
+  <div class="acc-body">
+    <div class="card">
+      <div class="ct">Шаг 1 — Состав группы</div>
+      <div class="sb">«Скажите, сколько вас будет человек, и есть ли дети? Это важно чтобы подобрать лучший вариант и сразу назвать точную цену.»</div>
+    </div>
+    <div class="card">
+      <div class="ct">Шаг 2 — Презентация приватной</div>
+      <div class="sb">«У нас есть два варианта. Первый — групповая, там будут большие группы, выезд в фиксированное время. Второй — приватная лодка только для вас: вы сами выбираете время, маршрут гибкий, никакой толпы и красивые личные фото. Разница в цене — [X] бат на человека. Для семьи обычно выбирают приватную — стоит того.»</div>
+    </div>
+    <div class="card">
+      <div class="ct">Шаг 3 — Усиление</div>
+      <div class="sb">«На приватной можете задержаться столько, сколько хотите. Никаких "садимся через 20 минут".»</div>
+      <div class="sb">«Фотографии другого уровня — только ваша семья, без чужих в кадре.»</div>
+      <div class="sb">«С маленьким ребёнком намного комфортнее — свой темп, нет шума от других.»</div>
+    </div>
+    <div class="card">
+      <div class="ct">Шаг 4 — Закрытие</div>
+      <div class="sb">«Бронируем на [дату]? Какое время удобно — утреннее или после обеда?»</div>
+      <div class="note">⚠️ Если партнёр не Бест и не Jetski — перед подтверждением брони уточнить у партнёра условия предоплаты, потом сообщать клиенту.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 Возражения -->
+<div class="acc">
+  <input type="checkbox" id="s9">
+  <label for="s9">🛡 Работа с возражениями</label>
+  <div class="acc-body">
+    <div class="obj">«Это слишком дорого»</div>
+    <div class="ans">«Давайте посчитаем. Вас [N] человек, групповая [X] бат с каждого — итого [N×X]. Приватная [Y] — разница [Y−N×X] бат. За это вы получаете своё время, маршрут и фото без чужих.»</div>
+    <div class="obj">«На групповой же дешевле»</div>
+    <div class="ans">«На человека — да. Но разница на всю компанию часто небольшая. При этом нет выбора времени, ждёте группу, весь день с незнакомыми. Стоит ли это разницы?»</div>
+    <div class="obj">«Нас двое, зачем целая лодка»</div>
+    <div class="ans">«Для двоих особенно хороша — как личное такси на воде. Не подстраиваетесь ни под кого. Многие пары берут приватную специально.»</div>
+    <div class="obj">«Мы подумаем»</div>
+    <div class="ans">«На [дату] осталось [1–2 слота]. Можем забронировать — перенесём за 24 часа без штрафа.»</div>
+    <div class="obj">«В интернете видели дешевле»</div>
+    <div class="ans">«Сравните что входит: часто нет входных билетов, нет русскоязычного сопровождения, лодка старая. У нас проверенные операторы. Если найдёте то же самое дешевле — напишите нам.»</div>
+    <div class="card" style="margin-top:10px">
+      <div class="ct">⚠️ Чего не делать</div>
+      <table>
+        <tr><th>Нельзя</th><th>Почему</th></tr>
+        <tr><td>Скидка при первом «дорого»</td><td>Клиент проверяет</td></tr>
+        <tr><td>Сравнивать с агрегаторами</td><td>Мы продаём сервис</td></tr>
+        <tr><td>«Не знаю»</td><td>Уточни у старшего менеджера сначала</td></tr>
+        <tr><td>Скидка без согласования</td><td>Только через старшего</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
