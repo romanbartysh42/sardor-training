@@ -1062,7 +1062,11 @@ function renderExamStart() {
 }
 
 function startExam() {
-  exam.questions = shuffle(seaExamQuestions).slice(0, 20);
+  exam.questions = shuffle(seaExamQuestions).slice(0, 20).map(q => {
+    const tagged = q.opts.map((text, i) => ({ text, ok: i === q.correct }));
+    const sh = shuffle(tagged);
+    return { ...q, opts: sh.map(o => o.text), correct: sh.findIndex(o => o.ok) };
+  });
   exam.current = 0;
   exam.answers = [];
   renderQuestion();
