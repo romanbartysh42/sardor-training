@@ -170,6 +170,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;ba
 .breakdown-result.ok{color:var(--green);}
 .breakdown-result.bad{color:var(--coral);}
 .results-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.timer{font-size:14px;font-weight:700;white-space:nowrap;min-width:56px;text-align:right;color:var(--ocean);}
+.timer.low{color:var(--coral);}
 </style>
 </head>
 <body>
@@ -824,6 +826,7 @@ async function saveExamResult(score, correct, total) {
 // NAVIGATION
 // ═══════════════════════════════════════════════
 function showScreen(name) {
+  stopTimer();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
@@ -1067,6 +1070,7 @@ function renderQuestion() {
     <div class="exam-progress">
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
       <div class="progress-text">Вопрос ${n} из ${total}</div>
+      <div class="timer" id="timer"></div>
     </div>
     <div class="question-card">
       <div class="q-category">${q.cat}</div>
@@ -1080,9 +1084,47 @@ function renderQuestion() {
       <button class="btn-primary" onclick="nextQuestion()">${n === total ? 'Завершить →' : 'Следующий →'}</button>
     </div>
   `;
+  startTimer();
+}
+
+// ─── ТАЙМЕР: 60 секунд на вопрос ───────────────────
+const QUESTION_SECONDS = 90;
+let questionTimer = null;
+
+function stopTimer() {
+  if (questionTimer) { clearInterval(questionTimer); questionTimer = null; }
+}
+
+function startTimer() {
+  stopTimer();
+  let left = QUESTION_SECONDS;
+  const paint = () => {
+    const el = document.getElementById('timer');
+    if (!el) return;
+    el.textContent = '\u23F1 ' + Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+    el.className = 'timer' + (left <= 10 ? ' low' : '');
+  };
+  paint();
+  questionTimer = setInterval(() => {
+    left--;
+    paint();
+    if (left <= 0) { stopTimer(); timeUp(); }
+  }, 1000);
+}
+
+function timeUp() {
+  const q = exam.questions[exam.current];
+  const options = document.querySelectorAll('.option');
+  options.forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+  exam.answers.push({ correct: false, question: q });
+  options[q.correct].classList.add('reveal-correct');
+  document.getElementById('feedback').innerHTML =
+    '<div class="feedback-box wrong"><strong>\u23F1 Время вышло</strong>' + q.explain + '</div>';
+  document.getElementById('exam-nav').style.display = 'flex';
 }
 
 function selectAnswer(idx) {
+  stopTimer();
   const q = exam.questions[exam.current];
   const options = document.querySelectorAll('.option');
   options.forEach(o => { o.classList.add('disabled'); o.onclick = null; });
