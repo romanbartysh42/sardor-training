@@ -2101,7 +2101,9 @@ function Home({ completed, onOpen }) {
 // GOOGLE API — авторизация и результаты
 // ═══════════════════════════════════════════════
 function getApiUrl() {
-  return localStorage.getItem('sardor_api_url') || '';
+  // Адрес скрипта задан жёстко. Настройка в браузере намеренно не используется —
+  // раньше сохранённый там устаревший адрес молча уводил результаты не в тот лист.
+  return 'https://script.google.com/macros/s/AKfycbwlrBUBS3L1crlw_Gl0aussymC0Bf15NfkPc4GmNL3HUqYc7PBVoGbN8ndFPPaC-Rgb/exec';
 }
 
 let currentUser = null;
@@ -2113,7 +2115,7 @@ function AuthScreen({ onLogin }) {
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [showSettings, setShowSettings] = React.useState(false);
-  const [apiUrl, setApiUrl] = React.useState(localStorage.getItem('sardor_api_url') || '');
+  const [apiUrl, setApiUrl] = React.useState('https://script.google.com/macros/s/AKfycbwlrBUBS3L1crlw_Gl0aussymC0Bf15NfkPc4GmNL3HUqYc7PBVoGbN8ndFPPaC-Rgb/exec');
   const [settingsStatus, setSettingsStatus] = React.useState('');
 
   const doLogin = async () => {
