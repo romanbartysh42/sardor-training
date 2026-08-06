@@ -5,6 +5,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
+<!-- APP_VERSION = '20260806-0205' -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Обучение менеджеров — Работа в CRM</title>
@@ -1639,5 +1640,39 @@
 </div>
 
 </div>
+<script>
+// ─── ПРОВЕРКА ВЕРСИИ ───────────────────────────────
+// Справочник весит несколько мегабайт, поэтому целиком мы его не перекачиваем.
+// Читаем только первые байты файла на сервере — там стоит метка версии.
+// Если версия новее той, что открыта, страница сама перезагрузится.
+const APP_VERSION = '20260806-0205';
+(function checkVersion() {
+  function readHead(url) {
+    return fetch(url, { cache: 'no-store', headers: { Range: 'bytes=0-2047' } })
+      .then(function (r) {
+        if (!r.body || !r.body.getReader) return r.text();
+        var reader = r.body.getReader();
+        return reader.read().then(function (res) {
+          try { reader.cancel(); } catch (e) {}
+          return new TextDecoder('utf-8').decode(res.value || new Uint8Array());
+        });
+      });
+  }
+  try {
+    readHead(location.pathname + '?cb=' + Date.now())
+      .then(function (txt) {
+        var m = txt.match(/APP_VERSION = '([^']+)'/);
+        if (!m) return;
+        if (m[1] === APP_VERSION) { try { sessionStorage.removeItem('sardor_guide_reload'); } catch (e) {} return; }
+        var already = null;
+        try { already = sessionStorage.getItem('sardor_guide_reload'); } catch (e) {}
+        if (already === m[1]) return;
+        try { sessionStorage.setItem('sardor_guide_reload', m[1]); } catch (e) {}
+        location.replace(location.pathname + '?v=' + m[1]);
+      })
+      .catch(function () {});
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
