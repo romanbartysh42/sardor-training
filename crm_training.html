@@ -5,7 +5,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
-<!-- APP_VERSION = '20260820-0448' -->
+<!-- APP_VERSION = '20260910-0838' -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Обучение менеджеров — Работа в CRM</title>
@@ -1585,8 +1585,12 @@
     <div class="rule-box">
       <strong>Пример</strong>
       Phi-Phi = 2 800 THB → агрегатор показывает ~7 900 ₽ по курсу 2.84<br><br>
-      Если ввести сразу 5 600 THB (2 человека) — курс может упасть до 2.7<br><br>
-      📌 <strong>Ниже курса 2.6 не опускаемся</strong> (актуально на июль 2026)
+      Если ввести сразу 5 600 THB (2 человека) — курс может упасть до 2.7
+    </div>
+
+    <div class="callout danger">
+      <div class="callout-icon">🚨</div>
+      <div><strong>Считаем только по сайту moneyshopphuket.com.</strong> Никаких других агрегаторов, приложений банков и курсов «из головы».</div>
     </div>
 
     <p>Полученную сумму <strong>округляем до ровной</strong>. Например: 15 151 ₽ → округляем до <strong>15 100 ₽</strong>.</p>
@@ -1724,7 +1728,7 @@
 // Справочник весит несколько мегабайт, поэтому целиком мы его не перекачиваем.
 // Читаем только первые байты файла на сервере — там стоит метка версии.
 // Если версия новее той, что открыта, страница сама перезагрузится.
-const APP_VERSION = '20260820-0448';
+const APP_VERSION = '20260910-0838';
 (function checkVersion() {
   function readHead(url) {
     return fetch(url, { cache: 'no-store', headers: { Range: 'bytes=0-2047' } })
