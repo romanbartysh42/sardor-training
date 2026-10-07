@@ -59,6 +59,7 @@ li{margin-bottom:4px;line-height:1.5;font-size:13px;}
 </div>
 <div class="cat">Международные авиатуры (за границу)</div>
 <ul>
+<li><a href="#avia-materials"><strong>📁 Материалы по авиатурам и анкета на визу</strong></a></li>
 <li><a href="#t1">1. Куала-Лумпур (Малайзия) — 2 дня / 1 ночь</a></li>
 <li><a href="#t3">3. Сингапур — 2 дня / 1 ночь</a></li>
 </ul>
@@ -66,6 +67,14 @@ li{margin-bottom:4px;line-height:1.5;font-size:13px;}
 <ul>
 <li><a href="#t2">2. Бангкок за 1 день</a></li>
 </ul>
+</div>
+
+<div class="tour" id="avia-materials">
+<div class="tour-header"><h1>📁 МАТЕРИАЛЫ ПО АВИАТУРАМ</h1><div class="sub">Общая папка по всем программам</div></div>
+<div class="tour-body">
+<div class="info ">📁 <a href="https://drive.google.com/drive/folders/12ZYRhIr5M8RUZtkTrIqEC_NirCjZPDF_">Информация о программах и анкета для визы в Сингапур</a> — фото, описания и бланк анкеты. Отправляй клиенту при презентации тура.</div>
+<div class="warn">АНКЕТА НА ВИЗУ В СИНГАПУР — берётся из этой же папки. Запрашивай у клиента заранее, а не накануне вылета.</div>
+</div>
 </div>
 
 <div class="tour" id="t1">
@@ -87,7 +96,7 @@ li{margin-bottom:4px;line-height:1.5;font-size:13px;}
 // Браузер может держать старую копию страницы в кэше. Здесь мы тихо
 // спрашиваем сервер, не появилась ли новая версия справочника, и если да —
 // перезагружаем страницу. Менеджеру ничего делать не нужно.
-const APP_VERSION = '20260806-0159';
+const APP_VERSION = '20261007-0950';
 (function checkVersion() {
   try {
     fetch(location.pathname + '?cb=' + Date.now(), { cache: 'no-store' })
