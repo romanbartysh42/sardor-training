@@ -1267,7 +1267,7 @@ function renderExamStart() {
     <div class="exam-start">
       <div style="font-size:48px;margin-bottom:16px">📝</div>
       <h2>Экзамен по морским экскурсиям</h2>
-      <p>Проверь знания по всем 14 морским экскурсиям. После каждого ответа увидишь объяснение. Проходной балл — 85%.</p>
+      <p>Проверь знания по всем 14 морским экскурсиям. После каждого ответа увидишь объяснение. Проходной балл — 85%. Билет собирается по блокам тем: каждая тема обязательно встретится.</p>
       <div class="exam-info-row">
         <div class="exam-info-item"><div class="num">20</div><div class="lbl">Вопросов</div></div>
         <div class="exam-info-item"><div class="num">85%</div><div class="lbl">Проходной балл</div></div>
@@ -1278,8 +1278,117 @@ function renderExamStart() {
   `;
 }
 
+
+// ═══════════════════════════════════════════════
+// СБОРКА БИЛЕТА ПО БЛОКАМ
+// Раньше экзамен брал 20 случайных вопросов из всего банка, и крупные темы
+// вытесняли мелкие: редкая категория попадалась примерно в четверти попыток.
+// Теперь билет собирается по блокам — из каждого берётся своё количество
+// вопросов, а внутри блока выбор по-прежнему случайный.
+// Добавляешь новую категорию вопросов — впиши её в cats нужного блока.
+// Не вписал — она попадёт в блок с пометкой catchAll и всё равно будет
+// участвовать в выборке.
+// ═══════════════════════════════════════════════
+const EXAM_BLOCKS = [
+  {
+    "name": "BTC — морские программы",
+    "n": 6,
+    "catchAll": true,
+    "cats": [
+      "5 жемчужин Андаманского моря",
+      "4 жемчужины Андаманского моря",
+      "Острова Пхи-Пхи: Рассветное приключение",
+      "11 островов",
+      "Рассветное путешествие на Пхи-Пхи",
+      "Тропический рай Краби",
+      "Симиланские острова",
+      "Пхи-Пхи, Рача Яй и закатная вечеринка у Майтон",
+      "Racha Coral Sunrise",
+      "Ранняя морская рыбалка"
+    ]
+  },
+  {
+    "name": "Love Andaman",
+    "n": 4,
+    "cats": [
+      "Love Andaman — общее",
+      "Love Andaman — Сурин",
+      "Love Andaman — Пхи-Пхи + Бамбу",
+      "Love Andaman — Пхи-Пхи + Майтон",
+      "Love Andaman — Краби Пханг Нга",
+      "Love Andaman — Симиланы"
+    ]
+  },
+  {
+    "name": "Сравнение морских туров",
+    "n": 3,
+    "cats": [
+      "Сравнение морских туров"
+    ]
+  },
+  {
+    "name": "Гидроциклы",
+    "n": 3,
+    "cats": [
+      "Гидроциклы — туры по островам (Паттайя)",
+      "Гидроциклы — 9 островов (Пхукет)"
+    ]
+  },
+  {
+    "name": "Narayana",
+    "n": 2,
+    "cats": [
+      "Narayana — общее",
+      "Narayana — Rung Private Island",
+      "Narayana — Phi Phi Paradise",
+      "Narayana — Краби",
+      "Narayana — James Bond"
+    ]
+  },
+  {
+    "name": "Дайвинг",
+    "n": 2,
+    "cats": [
+      "Дейли-дайвинг"
+    ]
+  }
+];
+
+function pickExamSet(bank, total) {
+  const byCat = {};
+  bank.forEach(function (q) {
+    const c = q.cat || '—';
+    (byCat[c] = byCat[c] || []).push(q);
+  });
+
+  // категории, не вписанные ни в один блок, отдаём блоку catchAll
+  const listed = {};
+  EXAM_BLOCKS.forEach(function (b) { b.cats.forEach(function (c) { listed[c] = true; }); });
+  const orphans = Object.keys(byCat).filter(function (c) { return !listed[c]; });
+  if (orphans.length) {
+    const home = EXAM_BLOCKS.filter(function (b) { return b.catchAll; })[0] || EXAM_BLOCKS[0];
+    home.cats = home.cats.concat(orphans);
+  }
+
+  const used = new Set();
+  let picked = [];
+  EXAM_BLOCKS.forEach(function (b) {
+    let pool = [];
+    b.cats.forEach(function (c) { if (byCat[c]) pool = pool.concat(byCat[c]); });
+    shuffle(pool).slice(0, b.n).forEach(function (q) { picked.push(q); used.add(q); });
+  });
+
+  // если какой-то блок отдал меньше своей квоты — добираем из остатка банка
+  if (picked.length < total) {
+    const rest = shuffle(bank.filter(function (q) { return !used.has(q); }));
+    picked = picked.concat(rest.slice(0, total - picked.length));
+  }
+
+  return shuffle(picked).slice(0, total);
+}
+
 function startExam() {
-  exam.questions = shuffle(seaExamQuestions).slice(0, 20).map(q => {
+  exam.questions = pickExamSet(seaExamQuestions, 20).map(q => {
     const tagged = q.opts.map((text, i) => ({ text, ok: i === q.correct }));
     const sh = shuffle(tagged);
     return { ...q, opts: sh.map(o => o.text), correct: sh.findIndex(o => o.ok) };
@@ -1319,7 +1428,7 @@ function renderQuestion() {
 // Браузер может держать старую копию страницы в кэше. Здесь мы тихо
 // спрашиваем сервер, не появилась ли новая версия, и если да —
 // перезагружаем страницу. Менеджеру ничего делать не нужно.
-const APP_VERSION = '20261012-2110';
+const APP_VERSION = '20261021-1620';
 (function checkVersion() {
   try {
     fetch(location.pathname + '?cb=' + Date.now(), { cache: 'no-store' })
