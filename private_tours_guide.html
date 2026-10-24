@@ -376,18 +376,19 @@ tr:last-child td { border-bottom: none; }
 <!-- 8 Авиатуры -->
 <div class="acc">
   <input type="checkbox" id="s7">
-  <label for="s7">🚁 Авиатуры</label>
+  <label for="s7">🚁 Бест · Авиатуры</label>
   <div class="acc-body">
-    <div class="alert">⚠️ Все цены — в рабочем чате, ветка «Авиатуры». Уже с нашей комиссией.</div>
+    <div class="alert">⚠️ Приватные авиатуры берём у Беста (BTC) и считаем так же, как морские и сухопутные: цена Беста × 1.35.</div>
     <div class="card">
-      <div class="ct">Как работаем</div>
-      <div class="step"><div class="sn">1</div><div><div class="st">Узнаём у клиента</div><div class="sd">Маршрут, кол-во человек, дата.</div></div></div>
-      <div class="step"><div class="sn">2</div><div><div class="st">Открываем ветку «Авиатуры»</div><div class="sd">Цены финальные — ничего считать не нужно.</div></div></div>
-      <div class="step"><div class="sn">3</div><div><div class="st">Называем цену из ветки</div><div class="sd">Перед закрытием — уточнить условия предоплаты у партнёра.</div></div></div>
+      <div class="ct">Алгоритм расчёта</div>
+      <div class="step"><div class="sn">1</div><div><div class="st">Узнаём у клиента</div><div class="sd">Маршрут, количество человек, дата.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Находим программу в таблице Беста</div><div class="sd">Раздел приватных авиатуров. Актуальную таблицу берём у старшего менеджера.</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Цена Беста × 1.35, округляем вверх до 100 ฿</div><div class="sd">Правило то же, что на море и на суше.</div></div></div>
+      <div class="step"><div class="sn">4</div><div><div class="st">Уточняем условия предоплаты</div><div class="sd">До того, как назвал клиенту сумму и подтвердил дату.</div></div></div>
     </div>
     <div class="card">
       <div class="ct">⚠️ Важно</div>
-      <table><tr><td>Цены из ветки — финальные, ничего не добавляем</td></tr><tr><td>Всегда сверяй актуальные цены в чате</td></tr><tr><td>Уточнить условия предоплаты перед закрытием</td></tr></table>
+      <table><tr><td>Наценка 35% — не меньше без согласования со старшим менеджером</td></tr><tr><td>Округляем вверх до 100 ฿</td></tr><tr><td>Готовых цен «уже с комиссией» у авиатуров нет — считаем сами</td></tr><tr><td>Программы нет в таблице — запрашиваем цену у Беста, а не считаем по памяти</td></tr><tr><td>Скидки — только через старшего менеджера</td></tr></table>
     </div>
   </div>
 </div>
@@ -451,9 +452,9 @@ tr:last-child td { border-bottom: none; }
 <script>
 // ─── ПРОВЕРКА ВЕРСИИ ───────────────────────────────
 // Браузер может держать старую копию страницы в кэше. Здесь мы тихо
-// спрашиваем сервер, не появилась ли новая версия справочника, и если да —
+// спрашиваем сервер, не появилась ли новая версия методички, и если да —
 // перезагружаем страницу. Менеджеру ничего делать не нужно.
-const APP_VERSION = '20260806-0159';
+const APP_VERSION = '20261024-1510';
 (function checkVersion() {
   try {
     fetch(location.pathname + '?cb=' + Date.now(), { cache: 'no-store' })
@@ -461,11 +462,11 @@ const APP_VERSION = '20260806-0159';
       .then(function (txt) {
         var m = txt.match(/APP_VERSION = '([^']+)'/);
         if (!m) return;
-        if (m[1] === APP_VERSION) { try { sessionStorage.removeItem('sardor_guide_reload'); } catch (e) {} return; }
+        if (m[1] === APP_VERSION) { try { sessionStorage.removeItem('sardor_private_reload'); } catch (e) {} return; }
         var already = null;
-        try { already = sessionStorage.getItem('sardor_guide_reload'); } catch (e) {}
+        try { already = sessionStorage.getItem('sardor_private_reload'); } catch (e) {}
         if (already === m[1]) return;
-        try { sessionStorage.setItem('sardor_guide_reload', m[1]); } catch (e) {}
+        try { sessionStorage.setItem('sardor_private_reload', m[1]); } catch (e) {}
         location.replace(location.pathname + '?v=' + m[1]);
       })
       .catch(function () {});
